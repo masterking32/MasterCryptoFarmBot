@@ -3,11 +3,18 @@
 # Github: https://github.com/masterking32
 # Telegram: https://t.me/MasterCryptoFarmBot
 
+import asyncio
 import logging
+import threading
+import time
+
 from colorlog import ColoredFormatter
+
+import config
 import utils.logColors as lc
 from utils.database import Database
 from utils.modules import Module
+from utils.webserver import WebServer
 
 # ---------------------------------------------#
 # Logging configuration
@@ -45,13 +52,40 @@ banner = f"""
 
 """
 print(banner)
-log.info(f"{lc.g}🚀 Bot is running ...{lc.rs}")
 
-# Database connection
-db = Database("database.db", log)
-db.migration()
 
-# loading modules
-modules = Module(log, db)
-modules.load_modules()
-db.migration_modules(modules.module_list)
+async def start_bot():
+    log.info(f"{lc.g}🚀 Bot is running ...{lc.rs}")
+
+    # Database connection
+    db = Database("database.db", log)
+    db.migration()
+
+    # loading modules
+    modules = Module(log, db)
+    modules.load_modules()
+    db.migration_modules(modules.module_list)
+
+    # Web server
+    web_server = WebServer(log, db, config.config)
+    thread = threading.Thread(target=asyncio.run, args=(web_server.start(),))
+    thread.start()
+
+    await asyncio.sleep(1)
+    log.info(f"{lc.g}🚀 Bot is ready ... {lc.rs}")
+
+    while True:
+        try:
+            time.sleep(1)
+        except KeyboardInterrupt:
+            log.info(f"{lc.r}🛑 Bot is stopping ... {lc.rs}")
+            web_server.stop()
+            break
+
+
+def main():
+    asyncio.run(start_bot())
+
+
+if __name__ == "__main__":
+    main()

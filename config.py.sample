@@ -1,0 +1,11 @@
+# Developed by: MasterkinG32
+# Date: 2024
+# Github: https://github.com/masterking32
+# Telegram: https://t.me/MasterCryptoFarmBot
+
+config = {
+    "web_server": {
+        "host": "127.0.0.1",  # Host to listen on (Default: 127.0.0.1)
+        "port": 3232,  # Port to listen on (Default: 3232)
+    },
+}

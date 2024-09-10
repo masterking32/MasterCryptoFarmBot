@@ -3,8 +3,9 @@
 # Github: https://github.com/masterking32
 # Telegram: https://t.me/MasterCryptoFarmBot
 
-import sqlite3
 import os
+import sqlite3
+
 import utils.logColors as lc
 
 
@@ -30,14 +31,18 @@ class Database:
 
         migrations = sorted(os.listdir("database_migrations"))
         for migration in migrations:
+            if not migration.endswith(".sql"):
+                continue
+
+            sql_id = migration.split(".")[0]
             query = "SELECT * FROM migration WHERE version = ?"
-            self.cursor.execute(query, (migration,))
+            self.cursor.execute(query, (sql_id,))
             result = self.cursor.fetchall()
             if not result:
                 self.logger.info(f"{lc.g}└─ 🔍 Migrating {migration} ...{lc.rs}")
                 with open(f"database_migrations/{migration}", "r") as file:
                     query = file.read()
-                    self.cursor.execute(query)
+                    self.cursor.executescript(query)
                     fileName = migration.split(".")[0]
                     query = "INSERT INTO migration (version) VALUES (?)"
                     self.cursor.execute(query, (fileName,))
@@ -65,10 +70,15 @@ class Database:
 
             migrations = sorted(os.listdir(f"modules/{module}/database_migrations"))
             for migration in migrations:
+                if not migration.endswith(".sql"):
+                    continue
+
                 query = (
                     "SELECT * FROM modules_migration WHERE module = ? AND version = ?"
                 )
-                self.cursor.execute(query, (module, migration))
+
+                sql_id = migration.split(".")[0]
+                self.cursor.execute(query, (module, sql_id))
                 result = self.cursor.fetchall()
                 if not result:
                     self.logger.info(
@@ -78,7 +88,7 @@ class Database:
                         f"modules/{module}/database_migrations/{migration}", "r"
                     ) as file:
                         query = file.read()
-                        self.cursor.execute(query)
+                        self.cursor.executescript(query)
                         fileName = migration.split(".")[0]
                         query = "INSERT INTO modules_migration (module, version) VALUES (?, ?)"
                         self.cursor.execute(query, (module, fileName))
@@ -90,6 +100,14 @@ class Database:
     def query(self, query, data):
         self.cursor.execute(query, data)
         return self.cursor.fetchall()
+
+    def getSettings(self, key, default=None):
+        query = "SELECT value FROM settings WHERE name = ?"
+        self.cursor.execute(query, (key,))
+        result = self.cursor.fetchall()
+        if result:
+            return result[0][0]
+        return default
 
     def __del__(self):
         self.conn.close()
