@@ -9,7 +9,7 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 import utils.logColors as lc
 import utils.variables as var
-from web.controllers.LoginController import LoginController
+import importlib
 
 
 class WebServer:
@@ -110,9 +110,11 @@ class WebServer:
 
                         fileName = os.path.basename(Routing[self.path])
                         ClassName = fileName.split(".")[0]
-                        if ClassName in globals():
-                            with open(Routing[self.path], "r") as file:
-                                exec(file.read())
+                        if ClassName not in globals():
+                            module = importlib.import_module(
+                                Routing[self.path].replace("/", ".")[:-3]
+                            )
+                            globals()[ClassName] = getattr(module, ClassName)
 
                         controller = globals()[ClassName](WebServerGlobal)
                         controller.post(self)
