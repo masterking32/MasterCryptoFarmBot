@@ -7,6 +7,7 @@ import asyncio
 import logging
 import threading
 import time
+import os
 
 from colorlog import ColoredFormatter
 
@@ -67,6 +68,10 @@ print(banner)
 
 async def start_bot():
     log.info(f"{lc.g}🚀 Bot is running ...{lc.rs}")
+
+    if not os.path.exists("temp"):
+        log.info(f"{lc.y}📁 Creating temp directory ...{lc.rs}")
+        os.makedirs("temp")
 
     # Database connection
     db = Database("database.db", log)
