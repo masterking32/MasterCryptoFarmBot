@@ -2,3 +2,5 @@ __pycache__
 modules
 config.py
 database.db
+node_modules
+package-lock.json

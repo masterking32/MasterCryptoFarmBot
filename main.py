@@ -10,11 +10,22 @@ import time
 
 from colorlog import ColoredFormatter
 
-import config
+
 import utils.logColors as lc
 from utils.database import Database
 from utils.modules import Module
 from utils.webserver import WebServer
+
+try:
+    import config
+except ImportError:
+    print(
+        f"{lc.r}Please create a config.py file with the required variables, check the example file (config.py.sample){lc.rs}"
+    )
+    raise ImportError(
+        "Please create a config.py file with the required variables, check the example file (config.py.sample)"
+    )
+
 
 # ---------------------------------------------#
 # Logging configuration
