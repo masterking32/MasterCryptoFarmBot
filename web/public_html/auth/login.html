@@ -17,6 +17,9 @@
         <h1 class="text-2xl pb-5">MasterCryptoFarmBot</h1>
         <h3 class="text-lg pb-5">Admin Panel Login</h3>
         <div class="mb-4">
+          <div class="alert alert-error mb-5 {{HAS_ERROR}}">
+            {{ERROR_MESSAGE}}
+          </div>
           <form action="" method="post">
             <label class="input input-bordered flex items-center gap-2">
               <svg
@@ -34,8 +37,9 @@
               <input
                 type="password"
                 class="grow"
-                value="password"
+                value=""
                 placeholder="Password"
+                name="password"
               />
             </label>
             <div class="mt-5">
@@ -46,6 +50,7 @@
         <p>
           <a href="../index.html" class="text-orange-400">Back to Home</a>
         </p>
+        <div class="hidden"></div>
       </div>
     </div>
   </body>

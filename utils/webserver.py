@@ -9,6 +9,7 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 import utils.logColors as lc
 import utils.variables as var
+from web.controllers.LoginController import LoginController
 
 
 class WebServer:
@@ -41,10 +42,16 @@ class WebServer:
     def TemplateEngine(self, template, data):
         default_data = {
             "APP_VERSION": var.APP_VERSION,
+            "ERROR_MESSAGE": "",
+            "HAS_ERROR": "hidden",
         }
 
-        data = {**default_data, **data}
-        for key, value in data.items():
+        data_new = {**default_data, **data}
+        for key, value in default_data.items():
+            if key in data:
+                data_new[key] = data[key]
+
+        for key, value in data_new.items():
             template = template.replace(f"{{{{{key}}}}}", value)
 
         return template
@@ -86,7 +93,43 @@ class WebServer:
     def WebServerHandler(self, request, client_address, server):
         WebServerGlobal = self
 
+        Routing = {
+            "/auth/login.html": "web/controllers/LoginController.py",
+        }
+
         class WebServerHandler(SimpleHTTPRequestHandler):
+            def do_POST(self):
+                try:
+                    if self.path in Routing:
+                        if not os.path.exists(Routing[self.path]):
+                            self.send_response(404)
+                            self.send_header("Content-type", "text/html")
+                            self.end_headers()
+                            self.wfile.write(b"404 Not Found")
+                            return
+
+                        fileName = os.path.basename(Routing[self.path])
+                        ClassName = fileName.split(".")[0]
+                        if ClassName in globals():
+                            with open(Routing[self.path], "r") as file:
+                                exec(file.read())
+
+                        controller = globals()[ClassName](WebServerGlobal)
+                        controller.post(self)
+
+                    else:
+                        self.send_response(404)
+                        self.send_header("Content-type", "text/html")
+                        self.end_headers()
+                        self.wfile.write(b"404 Not Found")
+                        return
+                except Exception as e:
+                    self.send_response(500)
+                    self.send_header("Content-type", "text/html")
+                    self.end_headers()
+                    self.wfile.write(b"500 Internal Server Error")
+                    WebServerGlobal.logger.error(f"WebServerHandler POST: {e}")
+
             def do_GET(self):
                 try:
                     if self.path == "/":
