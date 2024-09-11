@@ -134,6 +134,9 @@ class WebServer:
                         self.wfile.write(content)
                         return
 
+                except ConnectionAbortedError:
+                    # Connection was aborted, do nothing
+                    return
                 except Exception as e:
                     self.send_response(500)
                     self.send_header("Content-type", "text/html")
