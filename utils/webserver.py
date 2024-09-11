@@ -37,24 +37,41 @@ class WebServer:
         self.server.server_close()
 
     def WebServerHandler(self, request, client_address, server):
+        logger = self.logger
+
         class WebServerHandler(SimpleHTTPRequestHandler):
             def do_GET(self):
-                if self.path == "/":
-                    self.path = "/index.html"
+                try:
+                    if self.path == "/":
+                        self.path = "/index.html"
 
-                content_type = self.get_content_type(self.path)
-                if content_type is None:
-                    self.send_response(404)
+                    if os.path.exists(f"web/public_html{self.path}") is False:
+                        self.send_response(404)
+                        self.send_header("Content-type", "text/html")
+                        self.end_headers()
+                        self.wfile.write(b"404 Not Found")
+                        return
+
+                    content_type = self.get_content_type(self.path)
+                    if content_type is None:
+                        self.send_response(404)
+                        self.send_header("Content-type", "text/html")
+                        self.end_headers()
+                        self.wfile.write(b"404 Not Found")
+                        return
+
+                    self.send_response(200)
+                    self.send_header("Content-type", content_type)
+                    self.end_headers()
+                    with open(f"web/public_html{self.path}", "rb") as file:
+                        self.wfile.write(file.read())
+
+                except Exception as e:
+                    self.send_response(500)
                     self.send_header("Content-type", "text/html")
                     self.end_headers()
-                    self.wfile.write(b"404 Not Found")
-                    return
-
-                self.send_response(200)
-                self.send_header("Content-type", content_type)
-                self.end_headers()
-                with open(f"web/public_html{self.path}", "rb") as file:
-                    self.wfile.write(file.read())
+                    self.wfile.write(b"500 Internal Server Error")
+                    logger.error(f"WebServerHandler: {e}")
 
             def get_content_type(self, path):
                 extension = os.path.splitext(path)[1]
