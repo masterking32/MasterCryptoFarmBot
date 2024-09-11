@@ -7,6 +7,7 @@ import os
 from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
 
 import utils.logColors as lc
+import utils.variables as var
 
 
 class WebServer:
@@ -36,8 +37,19 @@ class WebServer:
         self.server.shutdown()
         self.server.server_close()
 
+    def TemplateEngine(self, template, data):
+        default_data = {
+            "APP_VERSION": var.APP_VERSION,
+        }
+
+        data = {**default_data, **data}
+        for key, value in data.items():
+            template = template.replace(f"{{{{{key}}}}}", value)
+
+        return template
+
     def WebServerHandler(self, request, client_address, server):
-        logger = self.logger
+        WebServerGlobal = self
 
         class WebServerHandler(SimpleHTTPRequestHandler):
             def do_GET(self):
@@ -60,18 +72,27 @@ class WebServer:
                         self.wfile.write(b"404 Not Found")
                         return
 
-                    self.send_response(200)
-                    self.send_header("Content-type", content_type)
-                    self.end_headers()
-                    with open(f"web/public_html{self.path}", "rb") as file:
-                        self.wfile.write(file.read())
+                    with open(f"web/public_html{self.path}", "r") as file:
+                        content = file.read()
+                        if content_type == "text/html":
+                            content = WebServerGlobal.TemplateEngine(
+                                content,
+                                {},
+                            )
+
+                        content = content.encode("utf-8")
+                        self.send_response(200)
+                        self.send_header("Content-type", content_type)
+                        self.end_headers()
+                        self.wfile.write(content)
+                        return
 
                 except Exception as e:
                     self.send_response(500)
                     self.send_header("Content-type", "text/html")
                     self.end_headers()
                     self.wfile.write(b"500 Internal Server Error")
-                    logger.error(f"WebServerHandler: {e}")
+                    WebServerGlobal.error(f"WebServerHandler: {e}")
 
             def get_content_type(self, path):
                 extension = os.path.splitext(path)[1]

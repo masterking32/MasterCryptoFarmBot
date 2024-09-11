@@ -15,6 +15,7 @@ import utils.logColors as lc
 from utils.database import Database
 from utils.modules import Module
 from utils.webserver import WebServer
+import utils.variables as var
 
 try:
     import config
@@ -25,7 +26,6 @@ except ImportError:
     raise ImportError(
         "Please create a config.py file with the required variables, check the example file (config.py.sample)"
     )
-
 
 # ---------------------------------------------#
 # Logging configuration
@@ -56,7 +56,7 @@ banner = f"""
 ▓▓  ▓▓▓▓▓▓ ▓▓▓▓      ▓▓▓▓▓    ▓▓▓▓       ▓▓▓▓
 ▓▓   ▓▓▓▓  ▓▓▓▓        ▓▓▓▓▓▓▓▓▓▓        ▓▓▓▓
 {lc.rs}
-            {lc.b}🤖 MasterCryptoFarmBot {lc.rs + lc.c}v1.0 🤖{lc.rs}
+            {lc.b}🤖 MasterCryptoFarmBot {lc.rs + lc.c}v{var.APP_VERSION} 🤖{lc.rs}
             {lc.b}👉 Created by: {lc.rs + lc.r}MasterkinG32 👈{lc.rs}
     {lc.b}🌍 Telegram: {lc.rs + lc.g}https://t.me/MasterCryptoFarmBot 🌍{lc.rs}
             ⛔ {lc.rb}CTRL + C to STOP THE BOT! {lc.rs}⛔
