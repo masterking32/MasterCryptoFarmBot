@@ -78,12 +78,14 @@ async def start_bot():
     db.migration()
 
     # loading modules
-    modules = Module(log, db)
+    modules = Module(log)
     modules.load_modules()
     db.migration_modules(modules.module_list)
 
+    db.Close()
+
     # Web server
-    web_server = WebServer(log, db, config.config)
+    web_server = WebServer(log, config.config)
     thread = threading.Thread(target=asyncio.run, args=(web_server.start(),))
     thread.start()
 

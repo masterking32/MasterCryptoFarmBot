@@ -9,9 +9,8 @@ import utils.logColors as lc
 
 
 class Module:
-    def __init__(self, logger, db):
+    def __init__(self, logger):
         self.logger = logger
-        self.db = db
         self.module_list = []
 
     def load_modules(self):

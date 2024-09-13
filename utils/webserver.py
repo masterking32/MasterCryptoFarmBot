@@ -4,155 +4,139 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 
 import os
-import time
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+import random
+import signal
+import string
+from flask import Flask, render_template, request
 
+import flask.cli
+
+from utils.database import Database
 import utils.logColors as lc
-import utils.variables as var
-import importlib
+import utils.variables as vr
+import logging
 
 
 class WebServer:
-    def __init__(self, logger, db, config):
+    def __init__(self, logger, config):
         self.logger = logger
-        self.db = db
         self.config = config
-        self.admin_password = db.getSettings("admin_password", "admin")
         self.host = self.config["web_server"]["host"]
         self.port = self.config["web_server"]["port"]
         self.server = None
 
+    def LoadFile(self, file):
+        try:
+            with open(file, "r") as f:
+                return f.read()
+        except FileNotFoundError:
+            return "404 Not Found"
+
+    def GetPublicHTMLPath(self, path):
+        current_Dir = os.path.dirname(__file__)
+        file_dir = os.path.abspath(
+            os.path.join(current_Dir, "../web/public_html/" + path)
+        )
+        return file_dir
+
+    def GetControllersPath(self, path):
+        current_Dir = os.path.dirname(__file__)
+        file_dir = os.path.abspath(
+            os.path.join(current_Dir, "../web/controllers/" + path)
+        )
+        return file_dir
+
     async def start(self):
+        db = Database("database.db", self.logger)
         self.logger.info(f"{lc.g}🌐 Starting web server ...{lc.rs}")
-        self.server = HTTPServer((self.host, self.port), self.WebServerHandler)
+        os.environ["FLASK_ENV"] = "production"
+        flask.cli.show_server_banner = lambda *args: None
+
+        self.app = Flask(__name__, template_folder=self.GetPublicHTMLPath(""))
+        SecretKey = db.getSettings("flask_secret_key", None)
+        if SecretKey is None:
+            self.logger.info(f"{lc.y}🔐 Generating new secret key for flask ...{lc.rs}")
+            SecretKey = "".join(
+                random.choices(string.ascii_letters + string.digits, k=32)
+            )
+            db.queryScript(
+                f"INSERT OR REPLACE INTO settings (name, value) VALUES ('flask_secret_key', '{SecretKey}');"
+            )
+            self.logger.info(f"{lc.g}🔐 Secret key generated successfully{lc.rs}")
+        self.app.secret_key = SecretKey
+
+        @self.app.route("/")
+        def index():
+            fileName = "index.html"
+            template_path = self.GetPublicHTMLPath(fileName)
+            if os.path.isfile(template_path):
+                return render_template(fileName, App_Version=vr.APP_VERSION)
+            else:
+                return "404 Not Found"
+
+        @self.app.route("/<path:path>.py", methods=["GET", "POST"])
+        def python_file(path):
+            path = path.replace(".py", "")
+            split_path = path.split("/")
+            if len(split_path) != 2:
+                return "404 Not Found"
+
+            if not split_path[0].isalnum() or not split_path[1].isalnum():
+                return "404 Not Found"
+
+            file_path = self.GetControllersPath(f"{split_path[0]}.py")
+
+            base_folder = self.GetControllersPath("")
+            if base_folder not in file_path:
+                return "403 Forbidden"
+
+            if not os.path.isfile(file_path):
+                return "404 Not Found"
+
+            try:
+                exec("import web.controllers." + split_path[0])
+                Module = eval(
+                    "web.controllers." + split_path[0] + "." + split_path[0] + "()"
+                )
+                if hasattr(Module, split_path[1]):
+                    return eval("Module" + "." + split_path[1] + "(request, self)")
+                else:
+                    return "404 Not Found"
+            except Exception as e:
+                self.logger.error(f"{lc.r}Error: {e}{lc.rs}")
+                return "500 Internal Server Error"
+
+        @self.app.route("/<path:path>")
+        def static_file(path):
+            base_folder = self.GetPublicHTMLPath("")
+
+            file_dir = self.GetPublicHTMLPath(path)
+
+            if base_folder not in file_dir:
+                return "403 Forbidden"
+
+            if os.path.isfile(file_dir):
+                if self.get_content_type(file_dir):
+                    if self.get_content_type(file_dir) == "text/html":
+                        return render_template(path)
+                    return (
+                        self.LoadFile(file_dir),
+                        200,
+                        {"Content-Type": self.get_content_type(file_dir)},
+                    )
+            return self.LoadFile(file_dir), 200
+
+        log = logging.getLogger("werkzeug")
+        log.setLevel(logging.ERROR)
         self.logger.info(
             f"{lc.g}🌐 Web server started on 🔗 {lc.rs + lc.y}http://{self.host}:{self.port}{lc.rs} 🔗"
         )
-
         self.logger.info(
-            f"{lc.g}🔐 Panel Password: {lc.rs + lc.r + self.admin_password + lc.rs}"
+            f"{lc.g}🔐 Panel Password: {lc.rs + lc.r + db.getSettings("admin_password", "admin") + lc.rs}"
         )
-        self.server.serve_forever()
-
-    def stop(self):
-        self.logger.info(f"{lc.r}🌐 Stopping web server ...{lc.rs}")
-        self.server.shutdown()
-        self.server.server_close()
-
-    def TemplateEngine(self, template, data):
-        default_data = {
-            "APP_VERSION": var.APP_VERSION,
-            "ERROR_MESSAGE": "",
-            "HAS_ERROR": "hidden",
-        }
-
-        data_new = {**default_data, **data}
-        for key, value in default_data.items():
-            if key in data:
-                data_new[key] = data[key]
-
-        for key, value in data_new.items():
-            template = template.replace(f"{{{{{key}}}}}", value)
-
-        return template
-
-    def deleteOldSessions(self):
-        try:
-            session_dir = "temp"
-            files = [
-                file for file in os.listdir(session_dir) if file.startswith("sessions_")
-            ]
-            for file in files:
-                file_path = os.path.join(session_dir, file)
-                file_create_time = os.path.getctime(file_path)
-                if (time.time() - file_create_time) / 3600 > 6:
-                    os.remove(file_path)
-                    self.logger.info(f"{lc.y}🗑️ Deleted old session file: {file}{lc.rs}")
-        except Exception as e:
-            self.logger.error(f"deleteOldSessions: {e}")
-
-    def CheckAuth(self, request):
-        self.deleteOldSessions()
-        if "Cookie" not in request.headers:
-            return False
-
-        cookie = request.headers.get("Cookie")
-        if not cookie or "auth" not in cookie:
-            return False
-
-        auth_token = cookie.split("=")[1]
-        if len(auth_token) != 64 or not auth_token.isalnum():
-            return False
-
-        session_file = f"temp/sessions_{auth_token}.json"
-        if not os.path.exists(session_file):
-            return False
-
-        return True
-
-    def SendHTML(self, request, content):
-        try:
-            request.send_response(200)
-            request.send_header("Content-type", "text/html")
-            request.end_headers()
-            request.wfile.write(content)
-        except Exception as e:
-            self.logger.error(f"SendHTML: {e}")
-
-    def SendError(self, request, code):
-        try:
-            request.send_response(code)
-            request.send_header("Content-type", "text/html")
-            request.end_headers()
-            request.wfile.write(f"{code} Error".encode("utf-8"))
-        except Exception as e:
-            self.logger.error(f"SendError: {e}")
-
-    def SendRedirect(self, request, location):
-        try:
-            request.send_response(302)
-            request.send_header("Location", location)
-            request.end_headers()
-        except Exception as e:
-            self.logger.error(f"SendRedirect: {e}")
-
-    def HandleRequests(self, request):
-        try:
-            if request.path == "/":
-                request.path = "/index.html"
-
-            if "/auth/" in request.path and self.CheckAuth(request):
-                self.SendRedirect(request, "/admin/dashboard.html")
-                return
-
-            if "/admin/" in request.path and not self.CheckAuth(request):
-                self.SendRedirect(request, "/auth/login.html")
-                return
-
-            file_path = f"web/public_html{request.path}"
-            if not os.path.exists(file_path):
-                self.SendError(request, 404)
-                return
-
-            content_type = self.get_content_type(request.path)
-            if content_type is None:
-                self.SendError(request, 404)
-                return
-
-            with open(file_path, "r") as file:
-                content = file.read()
-                if content_type == "text/html":
-                    content = self.TemplateEngine(content, {})
-
-                content = content.encode("utf-8")
-                request.send_response(200)
-                request.send_header("Content-type", content_type)
-                request.end_headers()
-                request.wfile.write(content)
-                return
-
-        except Exception as e:
-            self.logger.error(f"HandleRequests: {e}")
+        
+        db.Close()
+        self.server = self.app.run(host=self.host, port=self.port, threaded=True)
 
     def get_content_type(self, path):
         extension = os.path.splitext(path)[1]
@@ -176,49 +160,6 @@ class WebServer:
 
         return content_types.get(extension)
 
-    def WebServerHandler(self, request, client_address, server):
-        WebServerGlobal = self
-
-        Routing = {
-            "/auth/login.html": "web/controllers/LoginController.py",
-        }
-
-        class WebServerHandler(SimpleHTTPRequestHandler):
-            def do_POST(self):
-                try:
-                    if self.path in Routing:
-                        if not os.path.exists(Routing[self.path]):
-                            WebServerGlobal.SendError(self, 404)
-                            return
-
-                        fileName = os.path.basename(Routing[self.path])
-                        ClassName = fileName.split(".")[0]
-                        if ClassName not in globals():
-                            module = importlib.import_module(
-                                Routing[self.path].replace("/", ".")[:-3]
-                            )
-                            globals()[ClassName] = getattr(module, ClassName)
-
-                        controller = globals()[ClassName](WebServerGlobal)
-                        controller.post(self)
-
-                    else:
-                        WebServerGlobal.SendError(self, 404)
-                        return
-                except Exception as e:
-                    WebServerGlobal.SendError(self, 500)
-                    WebServerGlobal.logger.error(f"WebServerHandler POST: {e}")
-
-            def do_GET(self):
-                try:
-                    WebServerGlobal.HandleRequests(self)
-                except ConnectionAbortedError:
-                    return
-                except Exception as e:
-                    WebServerGlobal.SendError(self, 500)
-                    WebServerGlobal.logger.error(f"WebServerHandler: {e}")
-
-            def log_message(self, format, *args):
-                pass
-
-        return WebServerHandler(request, client_address, server)
+    def stop(self):
+        self.logger.info(f"{lc.r}🌐 Stopping web server ...{lc.rs}")
+        os.kill(os.getpid(), signal.SIGINT)

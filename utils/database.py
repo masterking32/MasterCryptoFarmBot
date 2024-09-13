@@ -101,6 +101,10 @@ class Database:
         self.cursor.execute(query, data)
         return self.cursor.fetchall()
 
+    def queryScript(self, query):
+        self.cursor.executescript(query)
+        return self.cursor.fetchall()
+
     def getSettings(self, key, default=None):
         query = "SELECT value FROM settings WHERE name = ?"
         self.cursor.execute(query, (key,))
@@ -110,4 +114,7 @@ class Database:
         return default
 
     def __del__(self):
+        self.conn.close()
+
+    def Close(self):
         self.conn.close()
