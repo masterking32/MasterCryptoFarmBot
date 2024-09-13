@@ -29,13 +29,7 @@ class admin:
                 webServer.local_git_commit != None
                 and webServer.local_git_commit == webServer.github_git_commit["sha"]
             ):
-                Last_Update = Last_Update
-                Update_Available = True
-            elif (
-                webServer.local_git_commit != None
-                and webServer.local_git_commit != webServer.github_git_commit["sha"]
-            ):
-                Last_Update = Last_Update
+                Update_Available = False
 
         return render_template(
             "admin/dashboard.html",
