@@ -1,3 +1,8 @@
+# Developed by: MasterkinG32
+# Date: 2024
+# Github: https://github.com/masterking32
+# Telegram: https://t.me/MasterCryptoFarmBot
+
 from flask import redirect, render_template, session
 
 from utils.database import Database
@@ -9,7 +14,6 @@ class auth:
         if "admin" in session:
             return redirect("/admin/dashboard.py")
 
-        print(session)
         if request.method == "POST":
             if "password" in request.form:
                 password = request.form["password"]
@@ -22,3 +26,8 @@ class auth:
                     return render_template("auth/login.html", error="Invalid password")
 
         return render_template("auth/login.html")
+
+    def logout(self, request, webServer):
+        if "admin" in session:
+            session.pop("admin")
+        return redirect("/auth/login.py")

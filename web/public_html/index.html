@@ -4,53 +4,61 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="./css/main.css" rel="stylesheet" />
+    <link
+      href="./css/fontawesome-free-6.6.0-web/css/all.min.css"
+      rel="stylesheet"
+    />
     <title>MasterCryptoFarmBot</title>
     <meta name="generator" content="MasterkinG CMS" />
   </head>
-  <body>
-    <div
-      class="container text-center mx-auto leading-loose py-10 px-5 max-w-xl"
-    >
-      <h1 class="text-2xl pb-5">MasterCryptoFarmBot</h1>
-      <p>
+  <body class="flex h-screen bg-indigo-900">
+    <div class="w-full max-w-xs m-auto bg-gray-900 rounded p-5">
+      <h1 class="text-2xl pb-5 text-center text-white">MasterCryptoFarmBot</h1>
+      <p class="text-center">
         Welcome to MasterCryptoFarmBot! This is a bot that will help you manage
         your crypto farm. You can use this bot to monitor and manage your
         Telegram Air-drop/Crypto Farm bots.
       </p>
-      <p class="mt-10">
-        <a href="./auth/login.py" class="btn btn-primary">Login</a>
+      <p class="mt-10 text-center">
+        <a
+          href="./auth/login.py"
+          class="w-full bg-indigo-700 hover:bg-pink-700 text-white font-bold py-2 px-4 mb-6 rounded"
+        >
+          <i class="fa-regular fa-user mr-2"></i>Login / Admin Panel</a
+        >
       </p>
-      <p class="mt-10">
+      <p class="mt-10 text-center">
         <a
           href="https://github.com/masterking32/MasterCryptoFarmBot"
-          class="text-orange-400"
+          class="text-pink-400 hover:text-pink-800"
           target="_blank"
           >Project GitHub</a
         >
-        |
+        <br />
+        Telegram:
         <a
           href="https://t.me/MasterCryptoFarmBot"
           target="_blank"
-          class="text-orange-400"
-          >Telegram Channel</a
+          class="text-pink-400 hover:text-pink-800"
+          >Channel</a
         >
         |
         <a
           href="https://t.me/MasterCryptoFarmBotGroup"
           target="_blank"
-          class="text-orange-400"
-          >Telegram Group</a
+          class="text-pink-400 hover:text-pink-800"
+          >Group</a
         >
       </p>
-      <p>
+      <p class="text-center">
         MasterCryptoFarmBot
-        <span class="text-cyan-400">v{{ App_Version }}</span>
+        <span class="text-cyan-400">v{{App_Version}}</span>
       </p>
-      <p>
+      <p class="text-center">
         Developed by
         <a
           href="https://masterking32.com"
-          class="text-orange-400"
+          class="text-pink-400 hover:text-pink-800"
           target="_blank"
           >MasterkinG32</a
         >

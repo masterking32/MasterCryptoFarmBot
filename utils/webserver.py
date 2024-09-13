@@ -118,12 +118,17 @@ class WebServer:
             if os.path.isfile(file_dir):
                 if self.get_content_type(file_dir):
                     if self.get_content_type(file_dir) == "text/html":
-                        return render_template(path)
-                    return (
-                        self.LoadFile(file_dir),
-                        200,
-                        {"Content-Type": self.get_content_type(file_dir)},
-                    )
+                        # return render_template(path)
+                        return "403 Forbidden"
+                    try:
+                        with open(file_dir, "rb") as f:
+                            content = f.read()
+                        return content, 200, {"Content-Type": self.get_content_type(file_dir)}
+                    except FileNotFoundError:
+                        return "404 Not Found"
+                    except Exception as e:
+                        self.logger.error(f"{lc.r}Error: {e}{lc.rs}")
+                        return "500 Internal Server Error"
             return self.LoadFile(file_dir), 200
 
         log = logging.getLogger("werkzeug")
@@ -134,7 +139,7 @@ class WebServer:
         self.logger.info(
             f"{lc.g}🔐 Panel Password: {lc.rs + lc.r + db.getSettings("admin_password", "admin") + lc.rs}"
         )
-        
+
         db.Close()
         self.server = self.app.run(host=self.host, port=self.port, threaded=True)
 
