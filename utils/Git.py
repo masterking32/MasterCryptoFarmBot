@@ -28,9 +28,21 @@ class Git:
 
     def GetRecentLocalCommit(self):
         try:
-            response = os.popen("git log -1 --pretty=format:%H").read().strip()
-            if response and response != 0 and response != "" and len(response) == 40:
+            response = (
+                os.popen(
+                    "git log -1 --pretty=format:%H 2>/dev/null"
+                    if os.name != "nt"
+                    else "git log -1 --pretty=format:%H 2>nul"
+                )
+                .read()
+                .strip()
+            )
+            if response and len(response) == 40:
                 return response
+            else:
+                self.logger.error(
+                    f"{lc.r} ❌ Project is not a git repository, Please initialize git{lc.rs}"
+                )
         except Exception as e:
             self.logger.error(
                 f"{lc.r} ❌ Project is not a git repository, Please initialize git{lc.rs}"

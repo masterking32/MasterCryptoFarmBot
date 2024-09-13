@@ -30,6 +30,9 @@ class admin:
                 and webServer.local_git_commit == webServer.github_git_commit["sha"]
             ):
                 Update_Available = False
+        else:
+            Last_Update = "Failed to fetch GitHub commit"
+            Update_Available = False
 
         return render_template(
             "admin/dashboard.html",
