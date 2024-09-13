@@ -8,6 +8,7 @@ import random
 import signal
 import string
 from flask import Flask, render_template, request
+import requests
 
 import flask.cli
 
@@ -15,6 +16,7 @@ from utils.database import Database
 import utils.logColors as lc
 import utils.variables as vr
 import logging
+import utils.Git as Git
 
 
 class WebServer:
@@ -24,6 +26,9 @@ class WebServer:
         self.host = self.config["web_server"]["host"]
         self.port = self.config["web_server"]["port"]
         self.server = None
+        self.public_ip = "127.0.0.1"
+        self.local_git_commit = None
+        self.github_git_commit = None
 
     def LoadFile(self, file):
         try:
@@ -46,8 +51,33 @@ class WebServer:
         )
         return file_dir
 
+    def GetPublicIP(self):
+        try:
+            response = requests.get("https://api.masterking32.com/ip.php?json=true")
+            if response.status_code == 200:
+                return response.json()["ipAddress"]
+        except Exception as e:
+            self.logger.error(f"{lc.r}Error: {e}{lc.rs}")
+
+        return "127.0.0.1"
     async def start(self):
         db = Database("database.db", self.logger)
+        self.logger.info(f"{lc.g}🗺️ Getting public IP ...{lc.rs}")
+        self.public_ip = self.GetPublicIP()
+        self.logger.info(f"{lc.g}🗺️ Public IP: {lc.rs + lc.y}{self.public_ip}{lc.rs}")
+
+        git = Git.Git(self.logger, self.config)
+        github_commit = git.GetGitHubRecentCommit(vr.GITHUB_REPOSITORY)
+        local_commit = git.GetRecentLocalCommit()
+        self.local_git_commit = local_commit
+        self.github_git_commit = github_commit
+
+        if github_commit is not None and local_commit is not None:
+            self.logger.info(f"{lc.g}🟢 GitHub Commit: {lc.rs + lc.c}{github_commit['sha'][:7]}{lc.rs}")
+            self.logger.info(f"{lc.g}🔵 Local Commit: {lc.rs + lc.c}{local_commit[:7]}{lc.rs}")
+            if github_commit["sha"] != local_commit:
+                self.logger.info(f"{lc.r}💔 New update available, Please update your project{lc.rs}")
+
         self.logger.info(f"{lc.g}🌐 Starting web server ...{lc.rs}")
         os.environ["FLASK_ENV"] = "production"
         flask.cli.show_server_banner = lambda *args: None

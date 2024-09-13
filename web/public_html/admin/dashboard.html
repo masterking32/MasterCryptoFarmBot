@@ -20,14 +20,60 @@
         </ul>
       </div>
       <hr class="h-px my-2 border-0 bg-gray-700" />
-      <hr class="h-px mb-2 mt-5 border-0 bg-gray-700" />
-      <p class="text-center mt-5">
+      <div class="flex justify-between items-center mt-5">
+        <div class="flex items-center">
+          <i class="fa-solid fa-user-circle text-4xl text-pink-700"></i>
+          <div class="ml-3">
+            <p class="text-white">Welcome, Admin</p>
+            <p class="text-xs text-gray-400">You are logged in as an admin</p>
+          </div>
+        </div>
         <a
           href="../auth/logout.py"
-          class="bg-pink-700 hover:bg-pink-800 text-white font-bold py-2 px-4 mb-6 rounded"
+          class="bg-pink-700 hover:bg-pink-800 text-white font-bold py-2 px-4 rounded"
           >Logout</a
         >
-      </p>
+      </div>
+      <hr class="h-px my-4 border-0 bg-gray-700" />
+      <div>
+        <h2 class="text-lg text-white">Quick Links</h2>
+        <ul class="mt-2 leading-loose">
+          <li>
+            <a href="./bots.py" class="text-pink-400 hover:text-pink-800"
+              ><span class="fa-solid fa-robot mr-2"></span> Manage Bot
+              Modules</a
+            >
+          </li>
+          <li>
+            <a href="./accounts.py" class="text-pink-400 hover:text-pink-800"
+              ><span class="fa-solid fa-users mr-2"></span> Manage Accounts</a
+            >
+          </li>
+          <li>
+            <a href="./settings.py" class="text-green-400 hover:text-pink-800"
+              ><span class="fa-solid fa-cog mr-2"></span> Panel Settings</a
+            >
+          </li>
+        </ul>
+      </div>
+      <hr class="h-px my-4 border-0 bg-gray-700" />
+      <div>
+        <h2 class="text-lg text-white">System Information</h2>
+        <ul class="mt-2 leading-loose">
+          <li>
+            <span class="fa-solid fa-server mr-2"></span> Server IP:
+            <span class="text-gray-400"> {{Server_IP}} </span>
+          </li>
+          <li>
+            <span class="fa-solid fa-code-branch mr-2"></span> App Version:
+            <span class="text-gray-400"> {{App_Version}} </span>
+          </li>
+          <li>
+            <span class="fa-solid fa-calendar-day mr-2"></span> Last Update:
+            <span class="text-gray-400"> {{Last_Update}} </span>
+          </li>
+        </ul>
+      </div>
     </div>
   </body>
 </html>
