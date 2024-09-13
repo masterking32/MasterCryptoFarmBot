@@ -20,6 +20,7 @@ class admin:
         local_commit = git.GetRecentLocalCommit()
         webServer.local_git_commit = local_commit
         webServer.github_git_commit = github_commit
+        Update_Available = True
 
         if webServer.github_git_commit != None:
             Last_Update = webServer.github_git_commit["commit"]["author"]["date"]
@@ -28,16 +29,18 @@ class admin:
                 webServer.local_git_commit != None
                 and webServer.local_git_commit == webServer.github_git_commit["sha"]
             ):
-                Last_Update = Last_Update + " (Up to date)"
+                Last_Update = Last_Update
+                Update_Available = True
             elif (
                 webServer.local_git_commit != None
                 and webServer.local_git_commit != webServer.github_git_commit["sha"]
             ):
-                Last_Update = Last_Update + " (Out of date)"
+                Last_Update = Last_Update
 
         return render_template(
             "admin/dashboard.html",
             Server_IP=webServer.public_ip,
             App_Version=vr.APP_VERSION,
             Last_Update=Last_Update,
+            Update_Available=Update_Available,
         )

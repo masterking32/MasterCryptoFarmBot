@@ -72,6 +72,21 @@
             <span class="fa-solid fa-calendar-day mr-2"></span> Last Update:
             <span class="text-gray-400"> {{Last_Update}} </span>
           </li>
+          <li>
+            {% if Update_Available %}
+            <a
+              class="text-red-400"
+              href="https://github.com/masterking32/MasterCryptoFarmBot"
+              target="_blank"
+            >
+              <span class="fa-solid fa-arrow-up mr-2"></span> Update Available
+            </a>
+            {% else %}
+            <span class="text-green-400">
+              <span class="fa-solid fa-check mr-2"></span> Up to Date</span
+            >
+            {% endif %}
+          </li>
         </ul>
       </div>
     </div>
