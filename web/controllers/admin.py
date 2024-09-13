@@ -34,6 +34,10 @@ class admin:
             Last_Update = "Failed to fetch GitHub commit"
             Update_Available = False
 
+        if webServer.local_git_commit == None:
+            Last_Update = "Failed to fetch local commit, Please initialize git"
+            Update_Available = True
+
         return render_template(
             "admin/dashboard.html",
             Server_IP=webServer.public_ip,
