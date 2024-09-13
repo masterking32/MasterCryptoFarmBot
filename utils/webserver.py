@@ -116,6 +116,66 @@ class WebServer:
         except Exception as e:
             self.logger.error(f"SendRedirect: {e}")
 
+    def HandleRequests(self, request):
+        try:
+            if request.path == "/":
+                request.path = "/index.html"
+
+            if "/auth/" in request.path and self.CheckAuth(request):
+                self.SendRedirect(request, "/admin/dashboard.html")
+                return
+
+            if "/admin/" in request.path and not self.CheckAuth(request):
+                self.SendRedirect(request, "/auth/login.html")
+                return
+
+            file_path = f"web/public_html{request.path}"
+            if not os.path.exists(file_path):
+                self.SendError(request, 404)
+                return
+
+            content_type = self.get_content_type(request.path)
+            if content_type is None:
+                self.SendError(request, 404)
+                return
+
+            with open(file_path, "r") as file:
+                content = file.read()
+                if content_type == "text/html":
+                    content = self.TemplateEngine(content, {})
+
+                content = content.encode("utf-8")
+                request.send_response(200)
+                request.send_header("Content-type", content_type)
+                request.end_headers()
+                request.wfile.write(content)
+                return
+
+        except Exception as e:
+            self.logger.error(f"HandleRequests: {e}")
+
+    def get_content_type(self, path):
+        extension = os.path.splitext(path)[1]
+        content_types = {
+            ".css": "text/css",
+            ".js": "application/javascript",
+            ".html": "text/html",
+            ".png": "image/png",
+            ".jpg": "image/jpg",
+            ".jpeg": "image/jpeg",
+            ".gif": "image/gif",
+            ".svg": "image/svg+xml",
+            ".ico": "image/x-icon",
+            ".json": "application/json",
+            ".woff": "font/woff",
+            ".woff2": "font/woff2",
+            ".ttf": "font/ttf",
+            ".eot": "font/eot",
+            ".otf": "font/otf",
+        }
+
+        return content_types.get(extension)
+
     def WebServerHandler(self, request, client_address, server):
         WebServerGlobal = self
 
@@ -151,68 +211,12 @@ class WebServer:
 
             def do_GET(self):
                 try:
-                    if self.path == "/":
-                        self.path = "/index.html"
-
-                    if "/auth/" in self.path:
-                        if WebServerGlobal.CheckAuth(self):
-                            WebServerGlobal.SendRedirect(self, "/admin/dashboard.html")
-                            return
-
-                    if "/admin/" in self.path:
-                        if not WebServerGlobal.CheckAuth(self):
-                            WebServerGlobal.SendRedirect(self, "/auth/login.html")
-                            return
-
-                    file_path = f"web/public_html{self.path}"
-                    if not os.path.exists(file_path):
-                        WebServerGlobal.SendError(self, 404)
-                        return
-
-                    content_type = self.get_content_type(self.path)
-                    if content_type is None:
-                        WebServerGlobal.SendError(self, 404)
-                        return
-
-                    with open(file_path, "r") as file:
-                        content = file.read()
-                        if content_type == "text/html":
-                            content = WebServerGlobal.TemplateEngine(content, {})
-
-                        content = content.encode("utf-8")
-                        self.send_response(200)
-                        self.send_header("Content-type", content_type)
-                        self.end_headers()
-                        self.wfile.write(content)
-                        return
-
+                    WebServerGlobal.HandleRequests(self)
                 except ConnectionAbortedError:
                     return
                 except Exception as e:
                     WebServerGlobal.SendError(self, 500)
                     WebServerGlobal.logger.error(f"WebServerHandler: {e}")
-
-            def get_content_type(self, path):
-                extension = os.path.splitext(path)[1]
-                content_types = {
-                    ".css": "text/css",
-                    ".js": "application/javascript",
-                    ".html": "text/html",
-                    ".png": "image/png",
-                    ".jpg": "image/jpg",
-                    ".jpeg": "image/jpeg",
-                    ".gif": "image/gif",
-                    ".svg": "image/svg+xml",
-                    ".ico": "image/x-icon",
-                    ".json": "application/json",
-                    ".woff": "font/woff",
-                    ".woff2": "font/woff2",
-                    ".ttf": "font/ttf",
-                    ".eot": "font/eot",
-                    ".otf": "font/otf",
-                }
-
-                return content_types.get(extension)
 
             def log_message(self, format, *args):
                 pass
