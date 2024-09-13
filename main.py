@@ -10,6 +10,7 @@ import time
 import os
 
 from colorlog import ColoredFormatter
+from flask import json
 
 
 import utils.logColors as lc
@@ -73,6 +74,10 @@ async def start_bot():
         log.info(f"{lc.y}📁 Creating temp directory ...{lc.rs}")
         os.makedirs("temp")
 
+    if not os.path.exists("telegram_accounts"):
+        log.info(f"{lc.y}📁 Creating telegram_accounts directory ...{lc.rs}")
+        os.makedirs("telegram_accounts")
+
     # Database connection
     db = Database("database.db", log)
     db.migration()
@@ -91,6 +96,49 @@ async def start_bot():
     db.migration_modules(modules.module_list)
 
     db.Close()
+
+    if os.path.exists("./telegram_accounts/accounts.json"):
+        log.info(f"{lc.g}👤 Reading accounts.json file ...{lc.rs}")
+        with open("./telegram_accounts/accounts.json", "r") as f:
+            accounts = json.load(f)
+            f.close()
+            if accounts:
+                log.info(
+                    f"{lc.g}└─ ✅ Found {lc.rs + lc.c + str(len(accounts)) + lc.rs + lc.g} accounts ...{lc.rs}"
+                )
+
+                log.info(f"{lc.g}🔍 Checking session and account files ...{lc.rs}")
+                sessions = [
+                    f
+                    for f in os.listdir("./telegram_accounts")
+                    if f.endswith(".session")
+                ]
+                for session in sessions:
+                    if session.replace(".session", "") not in [
+                        account["session_name"] for account in accounts
+                    ]:
+                        log.info(
+                            f"{lc.r}└─ ❌ Deleting {session} session file ...{lc.rs}"
+                        )
+                        os.remove(f"./telegram_accounts/{session}")
+
+                for account in accounts:
+                    if not os.path.exists(
+                        f"./telegram_accounts/{account['session_name']}.session"
+                    ):
+                        log.info(
+                            f"{lc.r}└─ ❌ {account['session_name']}.session file not found ...{lc.rs}"
+                        )
+                        accounts.remove(account)
+
+                with open("./telegram_accounts/accounts.json", "w") as f:
+                    json.dump(accounts, f, indent=2)
+
+                log.info(f"{lc.g}└─ ✅ Session files are up to date ...{lc.rs}")
+            else:
+                log.info(f"{lc.r}└─ ❌ No accounts found ...{lc.rs}")
+    else:
+        log.info(f"{lc.r}└─ ❌ No accounts found ...{lc.rs}")
 
     # Web server
     web_server = WebServer(log, config.config)

@@ -1,3 +1,4 @@
 colorlog
 flask
 requests
+pyrogram
