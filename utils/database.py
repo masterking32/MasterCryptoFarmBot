@@ -113,6 +113,12 @@ class Database:
             return result[0][0]
         return default
 
+    def updateSettings(self, key, value):
+        query = "INSERT OR REPLACE INTO settings (name, value) VALUES (?, ?)"
+        self.cursor.execute(query, (key, value))
+        self.conn.commit()
+        return True
+
     def __del__(self):
         self.conn.close()
 

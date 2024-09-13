@@ -8,6 +8,7 @@ from flask import redirect, render_template, session
 from utils.database import Database
 import utils.variables as vr
 import utils.Git as Git
+import utils.logColors as lc
 
 
 class admin:
@@ -15,6 +16,10 @@ class admin:
         if "admin" not in session:
             return redirect("/auth/login.py")
         Last_Update = "..."
+        
+        db = Database("database.db", webServer.logger)
+        license = db.getSettings("license", "Free License")
+        db.Close()
         git = Git.Git(webServer.logger, webServer.config)
         github_commit = git.GetGitHubRecentCommit(vr.GITHUB_REPOSITORY)
         local_commit = git.GetRecentLocalCommit()
@@ -44,4 +49,36 @@ class admin:
             App_Version=vr.APP_VERSION,
             Last_Update=Last_Update,
             Update_Available=Update_Available,
+            License=license,
         )
+
+    def settings(self, request, webServer):
+        if "admin" not in session:
+            return redirect("/auth/login.py")
+
+        error = None
+        success = None
+
+        db = Database("database.db", webServer.logger)
+        license = db.getSettings("license", "Free License")
+        if request.method == "POST" and "action" in request.form:
+            if (
+                "current-password" in request.form
+                and "new-password" in request.form
+                and "confirm-password" in request.form
+            ):
+                if db.getSettings("admin_password") != request.form["current-password"]:
+                    error = "Current password is incorrect!"
+                elif request.form["new-password"] == request.form["confirm-password"]:
+                    db.updateSettings("admin_password", request.form["new-password"])
+
+                    success = "Password changed successfully."
+                    webServer.logger.info(f"{lc.g}🔑 Admin password changed successfully, New password: {lc.rs + lc.c + request.form["new-password"] + lc.rs}")
+                else:
+                    error = "New password and confirm password does not match."
+
+            else:
+                error = "Please fill all the fields."
+
+        db.Close()
+        return render_template("admin/settings.html", error=error, success=success, server_ip=webServer.public_ip, license=license)

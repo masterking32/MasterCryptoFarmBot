@@ -50,7 +50,15 @@
             >
           </li>
           <li>
-            <a href="./settings.py" class="text-green-400 hover:text-pink-800"
+            <a
+              href="./change_license.py"
+              class="text-pink-400 hover:text-pink-800"
+              ><span class="fa-solid fa-key mr-2"></span> Get or Change
+              License</a
+            >
+          </li>
+          <li>
+            <a href="./settings.py" class="text-pink-400 hover:text-pink-800"
               ><span class="fa-solid fa-cog mr-2"></span> Panel Settings</a
             >
           </li>
@@ -62,15 +70,23 @@
         <ul class="mt-2 leading-loose">
           <li>
             <span class="fa-solid fa-server mr-2"></span> Server IP:
-            <span class="text-gray-400"> {{Server_IP}} </span>
+            <span class="text-cyan-400"> {{Server_IP}} </span>
+          </li>
+          <li>
+            <span class="fa-solid fa-network-wired mr-2"></span> License: {% if
+            "free" in License.lower() %}
+            <span class="text-orange-400"> {{License}} </span>
+            {% else %}
+            <span class="text-green-400"> {{License}} </span>
+            {% endif %}
           </li>
           <li>
             <span class="fa-solid fa-code-branch mr-2"></span> App Version:
-            <span class="text-gray-400"> {{App_Version}} </span>
+            <span class="text-green-400"> {{App_Version}} </span>
           </li>
           <li>
             <span class="fa-solid fa-calendar-day mr-2"></span> Last Update:
-            <span class="text-gray-400"> {{Last_Update}} </span>
+            <span class="text-rose-400"> {{Last_Update}} </span>
           </li>
           <li>
             {% if Update_Available %}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../css/main.css" rel="stylesheet" />
+    <link
+      href="../css/fontawesome-free-6.6.0-web/css/all.min.css"
+      rel="stylesheet"
+    />
+    <title>MasterCryptoFarmBot</title>
+    <meta name="generator" content="MasterkinG CMS" />
+  </head>
+  <body class="flex min-h-screen bg-indigo-900">
+    <div class="w-full max-w-md m-auto bg-gray-900 rounded p-5">
+      <h1 class="text-2xl pb-5 text-center text-white">MasterCryptoFarmBot</h1>
+      <div class="breadcrumbs text-sm">
+        <ul>
+          <li>
+            <a href="./dashboard.py" class="text-teal-200"
+              ><span class="fa-solid fa-gauge mr-2"></span> Dashboard</a
+            >
+          </li>
+          <li><span class="fa-solid fa-gear mr-2"></span> Settings</li>
+        </ul>
+      </div>
+      <div class="flex w-full flex-col">
+        <div class="divider divider-neutral">Server Info</div>
+      </div>
+      <ul class="mt-2 leading-loose">
+        <li>
+          <span class="text-white">
+            <i class="fa-solid fa-server mr-2"></i>
+            Server IP:</span
+          >
+          <span class="text-green-400">{{ server_ip }}</span>
+        </li>
+        <li>
+          <span class="text-white">
+            <i class="fa-solid fa-network-wired mr-2"></i>
+            License:</span
+          >
+          {% if license and "free" in license.lower() %}
+          <span class="text-orange-400">{{ license }}</span>
+          {% else %}
+          <span class="text-green-400">{{ license }}</span>
+          {% endif %}
+        </li>
+      </ul>
+      <div class="my-4 text-center">
+        <a
+          href="./change_license.py"
+          class="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 mb-6 rounded"
+          ><span class="fa-solid fa-key mr-2"></span> Get or Change License</a
+        >
+      </div>
+      <div class="flex w-full flex-col">
+        <div class="divider divider-neutral">Change Password</div>
+      </div>
+      {% if error %}
+      <div class="alert alert-error">{{ error }}</div>
+      {% endif %} {% if success %}
+      <div class="alert alert-success">{{ success }}</div>
+      {% endif %}
+
+      <form action="./settings.py" method="POST" class="mt-5">
+        <div class="flex flex-col">
+          <label for="current-password" class="text-white"
+            >Current Password</label
+          >
+          <input
+            type="password"
+            name="current-password"
+            id="current-password"
+            class="input input-neutral"
+            required
+          />
+        </div>
+        <div class="flex flex-col mt-3">
+          <label for="new-password" class="text-white">New Password</label>
+          <input
+            type="password"
+            name="new-password"
+            id="new-password"
+            class="input input-neutral"
+            required
+          />
+        </div>
+        <div class="flex flex-col mt-3">
+          <label for="confirm-password" class="text-white"
+            >Confirm Password</label
+          >
+          <input
+            type="password"
+            name="confirm-password"
+            id="confirm-password"
+            class="input input-neutral"
+            required
+          />
+        </div>
+        <input type="hidden" name="action" value="change-password" />
+        <div class="flex mt-5">
+          <button
+            type="submit"
+            class="btn btn-neutral"
+            name="change-password"
+            value="true"
+          >
+            Change Password
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

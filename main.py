@@ -77,6 +77,14 @@ async def start_bot():
     db = Database("database.db", log)
     db.migration()
 
+    licenseType = db.getSettings("license", "Free License")
+    licenseType = (
+        f"{lc.y}{licenseType}{lc.rs}"
+        if licenseType == "Free License"
+        else f"{lc.c}{licenseType}{lc.rs}"
+    )
+    log.info(f"{lc.g}🔑 Bot License: {lc.rs + licenseType}")
+
     # loading modules
     modules = Module(log)
     modules.load_modules()
