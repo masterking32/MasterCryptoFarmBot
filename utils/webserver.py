@@ -90,6 +90,32 @@ class WebServer:
 
         return True
 
+    def SendHTML(self, request, content):
+        try:
+            request.send_response(200)
+            request.send_header("Content-type", "text/html")
+            request.end_headers()
+            request.wfile.write(content)
+        except Exception as e:
+            self.logger.error(f"SendHTML: {e}")
+
+    def SendError(self, request, code):
+        try:
+            request.send_response(code)
+            request.send_header("Content-type", "text/html")
+            request.end_headers()
+            request.wfile.write(f"{code} Error".encode("utf-8"))
+        except Exception as e:
+            self.logger.error(f"SendError: {e}")
+
+    def SendRedirect(self, request, location):
+        try:
+            request.send_response(302)
+            request.send_header("Location", location)
+            request.end_headers()
+        except Exception as e:
+            self.logger.error(f"SendRedirect: {e}")
+
     def WebServerHandler(self, request, client_address, server):
         WebServerGlobal = self
 
@@ -102,10 +128,7 @@ class WebServer:
                 try:
                     if self.path in Routing:
                         if not os.path.exists(Routing[self.path]):
-                            self.send_response(404)
-                            self.send_header("Content-type", "text/html")
-                            self.end_headers()
-                            self.wfile.write(b"404 Not Found")
+                            WebServerGlobal.SendError(self, 404)
                             return
 
                         fileName = os.path.basename(Routing[self.path])
@@ -120,16 +143,10 @@ class WebServer:
                         controller.post(self)
 
                     else:
-                        self.send_response(404)
-                        self.send_header("Content-type", "text/html")
-                        self.end_headers()
-                        self.wfile.write(b"404 Not Found")
+                        WebServerGlobal.SendError(self, 404)
                         return
                 except Exception as e:
-                    self.send_response(500)
-                    self.send_header("Content-type", "text/html")
-                    self.end_headers()
-                    self.wfile.write(b"500 Internal Server Error")
+                    WebServerGlobal.SendError(self, 500)
                     WebServerGlobal.logger.error(f"WebServerHandler POST: {e}")
 
             def do_GET(self):
@@ -139,32 +156,22 @@ class WebServer:
 
                     if "/auth/" in self.path:
                         if WebServerGlobal.CheckAuth(self):
-                            self.send_response(302)
-                            self.send_header("Location", "/admin/")
-                            self.end_headers()
+                            WebServerGlobal.SendRedirect(self, "/admin/dashboard.html")
                             return
 
                     if "/admin/" in self.path:
                         if not WebServerGlobal.CheckAuth(self):
-                            self.send_response(302)
-                            self.send_header("Location", "/auth/login.html")
-                            self.end_headers()
+                            WebServerGlobal.SendRedirect(self, "/auth/login.html")
                             return
 
                     file_path = f"web/public_html{self.path}"
                     if not os.path.exists(file_path):
-                        self.send_response(404)
-                        self.send_header("Content-type", "text/html")
-                        self.end_headers()
-                        self.wfile.write(b"404 Not Found")
+                        WebServerGlobal.SendError(self, 404)
                         return
 
                     content_type = self.get_content_type(self.path)
                     if content_type is None:
-                        self.send_response(404)
-                        self.send_header("Content-type", "text/html")
-                        self.end_headers()
-                        self.wfile.write(b"404 Not Found")
+                        WebServerGlobal.SendError(self, 404)
                         return
 
                     with open(file_path, "r") as file:
@@ -180,13 +187,9 @@ class WebServer:
                         return
 
                 except ConnectionAbortedError:
-                    # Connection was aborted, do nothing
                     return
                 except Exception as e:
-                    self.send_response(500)
-                    self.send_header("Content-type", "text/html")
-                    self.end_headers()
-                    self.wfile.write(b"500 Internal Server Error")
+                    WebServerGlobal.SendError(self, 500)
                     WebServerGlobal.logger.error(f"WebServerHandler: {e}")
 
             def get_content_type(self, path):
