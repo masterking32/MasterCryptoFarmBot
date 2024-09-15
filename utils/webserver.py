@@ -111,7 +111,7 @@ class WebServer:
             if len(split_path) != 2:
                 return "404 Not Found"
 
-            if not split_path[0].isalnum() or not split_path[1].isalnum():
+            if not split_path[0].isalnum() or not split_path[1].replace('_', '').isalnum():
                 return "404 Not Found"
 
             file_path = self.GetControllersPath(f"{split_path[0]}.py")

@@ -18,6 +18,7 @@ from utils.database import Database
 from utils.modules import Module
 from utils.webserver import WebServer
 import utils.variables as var
+import utils.api as api
 
 try:
     import config
@@ -83,12 +84,24 @@ async def start_bot():
     db.migration()
 
     licenseType = db.getSettings("license", "Free License")
-    licenseType = (
+    licenseTypeMessage = (
         f"{lc.y}{licenseType}{lc.rs}"
         if licenseType == "Free License"
-        else f"{lc.c}{licenseType}{lc.rs}"
+        else f"{lc.c}User License: {licenseType[:15]}...{lc.rs}"
     )
-    log.info(f"{lc.g}🔑 Bot License: {lc.rs + licenseType}")
+    log.info(f"{lc.g}🔑 Bot License: {lc.rs + licenseTypeMessage}")
+    if "free" not in licenseType.lower():
+        log.info(f"{lc.g}🔑 Checking license ...{lc.rs}")
+        apiObj = api.API(log)
+        response = apiObj.ValidateLicense(licenseType)
+        if response != None:
+            log.info(
+                f"{lc.g}└─ ✅ License validated, Credit: {lc.rs + lc.c + str(response['credit']) + "$" + lc.rs + lc.g}, IP: {lc.rs + lc.c + response['ip'] + lc.rs}"
+            )
+        else:
+            log.info(f"{lc.r}└─ ❌ Invalid license key ...{lc.rs}")
+            log.info(f"{lc.r}🛑 Bot is stopping ... {lc.rs}")
+            return
 
     # loading modules
     modules = Module(log)

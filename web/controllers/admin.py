@@ -10,6 +10,7 @@ from utils.database import Database
 import utils.variables as vr
 import utils.Git as Git
 import utils.logColors as lc
+import utils.api as api
 
 
 class admin:
@@ -119,3 +120,29 @@ class admin:
                 json.dump(accounts, f, indent=4)
 
         return render_template("admin/accounts.html", accounts=accounts)
+
+    def change_license(self, request, webServer):
+        if "admin" not in session:
+            return redirect("/auth/login.py")
+
+        error = None
+        success = None
+
+        db = Database("database.db", webServer.logger)
+        license = db.getSettings("license", "Free License")
+        credit = None
+        if request.method == "POST" and "license" in request.form:
+            license_key = request.form["license"]
+            apiObj = api.API(webServer.logger)
+            response = apiObj.ValidateLicense(license_key)
+            if response != None:
+                db.updateSettings("license", license_key)
+                success = "License updated successfully."
+                webServer.logger.info(f"{lc.g}🔑 License updated successfully, New license: {lc.rs + lc.c + license + lc.rs}")
+                webServer.logger.info(f"{lc.g}📖 License Credit: {lc.rs + lc.c + str(response["credit"]) + "$" + lc.rs + lc.g}, IP: {lc.rs + lc.c + response["ip"] + lc.rs}")
+                license = license_key
+                credit = response["credit"]
+            else:
+                error = "Invalid license key."
+        db.Close()
+        return render_template("admin/change_license.html", error=error, success=success, server_ip=webServer.public_ip, license=license, credit=credit)
