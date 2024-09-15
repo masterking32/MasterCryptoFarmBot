@@ -3,7 +3,7 @@
 # Github: https://github.com/masterking32
 # Telegram: https://t.me/MasterCryptoFarmBot
 
-from flask import json
+import json
 import utils.logColors as lc
 from pyrogram import Client
 import os
@@ -11,6 +11,13 @@ import asyncio
 
 try:
     from config import config
+    API_ID = config["telegram_api"]["api_id"]
+    API_HASH = config["telegram_api"]["api_hash"]
+    if API_ID == 1234 or API_HASH == "":
+        print(
+        f"{lc.r}API_ID or API_HASH not found in the config.py file.{lc.rs}"
+        )
+        raise ValueError("API_ID or API_HASH not found in the config.py file.")
 except ImportError:
     print(
         f"{lc.r}Please create a config.py file with the required variables, check the example file (config.py.sample){lc.rs}"
@@ -23,12 +30,6 @@ except ImportError:
 async def register_sessions() -> None:
     if not os.path.exists("telegram_accounts"):
         os.mkdir("telegram_accounts")
-
-    API_ID = config["telegram_api"]["api_id"]
-    API_HASH = config["telegram_api"]["api_hash"]
-
-    if not API_ID or not API_HASH:
-        raise ValueError("API_ID and API_HASH not found in the .env file.")
 
     session_name = input(
         f"\n{lc.g}Enter a Name for account (press Enter to exit): {lc.rs}"
@@ -80,6 +81,7 @@ async def register_sessions() -> None:
         "id": user_data.id,
         "first_name": user_data.first_name,
         "username": user_data.username,
+        "disabled": False,
     }
 
     accounts = []
@@ -102,6 +104,70 @@ async def register_sessions() -> None:
     print(f"\n{lc.g}Session created successfully!{lc.rs}")
     return session_name
 
+async def import_sessions() -> None:
+    if not os.path.exists("telegram_accounts"):
+        return print(f"\n{lc.r}telegram_accounts folder does not exist!{lc.rs}")
+    session_files = [
+        f
+        for f in os.listdir("telegram_accounts")
+        if f.endswith(".session")
+        and os.path.isfile(os.path.join("telegram_accounts", f))
+    ]
+    print(f"\n{lc.y}Found {len(session_files)} session files.{lc.rs}")
+    if not session_files:
+        return print(f"\n{lc.r}No session files found!{lc.rs}")
+    for session_file in session_files:
+        print(f"{lc.y}Importing {session_file}...{lc.rs}")
+        session_name = session_file.replace(".session", "")
+        if os.path.exists("telegram_accounts/accounts.json"):
+            with open("telegram_accounts/accounts.json", "r") as f:
+                accounts = json.load(f)
+            if any(account["session_name"] == session_name for account in accounts):
+                print(f"{lc.r}Session {session_name} already exists!{lc.rs}")
+                continue
+        session = Client(
+            name=str(session_name),
+            api_id=API_ID,
+            api_hash=API_HASH,
+            workdir="telegram_accounts/",
+        )
+        async with session:
+            user_data = await session.get_me()
+        account = {
+            "session_name": session_name,
+            "phone_number": user_data.phone_number,
+            "id": user_data.id,
+            "first_name": user_data.first_name,
+            "username": user_data.username,
+            "disabled": False,
+        }
+        accounts = []
+        if os.path.exists("telegram_accounts/accounts.json"):
+            with open("telegram_accounts/accounts.json", "r") as f:
+                accounts = json.load(f)
+        accounts.append(account)
+        with open("telegram_accounts/accounts.json", "w") as f:
+            json.dump(accounts, f, indent=2)
+        print(f"{lc.g}Session {session_name} imported successfully!{lc.rs}")
+
 
 if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(register_sessions())
+    print(
+        f"{lc.y}Welcome to MasterCryptoFarmBot Telegram Account Manager!{lc.rs}\n"
+        f"{lc.y}Please select an option:{lc.rs}"
+        f"\n{lc.g}1. Register new sessions{lc.rs}"
+        f"\n{lc.g}2. Import existing sessions{lc.rs}"
+        f"\n{lc.g}3. Exit{lc.rs}"
+        f"\n{lc.y}Enter your choice: {lc.rs}"
+    )
+
+    choice = input()
+
+    if choice == "1":
+        asyncio.get_event_loop().run_until_complete(register_sessions())
+
+    elif choice == "2":
+        asyncio.get_event_loop().run_until_complete(import_sessions())
+    else:
+        print(f"\n{lc.r}Closing...{lc.rs}")
+        exit()
