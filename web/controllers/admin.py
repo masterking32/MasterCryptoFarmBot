@@ -3,6 +3,7 @@
 # Github: https://github.com/masterking32
 # Telegram: https://t.me/MasterCryptoFarmBot
 
+import json
 from flask import redirect, render_template, session
 
 from utils.database import Database
@@ -16,7 +17,7 @@ class admin:
         if "admin" not in session:
             return redirect("/auth/login.py")
         Last_Update = "..."
-        
+
         db = Database("database.db", webServer.logger)
         license = db.getSettings("license", "Free License")
         db.Close()
@@ -82,3 +83,39 @@ class admin:
 
         db.Close()
         return render_template("admin/settings.html", error=error, success=success, server_ip=webServer.public_ip, license=license)
+
+    def accounts(self, request, webServer):
+        if "admin" not in session:
+            return redirect("/auth/login.py")
+
+        accounts = []
+        with open("telegram_accounts/accounts.json", "r") as f:
+            accounts = json.load(f)
+
+        if "disable" in request.args:
+            AccountID = request.args.get("disable", 0)
+            for account in accounts:
+                if str(account["id"]) == str(AccountID):
+                    accounts.remove(account)
+                    account["disabled"] = True
+                    webServer.logger.info(f"{lc.r}🔒 Account disabled, Account ID: {lc.rs + lc.c + AccountID + lc.rs}")
+                    accounts.append(account)
+                    break
+
+            with open("telegram_accounts/accounts.json", "w") as f:
+                json.dump(accounts, f, indent=4)
+
+        if "enable" in request.args:
+            AccountID = request.args.get("enable", 0)
+            for account in accounts:
+                if str(account["id"]) == str(AccountID):
+                    accounts.remove(account)
+                    webServer.logger.info(f"{lc.g}🔓 Account enabled, Account ID: {lc.rs + lc.c + AccountID + lc.rs}")
+                    account["disabled"] = False
+                    accounts.append(account)
+                    break
+
+            with open("telegram_accounts/accounts.json", "w") as f:
+                json.dump(accounts, f, indent=4)
+
+        return render_template("admin/accounts.html", accounts=accounts)

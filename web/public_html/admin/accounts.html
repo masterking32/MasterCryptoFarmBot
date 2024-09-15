@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../css/main.css" rel="stylesheet" />
+    <link
+      href="../css/fontawesome-free-6.6.0-web/css/all.min.css"
+      rel="stylesheet"
+    />
+    <title>MasterCryptoFarmBot</title>
+    <meta name="generator" content="MasterkinG CMS" />
+  </head>
+  <body class="flex min-h-screen bg-indigo-900">
+    <div class="w-full max-w-md m-auto bg-gray-900 rounded p-5">
+      <h1 class="text-2xl pb-5 text-center text-white">MasterCryptoFarmBot</h1>
+      <div class="breadcrumbs text-sm">
+        <ul>
+          <li>
+            <a href="./dashboard.py" class="text-teal-200"
+              ><span class="fa-solid fa-gauge mr-2"></span> Dashboard</a
+            >
+          </li>
+          <li><span class="fa-solid fa-users mr-2"></span> Accounts</li>
+        </ul>
+      </div>
+      <div class="divider divider-neutral">How To Add Account</div>
+      <div class="text-white text-sm text-center">
+        To add an account, Just run the following command
+        <div class="my-2 text-center bg-gray-800 p-2 rounded text-blue-400">
+          <pre><code>python3 add_account.py</code></pre>
+        </div>
+        and follow the instructions.
+      </div>
+      <div class="flex w-full flex-col">
+        <div class="divider divider-neutral">Accounts</div>
+      </div>
+      {% for account in accounts %}
+      <!-- Accounts with allow disable them -->
+      <div class="flex justify-between items-center mt-5">
+        <div class="flex items-center">
+          <i class="fa-solid fa-user-circle text-4xl text-pink-700"></i>
+          <div class="ml-3">
+            <p class="text-white">{{ account.session_name }}</p>
+            <p class="text-xs text-gray-400">
+              {{ account.username }} - {{ account.id }}
+            </p>
+          </div>
+        </div>
+        {% if account.disabled %}
+        <a
+          href="./accounts.py?enable={{ account.id }}"
+          class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-4 rounded"
+          >Enable</a
+        >
+        {% else %}
+        <a
+          href="./accounts.py?disable={{ account.id }}"
+          class="bg-pink-700 hover:bg-pink-800 text-white font-bold py-2 px-4 rounded"
+          >Disable</a
+        >
+        {% endif %}
+      </div>
+      <hr class="h-px my-4 border-0 bg-gray-700" />
+      {% endfor %}
+    </div>
+  </body>
+</html>
