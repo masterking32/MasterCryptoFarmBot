@@ -11,12 +11,11 @@ import asyncio
 
 try:
     from config import config
+
     API_ID = config["telegram_api"]["api_id"]
     API_HASH = config["telegram_api"]["api_hash"]
     if API_ID == 1234 or API_HASH == "":
-        print(
-        f"{lc.r}API_ID or API_HASH not found in the config.py file.{lc.rs}"
-        )
+        print(f"{lc.r}API_ID or API_HASH not found in the config.py file.{lc.rs}")
         raise ValueError("API_ID or API_HASH not found in the config.py file.")
 except ImportError:
     print(
@@ -82,6 +81,8 @@ async def register_sessions() -> None:
         "first_name": user_data.first_name,
         "username": user_data.username,
         "disabled": False,
+        "user_agent": "",
+        "proxy": "",
     }
 
     accounts = []
@@ -103,6 +104,7 @@ async def register_sessions() -> None:
 
     print(f"\n{lc.g}Session created successfully!{lc.rs}")
     return session_name
+
 
 async def import_sessions() -> None:
     if not os.path.exists("telegram_accounts"):
@@ -140,6 +142,8 @@ async def import_sessions() -> None:
             "first_name": user_data.first_name,
             "username": user_data.username,
             "disabled": False,
+            "user_agent": "",
+            "proxy": "",
         }
         accounts = []
         if os.path.exists("telegram_accounts/accounts.json"):

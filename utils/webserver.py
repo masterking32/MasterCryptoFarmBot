@@ -29,6 +29,7 @@ class WebServer:
         self.public_ip = "127.0.0.1"
         self.local_git_commit = None
         self.github_git_commit = None
+        self.SystemOS = os.name
 
     def LoadFile(self, file):
         try:
@@ -61,6 +62,18 @@ class WebServer:
 
         return "127.0.0.1"
     async def start(self):
+        if os.name == "nt":
+            self.SystemOS = "Windows"
+        elif os.name == "posix":
+            if os.uname().sysname == "Darwin":
+                self.SystemOS = "Mac"
+            else:
+                self.SystemOS = "Linux"
+        else:
+            self.SystemOS = "Termux"
+
+        self.logger.info(f"{lc.g}🖥️ You are running on {lc.rs + lc.y}{self.SystemOS}{lc.rs} {lc.g}OS{lc.rs}")
+
         db = Database("database.db", self.logger)
         self.logger.info(f"{lc.g}🗺️ Getting public IP ...{lc.rs}")
         self.public_ip = self.GetPublicIP()

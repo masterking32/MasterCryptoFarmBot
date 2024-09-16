@@ -28,14 +28,31 @@
       <div class="text-white text-sm text-center">
         To add an account, Just run the following command
         <div class="my-2 text-center bg-gray-800 p-2 rounded text-blue-400">
+          {% if SystemOS == "Windows" %}
+          <pre><code>python add_account.py</code></pre>
+          {% elif SystemOS == "Linux" %}
           <pre><code>python3 add_account.py</code></pre>
+          {% elif SystemOS == "Mac" %}
+          <pre><code>python3 add_account.py</code></pre>
+          {% else %}
+          <pre><code>python add_account.py</code></pre>
+          {% endif %}
         </div>
         and follow the instructions.
       </div>
       <div class="flex w-full flex-col">
         <div class="divider divider-neutral">Accounts</div>
       </div>
-      {% for account in accounts %}
+
+      {% if error %}
+      <div class="bg-red-700 text-white p-2 rounded my-2 text-center">
+        {{ error }}
+      </div>
+      {% endif %} {% if success %}
+      <div class="bg-green-700 text-white p-2 rounded my-2 text-center">
+        {{ success }}
+      </div>
+      {% endif %} {% for account in accounts %}
       <!-- Accounts with allow disable them -->
       <div class="flex justify-between items-center mt-5">
         <div class="flex items-center">
@@ -47,19 +64,101 @@
             </p>
           </div>
         </div>
-        {% if account.disabled %}
-        <a
-          href="./accounts.py?enable={{ account.id }}"
-          class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-4 rounded"
-          >Enable</a
+        <button
+          class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded"
+          onclick="account_model_{{ account.id }}.showModal()"
         >
-        {% else %}
-        <a
-          href="./accounts.py?disable={{ account.id }}"
-          class="bg-pink-700 hover:bg-pink-800 text-white font-bold py-2 px-4 rounded"
-          >Disable</a
-        >
-        {% endif %}
+          <i class="fa-solid fa-cog"></i>
+        </button>
+        <dialog id="account_model_{{ account.id }}" class="modal">
+          <div class="modal-box">
+            <h1 class="text-white">Account Settings</h1>
+            <hr class="h-px my-4 border-0 bg-gray-700" />
+            <div class="">
+              <p class="text-white">Account ID: {{ account.id }}</p>
+              <p class="text-white">Username: {{ account.username }}</p>
+              <p class="text-white">Session Name: {{ account.session_name }}</p>
+            </div>
+            <hr class="h-px my-4 border-0 bg-gray-700" />
+            <div class="text-center">
+              <p class="text-white">
+                {% if account.disabled %}
+                <a
+                  href="./accounts.py?enable={{ account.id }}"
+                  class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-4 rounded"
+                  >Enable Account</a
+                >
+                {% else %}
+                <a
+                  href="./accounts.py?disable={{ account.id }}"
+                  class="bg-pink-700 hover:bg-pink-800 text-white font-bold py-2 px-4 rounded"
+                  >Disable Account</a
+                >
+                {% endif %}
+              </p>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <form action="./accounts.py" method="POST">
+                <div class="flex flex-col">
+                  <label for="user_agent" class="text-white mb-2"
+                    >User Agent:
+                    <a
+                      href="https://github.com/masterking32/MasterCryptoFarmBot/wiki/Account-User%E2%80%90Agent"
+                      class="text-blue-400"
+                      target="_blank"
+                      >How to get User Agent?</a
+                    >
+                  </label>
+                  <input
+                    type="text"
+                    name="user_agent"
+                    id="user_agent"
+                    class="input input-bordered bg-gray-900"
+                    value="{{ account.user_agent }}"
+                    placeholder="User Agent"
+                  />
+                </div>
+                <div class="flex flex-col mt-5">
+                  <label for="proxy" class="text-white mb-2"
+                    >Proxy:
+                    <a
+                      href="https://github.com/masterking32/MasterCryptoFarmBot/wiki/Account-Proxy"
+                      class="text-blue-400"
+                      target="_blank"
+                      >How to get/Use Proxy?</a
+                    ></label
+                  >
+                  <input
+                    type="text"
+                    name="proxy"
+                    id="proxy"
+                    class="input input-bordered bg-gray-900"
+                    value="{{ account.proxy }}"
+                    placeholder="Proxy"
+                  />
+                </div>
+                <div class="text-center mt-5">
+                  <input
+                    type="hidden"
+                    name="account_id"
+                    value="{{ account.id }}"
+                  />
+                  <button
+                    type="submit"
+                    class="btn bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <div class="modal-action">
+                <form method="dialog">
+                  <button class="btn">Close</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </dialog>
       </div>
       <hr class="h-px my-4 border-0 bg-gray-700" />
       {% endfor %}

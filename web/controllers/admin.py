@@ -90,6 +90,8 @@ class admin:
             return redirect("/auth/login.py")
 
         accounts = []
+        success = ""
+        error = ""
         with open("telegram_accounts/accounts.json", "r") as f:
             accounts = json.load(f)
 
@@ -97,10 +99,9 @@ class admin:
             AccountID = request.args.get("disable", 0)
             for account in accounts:
                 if str(account["id"]) == str(AccountID):
-                    accounts.remove(account)
+                    success = f"Account {account['session_name']} disabled successfully."
                     account["disabled"] = True
                     webServer.logger.info(f"{lc.r}🔒 Account disabled, Account ID: {lc.rs + lc.c + AccountID + lc.rs}")
-                    accounts.append(account)
                     break
 
             with open("telegram_accounts/accounts.json", "w") as f:
@@ -110,16 +111,29 @@ class admin:
             AccountID = request.args.get("enable", 0)
             for account in accounts:
                 if str(account["id"]) == str(AccountID):
-                    accounts.remove(account)
+                    success = f"Account {account['session_name']} enabled successfully."
                     webServer.logger.info(f"{lc.g}🔓 Account enabled, Account ID: {lc.rs + lc.c + AccountID + lc.rs}")
                     account["disabled"] = False
-                    accounts.append(account)
                     break
 
             with open("telegram_accounts/accounts.json", "w") as f:
                 json.dump(accounts, f, indent=4)
 
-        return render_template("admin/accounts.html", accounts=accounts)
+        if request.method == "POST" and "account_id" in request.form:
+            AccountID = request.form["account_id"]
+            for account in accounts:
+                if str(account["id"]) == str(AccountID):
+                    account["user_agent"] = "" if "user_agent" not in request.form else request.form["user_agent"]
+                    account["proxy"] = "" if "proxy" not in request.form else request.form["proxy"]
+
+                    success = f"Account {account['session_name']} updated successfully."
+                    webServer.logger.info(f"{lc.g}🔄 Account updated, Account ID: {lc.rs + lc.c + AccountID + lc.rs}")
+                    break
+
+            with open("telegram_accounts/accounts.json", "w") as f:
+                json.dump(accounts, f, indent=4)
+
+        return render_template("admin/accounts.html", accounts=accounts, SystemOS=webServer.SystemOS, error=error, success=success)
 
     def change_license(self, request, webServer):
         if "admin" not in session:
