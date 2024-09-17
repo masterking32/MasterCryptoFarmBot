@@ -4,25 +4,37 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 import logging
 from colorlog import ColoredFormatter
+from logging.handlers import RotatingFileHandler
 
 
-def getLogger():
+def getLogger(logFile=None, max_log_size=1024 * 1024 * 1, backup_count=3):
     # ---------------------------------------------#
     # Logging configuration
     LOG_LEVEL = logging.DEBUG
     # Include date and time in the log format
-    LOGFORMAT = f"{cb}[MasterCryptoBot]{rs} {bt}[%(asctime)s]{bt} %(log_color)s[%(levelname)s]%(reset)s %(log_color)s%(message)s%(reset)s"
+    LOGFORMAT = f"{cb}[MasterCryptoFarmBot]{rs} {bt}[%(asctime)s]{bt} %(log_color)s[%(levelname)s]%(reset)s %(log_color)s%(message)s%(reset)s"
 
     logging.root.setLevel(LOG_LEVEL)
     formatter = ColoredFormatter(
         LOGFORMAT, "%Y-%m-%d %H:%M:%S"
     )  # Specify the date/time format
+
+    LOGFILE_FORMAT = "[MasterCryptoFarmBot] [%(asctime)s] [%(levelname)s] %(message)s"
+    file_formatter = logging.Formatter(LOGFILE_FORMAT, "%Y-%m-%d %H:%M:%S")
+
     stream = logging.StreamHandler()
     stream.setLevel(LOG_LEVEL)
     stream.setFormatter(formatter)
     log = logging.getLogger("pythonConfig")
     log.setLevel(LOG_LEVEL)
     log.addHandler(stream)
+    if logFile:
+        file_handler = RotatingFileHandler(
+            logFile, maxBytes=max_log_size, backupCount=backup_count, encoding="utf-8"
+        )
+        file_handler.setFormatter(file_formatter)
+        log.addHandler(file_handler)
+
     # End of configuration
     # ---------------------------------------------#
     return log
