@@ -9,7 +9,6 @@ import threading
 import time
 import os
 
-from colorlog import ColoredFormatter
 from flask import json
 
 
@@ -30,24 +29,7 @@ except ImportError:
         "Please create a config.py file with the required variables, check the example file (config.py.sample)"
     )
 
-# ---------------------------------------------#
-# Logging configuration
-LOG_LEVEL = logging.DEBUG
-# Include date and time in the log format
-LOGFORMAT = f"{lc.cb}[MasterCryptoBot]{lc.rs} {lc.bt}[%(asctime)s]{lc.bt} %(log_color)s[%(levelname)s]%(reset)s %(log_color)s%(message)s%(reset)s"
-
-logging.root.setLevel(LOG_LEVEL)
-formatter = ColoredFormatter(
-    LOGFORMAT, "%Y-%m-%d %H:%M:%S"
-)  # Specify the date/time format
-stream = logging.StreamHandler()
-stream.setLevel(LOG_LEVEL)
-stream.setFormatter(formatter)
-log = logging.getLogger("pythonConfig")
-log.setLevel(LOG_LEVEL)
-log.addHandler(stream)
-# End of configuration
-# ---------------------------------------------#
+log = lc.getLogger()
 
 banner = f"""
 {lc.m}

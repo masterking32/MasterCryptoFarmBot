@@ -2,6 +2,31 @@
 # Date: 2024
 # Github: https://github.com/masterking32
 # Telegram: https://t.me/MasterCryptoFarmBot
+import logging
+from colorlog import ColoredFormatter
+
+
+def getLogger():
+    # ---------------------------------------------#
+    # Logging configuration
+    LOG_LEVEL = logging.DEBUG
+    # Include date and time in the log format
+    LOGFORMAT = f"{cb}[MasterCryptoBot]{rs} {bt}[%(asctime)s]{bt} %(log_color)s[%(levelname)s]%(reset)s %(log_color)s%(message)s%(reset)s"
+
+    logging.root.setLevel(LOG_LEVEL)
+    formatter = ColoredFormatter(
+        LOGFORMAT, "%Y-%m-%d %H:%M:%S"
+    )  # Specify the date/time format
+    stream = logging.StreamHandler()
+    stream.setLevel(LOG_LEVEL)
+    stream.setFormatter(formatter)
+    log = logging.getLogger("pythonConfig")
+    log.setLevel(LOG_LEVEL)
+    log.addHandler(stream)
+    # End of configuration
+    # ---------------------------------------------#
+    return log
+
 
 # # Regular Text Colors
 bl = "\033[30m"  # black

@@ -6,12 +6,19 @@
 import os
 
 import utils.logColors as lc
+import utils.database as db
 
 
 class Module:
     def __init__(self, logger):
         self.logger = logger
         self.module_list = []
+
+    def get_ModuleName(self):
+        return os.path.basename(os.getcwd())
+
+    def is_module_disabled(self, db, module_name):
+        return db.getSettings(f"{module_name}_disabled", "0") == "1"
 
     def load_modules(self):
         self.logger.info(f"{lc.g}🔍 Loading modules ...{lc.rs}")
