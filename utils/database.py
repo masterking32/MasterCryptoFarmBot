@@ -119,6 +119,12 @@ class Database:
         self.conn.commit()
         return True
 
+    def deleteSettings(self, key):
+        query = "DELETE FROM settings WHERE name = ?"
+        self.cursor.execute(query, (key,))
+        self.conn.commit()
+        return True
+
     def __del__(self):
         self.conn.close()
 

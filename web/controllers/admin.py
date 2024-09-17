@@ -4,6 +4,9 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 
 import json
+import os
+import hashlib
+import base64
 from flask import redirect, render_template, session
 
 from utils.database import Database
@@ -160,3 +163,80 @@ class admin:
                 error = "Invalid license key."
         db.Close()
         return render_template("admin/change_license.html", error=error, success=success, server_ip=webServer.public_ip, license=license, credit=credit)
+
+    def bots(self, requests, webServer):
+        if "admin" not in session:
+            return redirect("/auth/login.py")
+
+        error = None
+        success = None
+
+        modules = os.listdir("modules")
+        bots = []
+        db = Database("database.db", webServer.logger)
+        for module in modules:
+            if os.path.isdir(f"modules/{module}") and os.path.exists(f"modules/{module}/bot.py"):
+                bot = {}
+                bot['name'] = module
+                bot['id'] = hashlib.md5(module.encode()).hexdigest()
+
+                if os.path.exists(f"modules/{module}/logo.png"):
+                    with open(f"modules/{module}/logo.png", "rb") as f:
+                        logo_data = base64.b64encode(f.read()).decode()
+                    bot['logo'] = f"data:image/png;base64,{logo_data}"
+                else:
+                    bot['logo'] = ""
+
+                bot['disabled'] = db.getSettings(f"{module}_disabled", False)
+
+                if os.path.exists(f"modules/{module}/bot_settings.json"):
+                    with open(f"modules/{module}/bot_settings.json", "r") as f:
+                        bot_settings = json.load(f)
+                        bot['settings'] = bot_settings
+                else:
+                    bot['settings'] = {}
+
+                if os.path.exists(f"modules/{module}/bot_settings_types.json"):
+                    with open(f"modules/{module}/bot_settings_types.json", "r") as f:
+                        bot_settings = json.load(f)
+                        bot['settings_types'] = bot_settings
+                else:
+                    bot['settings_types'] = None
+                bots.append(bot)
+
+        if "disable" in requests.args:
+            BotID = requests.args.get("disable", 0)
+            for bot in bots:
+                if str(bot["id"]) == str(BotID):
+                    success = f"Bot {bot['name']} disabled successfully."
+                    db.updateSettings(f"{bot['name']}_disabled", True)
+                    bots[bots.index(bot)]["disabled"] = True
+                    webServer.logger.info(f"{lc.r}🔒 Bot disabled, Bot Name: {lc.rs + lc.c + bot["name"] + lc.rs}")
+                    break
+        elif "enable" in requests.args:
+            BotID = requests.args.get("enable", 0)
+            for bot in bots:
+                if str(bot["id"]) == str(BotID):
+                    success = f"Bot {bot['name']} enabled successfully."
+                    db.deleteSettings(f"{bot['name']}_disabled")
+                    bots[bots.index(bot)]["disabled"] = False
+                    webServer.logger.info(f"{lc.g}🔓 Bot enabled, Bot Name: {lc.rs + lc.c + bot["name"] + lc.rs}")
+                    break
+
+        if requests.method == "POST" and "bot_id" in requests.form:
+            BotID = requests.form["bot_id"]
+            settings = {}
+            for bot in bots:
+                if str(bot["id"]) == str(BotID):
+                    for key in requests.form:
+                        if key != "bot_id":
+                            settings[key] = requests.form[key]
+
+                    with open(f"modules/{bot['name']}/bot_settings.json", "w") as f:
+                        json.dump(settings, f, indent=4)
+                    bots[bots.index(bot)]["settings"] = settings
+                    success = f"Bot {bot['name']} updated successfully."
+                    webServer.logger.info(f"{lc.g}🔄 Bot updated, Bot Name: {lc.rs + lc.c + bot["name"] + lc.rs}")
+                    break
+
+        return render_template("admin/bots.html", error=error, success=success, bots=bots)

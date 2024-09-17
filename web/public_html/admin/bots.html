@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../css/main.css" rel="stylesheet" />
+    <link
+      href="../css/fontawesome-free-6.6.0-web/css/all.min.css"
+      rel="stylesheet"
+    />
+    <title>MasterCryptoFarmBot</title>
+    <meta name="generator" content="MasterkinG CMS" />
+  </head>
+  <body class="flex min-h-screen bg-indigo-900">
+    <div class="w-full max-w-md m-auto bg-gray-900 rounded p-5">
+      <h1 class="text-2xl pb-5 text-center text-white">MasterCryptoFarmBot</h1>
+      <div class="breadcrumbs text-sm">
+        <ul>
+          <li>
+            <a href="./dashboard.py" class="text-teal-200"
+              ><span class="fa-solid fa-gauge mr-2"></span> Dashboard</a
+            >
+          </li>
+          <li><span class="fa-solid fa-robot mr-2"></span> Bots</li>
+        </ul>
+      </div>
+      <div class="divider divider-neutral">Bot Modules</div>
+      <div class="text-white text-sm text-center">
+        <a href="./add_bot.py" class="bg-gray-800 p-2 rounded text-blue-400"
+          ><span class="fa-solid fa-plus mr-2"></span> Install Bot Module</a
+        >
+      </div>
+      <div class="divider divider-neutral">Bots</div>
+      {% if error %}
+      <div class="bg-red-500 text-white p-3 rounded my-3 text-center">
+        {{ error }}
+      </div>
+      {% endif %} {% if success %}
+      <div class="bg-green-500 text-white p-3 rounded my-3 text-center">
+        {{ success }}
+      </div>
+      {% endif %} {% for bot in bots %}
+      <div class="flex justify-between items-center mt-5">
+        <div class="flex items-center">
+          {% if bot.logo != "" %}
+          <img
+            src="{{ bot.logo }}"
+            class="w-10 h-10 rounded-full"
+            alt="{{ bot.name }}"
+          />
+          {% else %}
+          <i class="fa-solid fa-robot text-4xl text-pink-700"></i>
+          {% endif %}
+          <div class="ml-3">
+            <h2 class="text-lg text-white">{{ bot.name }}</h2>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <button
+            class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded"
+            onclick="bot_modal{{ bot.id }}.showModal()"
+          >
+            <i class="fa-solid fa-cog"></i>
+          </button>
+          <dialog id="bot_modal{{ bot.id }}" class="modal">
+            <div class="modal-box">
+              <h1 class="text-white">Bot Settings</h1>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <div class="">
+                <p class="text-white">Bot Name: {{ bot.name }}</p>
+              </div>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <div class="text-center">
+                <p class="text-white">
+                  {% if bot.disabled %}
+                  <a
+                    href="./bots.py?enable={{ bot.id }}"
+                    class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-4 rounded"
+                    >Enable Bot</a
+                  >
+                  {% else %}
+                  <a
+                    href="./bots.py?disable={{ bot.id }}"
+                    class="bg-pink-700 hover:bg-pink-800 text-white font-bold py-2 px-4 rounded"
+                    >Disable Bot</a
+                  >
+                  {% endif %}
+                </p>
+              </div>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              {% if bot.settings_types is not none %}
+              <form action="./bots.py" method="POST">
+                <input type="hidden" name="bot_id" value="{{ bot.id }}" />
+
+                {% for setting_type in bot.settings_types %} {% if
+                setting_type.type == "text" or setting_type.type == "number" %}
+                <div class="flex flex-col my-3">
+                  <label for="{{ setting_type.key }}" class="text-white mb-2"
+                    >{{ setting_type.name }} {% if setting_type.description !=
+                    none %}
+                    <div
+                      class="tooltip"
+                      data-tip="{{ setting_type.description }}"
+                    >
+                      <button class="btn btn-sm btn-info ml-2" type="button">
+                        Need Help?
+                      </button>
+                    </div>
+                    {% endif %}
+                  </label>
+                  <input type="{{ setting_type.type }}" name="{{
+                  setting_type.key }}" id="{{ setting_type.key }}" value="{% if
+                  setting_type.key in bot.settings %}{{
+                  bot.settings[setting_type.key] }}{% else %}{{
+                  setting_type.default_value }}{% endif %}" {% if
+                  setting_type.type == "number" and setting_type.min is not none
+                  and setting_type.max is not none %} min="{{ setting_type.min
+                  }}" max="{{ setting_type.max }}" {% endif %} placeholder="{{
+                  setting_type.placeholder }}" required class="input
+                  input-bordered bg-gray-900" />
+                </div>
+                {% elif setting_type.type == "select" %}
+                <div class="flex flex-col my-3">
+                  <label for="{{ setting_type.key }}" class="text-white mb-2"
+                    >{{ setting_type.name }}{% if setting_type.description !=
+                    none %}
+                    <div
+                      class="tooltip"
+                      data-tip="{{ setting_type.description }}"
+                    >
+                      <button class="btn btn-sm btn-info ml-2" type="button">
+                        Need Help?
+                      </button>
+                    </div>
+                    {% endif %}</label
+                  >
+                  <select
+                    name="{{ setting_type.key }}"
+                    id="{{ setting_type.key }}"
+                    class="input input-bordered bg-gray-900"
+                    required
+                  >
+                    {%if setting_type.key in bot.settings %}
+                    <option
+                      value="{{ bot.settings[setting_type.key] }}"
+                      selected
+                    >
+                      {{ bot.settings[setting_type.key] }}
+                    </option>
+                    {% endif %} {% for option in setting_type.options %}
+                    <option value="{{ option.value }}">
+                      {{ option.name }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+                {% elif setting_type.type == "checkbox" %}
+                <div class="form-control my-3">
+                  <label
+                    class="label cursor-pointer"
+                    for="{{setting_type.key }}"
+                  >
+                    <span class="label-text"
+                      >{{setting_type.name}}{% if setting_type.description !=
+                      none %}
+                      <div
+                        class="tooltip"
+                        data-tip="{{ setting_type.description }}"
+                      >
+                        <button class="btn btn-sm btn-info ml-2" type="button">
+                          Need Help?
+                        </button>
+                      </div>
+                      {% endif %}</span
+                    >
+                    <input type="checkbox" {% if setting_type.key in
+                    bot.settings and bot.settings[setting_type.key] == 'on' %}
+                    checked {% elif setting_type.key not in bot.settings and
+                    setting_type.default_value == 'on' %} checked {% endif %}
+                    class="checkbox" id="{{setting_type.key}}" name="{{
+                    setting_type.key }}" />
+                  </label>
+                </div>
+                {% endif %} {% endfor %}
+
+                <div class="flex flex-col mt-5">
+                  <button type="submit" class="btn btn-primary">
+                    Save Settings
+                  </button>
+                </div>
+              </form>
+              {% endif %}
+              <div class="modal-action">
+                <form method="dialog">
+                  <button class="btn">Close</button>
+                </form>
+              </div>
+            </div>
+          </dialog>
+        </div>
+      </div>
+      {% endfor %}
+
+      <hr class="h-px my-4 border-0 bg-gray-700" />
+      <div class="text-center">
+        <a
+          href="https://github.com/masterking32/MasterCryptoFarmBot"
+          target="_blank"
+          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+        >
+          <span class="fa-brands fa-github mr-2"></span>
+          GitHub
+        </a>
+        <a
+          href="https://t.me/MasterCryptoFarmBot"
+          target="_blank"
+          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+        >
+          <span class="fa-brands fa-telegram mr-2"></span>
+          Channel
+        </a>
+        <a
+          href="https://t.me/MasterCryptoFarmBotGroup"
+          target="_blank"
+          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+        >
+          <span class="fa-brands fa-telegram mr-2"></span>
+          Group
+        </a>
+      </div>
+    </div>
+  </body>
+</html>
