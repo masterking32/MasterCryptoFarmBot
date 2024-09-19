@@ -1,4 +1,5 @@
 colorlog
 flask
 requests
+requests[socks]
 pyrogram
