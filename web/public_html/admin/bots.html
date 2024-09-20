@@ -21,16 +21,16 @@
               ><span class="fa-solid fa-gauge mr-2"></span> Dashboard</a
             >
           </li>
-          <li><span class="fa-solid fa-robot mr-2"></span> Bots</li>
+          <li><span class="fa-solid fa-robot mr-2"></span> Bot Modules</li>
         </ul>
       </div>
-      <div class="divider divider-neutral">Bot Modules</div>
+      <div class="divider divider-neutral">Install New Bot Module</div>
       <div class="text-white text-sm text-center">
         <a href="./add_bot.py" class="bg-gray-800 p-2 rounded text-blue-400"
           ><span class="fa-solid fa-plus mr-2"></span> Install Bot Module</a
         >
       </div>
-      <div class="divider divider-neutral">Bots</div>
+      <div class="divider divider-neutral">Bot Modules</div>
       {% if error %}
       <div class="bg-red-500 text-white p-3 rounded my-3 text-center">
         {{ error }}
@@ -52,7 +52,11 @@
           <i class="fa-solid fa-robot text-4xl text-pink-700"></i>
           {% endif %}
           <div class="ml-3">
-            <h2 class="text-lg text-white">{{ bot.name }}</h2>
+            <h2 class="text-lg text-white">
+              {% if bot.disabled %}
+              <span class="text-red-500"><i class="fa-solid fa-ban"></i></span>
+              {% endif %} {{ bot.name }}
+            </h2>
           </div>
         </div>
         <div class="flex items-center">

@@ -45,4 +45,4 @@ def HideIP(ip):
     if ":" in ip:
         return ip[:6] + "****" + ip[-6:]
     parts = ip.split(".")
-    return parts[0] + ".***" + "." + parts[2] + "." + parts[3]
+    return parts[0] + "." + parts[1] + ".***.***"
