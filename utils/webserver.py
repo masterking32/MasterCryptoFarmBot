@@ -61,6 +61,7 @@ class WebServer:
             self.logger.error(f"{lc.r}Error: {e}{lc.rs}")
 
         return "127.0.0.1"
+
     async def start(self):
         if os.name == "nt":
             self.SystemOS = "Windows"
@@ -72,7 +73,9 @@ class WebServer:
         else:
             self.SystemOS = "Termux"
 
-        self.logger.info(f"{lc.g}🖥️ You are running on {lc.rs + lc.y}{self.SystemOS}{lc.rs} {lc.g}OS{lc.rs}")
+        self.logger.info(
+            f"{lc.g}🖥️ You are running on {lc.rs + lc.y}{self.SystemOS}{lc.rs} {lc.g}OS{lc.rs}"
+        )
 
         db = Database("database.db", self.logger)
         self.logger.info(f"{lc.g}🗺️ Getting public IP ...{lc.rs}")
@@ -86,10 +89,16 @@ class WebServer:
         self.github_git_commit = github_commit
 
         if github_commit is not None and local_commit is not None:
-            self.logger.info(f"{lc.g}🟢 GitHub Commit: {lc.rs + lc.c}{github_commit['sha'][:7]}{lc.rs}")
-            self.logger.info(f"{lc.g}🔵 Local Commit: {lc.rs + lc.c}{local_commit[:7]}{lc.rs}")
+            self.logger.info(
+                f"{lc.g}🟢 GitHub Commit: {lc.rs + lc.c}{github_commit['sha'][:7]}{lc.rs}"
+            )
+            self.logger.info(
+                f"{lc.g}🔵 Local Commit: {lc.rs + lc.c}{local_commit[:7]}{lc.rs}"
+            )
             if github_commit["sha"] != local_commit:
-                self.logger.info(f"{lc.r}💔 New update available, Please update your project{lc.rs}")
+                self.logger.info(
+                    f"{lc.r}💔 New update available, Please update your project{lc.rs}"
+                )
 
         self.logger.info(f"{lc.g}🌐 Starting web server ...{lc.rs}")
         os.environ["FLASK_ENV"] = "production"
@@ -124,7 +133,10 @@ class WebServer:
             if len(split_path) != 2:
                 return "404 Not Found"
 
-            if not split_path[0].isalnum() or not split_path[1].replace('_', '').isalnum():
+            if (
+                not split_path[0].isalnum()
+                or not split_path[1].replace("_", "").isalnum()
+            ):
                 return "404 Not Found"
 
             file_path = self.GetControllersPath(f"{split_path[0]}.py")
@@ -155,7 +167,7 @@ class WebServer:
 
             file_dir = self.GetPublicHTMLPath(path)
 
-            if base_folder not in file_dir:
+            if base_folder not in file_dir or os.path.isdir(file_dir):
                 return "403 Forbidden"
 
             if os.path.isfile(file_dir):
@@ -166,7 +178,11 @@ class WebServer:
                     try:
                         with open(file_dir, "rb") as f:
                             content = f.read()
-                        return content, 200, {"Content-Type": self.get_content_type(file_dir)}
+                        return (
+                            content,
+                            200,
+                            {"Content-Type": self.get_content_type(file_dir)},
+                        )
                     except FileNotFoundError:
                         return "404 Not Found"
                     except Exception as e:
