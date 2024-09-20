@@ -17,6 +17,7 @@ import utils.logColors as lc
 import utils.variables as vr
 import logging
 import utils.Git as Git
+import utils.utils as utils
 
 
 class WebServer:
@@ -80,7 +81,9 @@ class WebServer:
         db = Database("database.db", self.logger)
         self.logger.info(f"{lc.g}🗺️ Getting public IP ...{lc.rs}")
         self.public_ip = self.GetPublicIP()
-        self.logger.info(f"{lc.g}🗺️ Public IP: {lc.rs + lc.y}{self.public_ip}{lc.rs}")
+        self.logger.info(
+            f"{lc.g}🗺️ Public IP: {lc.rs + lc.y}{utils.HideIP(self.public_ip)}{lc.rs}"
+        )
 
         git = Git.Git(self.logger, self.config)
         github_commit = git.GetGitHubRecentCommit(vr.GITHUB_REPOSITORY)

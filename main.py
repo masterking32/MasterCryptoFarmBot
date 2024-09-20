@@ -4,7 +4,6 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 
 import asyncio
-import logging
 import threading
 import time
 import os
@@ -18,6 +17,7 @@ from utils.modules import Module
 from utils.webserver import WebServer
 import utils.variables as var
 import utils.api as api
+import utils.utils as utils
 
 try:
     import config
@@ -69,7 +69,7 @@ async def start_bot():
     licenseTypeMessage = (
         f"{lc.y}{licenseType}{lc.rs}"
         if licenseType == "Free License"
-        else f"{lc.c}User License: {licenseType[:15]}...{lc.rs}"
+        else f"{lc.c}User License: ***{licenseType[5:20]}...{lc.rs}"
     )
     log.info(f"{lc.g}🔑 Bot License: {lc.rs + licenseTypeMessage}")
     if "free" not in licenseType.lower():
@@ -78,7 +78,7 @@ async def start_bot():
         response = apiObj.ValidateLicense(licenseType)
         if response != None:
             log.info(
-                f"{lc.g}└─ ✅ License validated, Credit: {lc.rs + lc.c + str(response['credit']) + '$' + lc.rs + lc.g}, IP: {lc.rs + lc.c + response['ip'] + lc.rs}"
+                f"{lc.g}└─ ✅ License validated, Credit: {lc.rs + lc.c + str(response['credit']) + '$' + lc.rs + lc.g}, IP: {lc.rs + lc.c + utils.HideIP(response['ip']) + lc.rs}"
             )
         else:
             log.info(f"{lc.r}└─ ❌ Invalid license key ...{lc.rs}")

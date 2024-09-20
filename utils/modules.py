@@ -34,10 +34,8 @@ class Module:
                 if not os.listdir(f"modules/{module}"):
                     continue
 
-                if not os.path.exists(f"modules/{module}/module_main.py"):
-                    self.logger.warning(
-                        f"{lc.y}└─ ⚠️ {module} module_main.py not found!{lc.rs}"
-                    )
+                if not os.path.exists(f"modules/{module}/bot.py"):
+                    self.logger.warning(f"{lc.y}└─ ⚠️ {module} bot.py not found!{lc.rs}")
                     continue
 
                 self.module_list.append(module)

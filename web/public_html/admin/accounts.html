@@ -21,7 +21,9 @@
               ><span class="fa-solid fa-gauge mr-2"></span> Dashboard</a
             >
           </li>
-          <li><span class="fa-solid fa-users mr-2"></span> Accounts</li>
+          <li>
+            <span class="fa-solid fa-users mr-2"></span> Pyrogram Accounts
+          </li>
         </ul>
       </div>
       <div class="divider divider-neutral">How To Add Account</div>
@@ -56,7 +58,12 @@
       <!-- Accounts with allow disable them -->
       <div class="flex justify-between items-center mt-5">
         <div class="flex items-center">
+          {% if account.disabled %}
           <i class="fa-solid fa-user-circle text-4xl text-pink-700"></i>
+          {% else %}
+          <i class="fa-solid fa-user-circle text-4xl text-green-700"></i>
+          {% endif %}
+
           <div class="ml-3">
             <p class="text-white">{{ account.session_name }}</p>
             <p class="text-xs text-gray-400">

@@ -33,7 +33,7 @@
             <i class="fa-solid fa-server mr-2"></i>
             Server IP:</span
           >
-          <span class="text-green-400">{{ server_ip }}</span>
+          <span class="text-green-400 blur hover:blur-0">{{ server_ip }}</span>
         </li>
         <li>
           <span class="text-white">
@@ -45,7 +45,9 @@
           {% else %}
           <span class="text-green-400">User License</span>
           <p class="text-center">
-            <span class="text-xs text-green-400">{{ license }}</span>
+            <span class="text-xs text-green-400 blur hover:blur-0">
+              {{ license }}
+            </span>
           </p>
           {% endif %}
         </li>
