@@ -33,6 +33,7 @@ class tgAccount:
         BotID,
         ReferralToken=None,
         ShortAppName=None,
+        AppURL=None,
     ):
         self.bot_globals = bot_globals
         self.log = log
@@ -42,6 +43,7 @@ class tgAccount:
         self.BotID = BotID
         self.ShortAppName = ShortAppName
         self.ReferralToken = ReferralToken
+        self.AppURL = AppURL
 
     async def Connect(self):
         if self.tgClient is not None and self.tgClient.is_connected:
@@ -164,7 +166,7 @@ class tgAccount:
                         bot=peer,
                         platform="android",
                         from_bot_menu=False,
-                        url="https://api.masterking32.com/telegram_useragent.php",
+                        url=self.AppURL,
                     )
                 )
 
