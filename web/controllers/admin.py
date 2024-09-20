@@ -78,7 +78,7 @@ class admin:
                     db.updateSettings("admin_password", request.form["new-password"])
 
                     success = "Password changed successfully."
-                    webServer.logger.info(f"{lc.g}🔑 Admin password changed successfully, New password: {lc.rs + lc.c + request.form["new-password"] + lc.rs}")
+                    webServer.logger.info(f"{lc.g}🔑 Admin password changed successfully, New password: {lc.rs + lc.c + request.form['new-password'] + lc.rs}")
                 else:
                     error = "New password and confirm password does not match."
 
@@ -156,7 +156,7 @@ class admin:
                 db.updateSettings("license", license_key)
                 success = "License updated successfully."
                 webServer.logger.info(f"{lc.g}🔑 License updated successfully, New license: {lc.rs + lc.c + license + lc.rs}")
-                webServer.logger.info(f"{lc.g}📖 License Credit: {lc.rs + lc.c + str(response["credit"]) + "$" + lc.rs + lc.g}, IP: {lc.rs + lc.c + response["ip"] + lc.rs}")
+                webServer.logger.info(f"{lc.g}📖 License Credit: {lc.rs + lc.c + str(response['credit']) + '$' + lc.rs + lc.g}, IP: {lc.rs + lc.c + response['ip'] + lc.rs}")
                 license = license_key
                 credit = response["credit"]
             else:
@@ -211,7 +211,7 @@ class admin:
                     success = f"Bot {bot['name']} disabled successfully."
                     db.updateSettings(f"{bot['name']}_disabled", True)
                     bots[bots.index(bot)]["disabled"] = True
-                    webServer.logger.info(f"{lc.r}🔒 Bot disabled, Bot Name: {lc.rs + lc.c + bot["name"] + lc.rs}")
+                    webServer.logger.info(f"{lc.r}🔒 Bot disabled, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs}")
                     break
         elif "enable" in requests.args:
             BotID = requests.args.get("enable", 0)
@@ -220,7 +220,7 @@ class admin:
                     success = f"Bot {bot['name']} enabled successfully."
                     db.deleteSettings(f"{bot['name']}_disabled")
                     bots[bots.index(bot)]["disabled"] = False
-                    webServer.logger.info(f"{lc.g}🔓 Bot enabled, Bot Name: {lc.rs + lc.c + bot["name"] + lc.rs}")
+                    webServer.logger.info(f"{lc.g}🔓 Bot enabled, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs}")
                     break
 
         if requests.method == "POST" and "bot_id" in requests.form:
@@ -236,7 +236,7 @@ class admin:
                         json.dump(settings, f, indent=4)
                     bots[bots.index(bot)]["settings"] = settings
                     success = f"Bot {bot['name']} updated successfully."
-                    webServer.logger.info(f"{lc.g}🔄 Bot updated, Bot Name: {lc.rs + lc.c + bot["name"] + lc.rs}")
+                    webServer.logger.info(f"{lc.g}🔄 Bot updated, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs}")
                     break
 
         return render_template("admin/bots.html", error=error, success=success, bots=bots)

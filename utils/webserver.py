@@ -180,7 +180,7 @@ class WebServer:
             f"{lc.g}🌐 Web server started on 🔗 {lc.rs + lc.y}http://{self.host}:{self.port}{lc.rs} 🔗"
         )
         self.logger.info(
-            f"{lc.g}🔐 Panel Password: {lc.rs + lc.r + db.getSettings("admin_password", "admin") + lc.rs}"
+            f"{lc.g}🔐 Panel Password: {lc.rs + lc.r + db.getSettings('admin_password', 'admin') + lc.rs}"
         )
 
         db.Close()

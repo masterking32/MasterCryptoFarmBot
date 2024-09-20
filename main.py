@@ -78,7 +78,7 @@ async def start_bot():
         response = apiObj.ValidateLicense(licenseType)
         if response != None:
             log.info(
-                f"{lc.g}└─ ✅ License validated, Credit: {lc.rs + lc.c + str(response['credit']) + "$" + lc.rs + lc.g}, IP: {lc.rs + lc.c + response['ip'] + lc.rs}"
+                f"{lc.g}└─ ✅ License validated, Credit: {lc.rs + lc.c + str(response['credit']) + '$' + lc.rs + lc.g}, IP: {lc.rs + lc.c + response['ip'] + lc.rs}"
             )
         else:
             log.info(f"{lc.r}└─ ❌ Invalid license key ...{lc.rs}")
