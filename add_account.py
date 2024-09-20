@@ -27,9 +27,6 @@ except ImportError:
 
 
 async def register_sessions() -> None:
-    if not os.path.exists("telegram_accounts"):
-        os.mkdir("telegram_accounts")
-
     session_name = input(
         f"\n{lc.g}Enter a Name for account (press Enter to exit): {lc.rs}"
     )
@@ -107,8 +104,6 @@ async def register_sessions() -> None:
 
 
 async def import_sessions() -> None:
-    if not os.path.exists("telegram_accounts"):
-        return print(f"\n{lc.r}telegram_accounts folder does not exist!{lc.rs}")
     session_files = [
         f
         for f in os.listdir("telegram_accounts")
@@ -156,6 +151,8 @@ async def import_sessions() -> None:
 
 
 if __name__ == "__main__":
+    if not os.path.exists("telegram_accounts"):
+        os.mkdir("telegram_accounts")
     print(
         f"{lc.y}Welcome to MasterCryptoFarmBot Telegram Account Manager!{lc.rs}\n"
         f"{lc.y}Please select an option:{lc.rs}"
