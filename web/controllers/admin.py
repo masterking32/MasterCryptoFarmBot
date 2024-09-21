@@ -204,8 +204,6 @@ class admin:
                 credit = response["credit"]
                 ton_wallet = response["ton_wallet"]
                 user_id = response["user_id"]
-            else:
-                error = "Invalid license key."
         db.Close()
         return render_template(
             "admin/change_license.html",
