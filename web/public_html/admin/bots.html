@@ -61,6 +61,287 @@
         </div>
         <div class="flex items-center">
           <button
+            class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded mr-2"
+            onclick="bot_accounts{{ bot.id }}.showModal()"
+          >
+            <i class="fa-solid fa-users"></i>
+          </button>
+          <dialog id="bot_accounts{{ bot.id }}" class="modal">
+            <div class="modal-box">
+              <h1 class="text-white">Bot Accounts</h1>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <div class="text-center">
+                <p class="text-white">Bot Name: {{ bot.name }}</p>
+                <p class="text-center">
+                  <a
+                    href="https://github.com/masterking32/MasterCryptoFarmBot/wiki/How-to:-Add-New-Accounts"
+                    target="_blank"
+                    class="btn bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded mt-2"
+                    >How to Add Account</a
+                  >
+                  /
+                  <button
+                    class="btn bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-4 rounded mt-2"
+                    onclick="add_account{{ bot.id }}.showModal()"
+                  >
+                    Add Module Account
+                  </button>
+                </p>
+              </div>
+              <div class="divider divider-neutral">Bot Accounts</div>
+              {% for account in bot.accounts %}
+              <div class="flex justify-between items-center mt-5">
+                <div class="flex items-center">
+                  {% if account.disabled %}
+                  <i class="fa-solid fa-user-circle text-4xl text-pink-700"></i>
+                  {% else %}
+                  <i
+                    class="fa-solid fa-user-circle text-4xl text-green-700"
+                  ></i>
+                  {% endif %}
+                  <div class="ml-3">
+                    <p class="text-white">{{ account.display_name }}</p>
+                  </div>
+                </div>
+                <div>
+                  <button
+                    class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded"
+                    onclick="account_model_{{ account.id }}.showModal()"
+                  >
+                    <i class="fa-solid fa-cog"></i>
+                  </button>
+                  <dialog id="account_model_{{ account.id }}" class="modal">
+                    <div class="modal-box">
+                      <h1 class="text-white">Account Settings</h1>
+                      <hr class="h-px my-4 border-0 bg-gray-700" />
+                      <div class="text-center">
+                        <p class="text-white">
+                          Account Name: {{ account.display_name }}
+                        </p>
+                        <p class="text-white">Bot Name: {{ bot.name }}</p>
+                      </div>
+                      <hr class="h-px my-4 border-0 bg-gray-700" />
+                      <div class="text-center">
+                        <p class="text-white">
+                          {% if account.disabled %}
+                          <a
+                            href="./bots.py?enable_account={{ account.id }}&bot_id={{ bot.id }}"
+                            class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-4 rounded"
+                            >Enable Account</a
+                          >
+                          {% else %}
+                          <a
+                            href="./bots.py?disable_account={{ account.id }}&bot_id={{ bot.id }}"
+                            class="bg-pink-700 hover:bg-pink-800 text-white font-bold py-2 px-4 rounded"
+                            >Disable Account</a
+                          >
+                          {% endif %}
+                        </p>
+                      </div>
+                      <hr class="h-px my-4 border-0 bg-gray-700" />
+                      <div>
+                        <form action="./bots.py" method="POST">
+                          <div class="flex flex-col my-3">
+                            <label for="web_app_url" class="text-white mb-2"
+                              >Web App URL
+                              <a
+                                href="https://github.com/masterking32/MasterCryptoFarmBot/wiki/How-to:-Add-New-Accounts"
+                                class="ml-2 bg-blue-400 text-white rounded-full py-1 px-3"
+                                target="_blank"
+                              >
+                                <i class="fa-solid fa-question"></i>
+                              </a>
+                            </label>
+                            <input
+                              type="text"
+                              name="web_app_url"
+                              id="web_app_url"
+                              placeholder="Web App URL"
+                              required=""
+                              class="input input-bordered bg-gray-900"
+                              value="{{ account.web_app_data }}"
+                            />
+                          </div>
+                          <div class="flex flex-col my-3">
+                            <label for="user_agent" class="text-white mb-2"
+                              >User Agent
+                              <a
+                                href="https://github.com/masterking32/MasterCryptoFarmBot/wiki/Account-User%E2%80%90Agent"
+                                class="ml-2 bg-blue-400 text-white rounded-full py-1 px-3"
+                                target="_blank"
+                              >
+                                <i class="fa-solid fa-question"></i>
+                              </a>
+                            </label>
+                            <input
+                              type="text"
+                              name="user_agent"
+                              id="user_agent"
+                              placeholder="User Agent"
+                              required=""
+                              class="input input-bordered bg-gray-900"
+                              value="{{ account.user_agent }}"
+                            />
+                          </div>
+                          <div class="flex flex-col my-3">
+                            <label for="proxy" class="text-white mb-2"
+                              >Proxy
+                              <a
+                                href="https://github.com/masterking32/MasterCryptoFarmBot/wiki/Account-Proxy"
+                                class="ml-2 bg-blue-400 text-white rounded-full py-1 px-3"
+                                target="_blank"
+                              >
+                                <i class="fa-solid fa-question"></i>
+                              </a>
+                            </label>
+                            <input
+                              type="text"
+                              name="proxy"
+                              id="proxy"
+                              placeholder="Proxy"
+                              class="input input-bordered bg-gray-900"
+                              value="{{ account.proxy }}"
+                            />
+                          </div>
+                          <input
+                            type="hidden"
+                            name="edit_account"
+                            value="{{ bot.id }}"
+                          />
+                          <input
+                            type="hidden"
+                            name="account_id"
+                            value="{{ account.id }}"
+                          />
+                          <div class="flex flex-col mt-5">
+                            <button type="submit" class="btn btn-primary">
+                              Save Account
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                      <div class="modal-action">
+                        <form method="dialog">
+                          <button class="btn">Close</button>
+                        </form>
+                      </div>
+                    </div>
+                  </dialog>
+
+                  <a
+                    href="./bots.py?delete_account={{ account.id }}&bot_id={{ bot.id }}"
+                    class="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded"
+                    ><i class="fa-solid fa-trash"></i
+                  ></a>
+                </div>
+              </div>
+              {% endfor %}
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <div class="modal-action">
+                <form method="dialog">
+                  <button class="btn">Close</button>
+                </form>
+              </div>
+            </div>
+          </dialog>
+          <dialog id="add_account{{ bot.id }}" class="modal">
+            <div class="modal-box">
+              <h1 class="text-white">Add Account</h1>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <form action="./bots.py" method="POST">
+                <div class="flex flex-col my-3">
+                  <label for="session_name" class="text-white mb-2"
+                    >Session Name</label
+                  >
+                  <input
+                    type="text"
+                    name="session_name"
+                    id="session_name"
+                    placeholder="Session Name"
+                    required
+                    class="input input-bordered bg-gray-900"
+                  />
+                </div>
+                <div class="flex flex-col my-3">
+                  <label for="web_app_url" class="text-white mb-2"
+                    >Web App URL
+                    <a
+                      href="https://github.com/masterking32/MasterCryptoFarmBot/wiki/How-to:-Add-New-Accounts"
+                      class="ml-2 bg-blue-400 text-white rounded-full py-1 px-3"
+                      target="_blank"
+                    >
+                      <i class="fa-solid fa-question"></i>
+                    </a>
+                  </label>
+                  <input
+                    type="text"
+                    name="web_app_url"
+                    id="web_app_url"
+                    placeholder="Web App URL"
+                    required
+                    class="input input-bordered bg-gray-900"
+                  />
+                </div>
+                <div class="flex flex-col my-3">
+                  <label for="user_agent" class="text-white mb-2"
+                    >User Agent
+                    <a
+                      href="https://github.com/masterking32/MasterCryptoFarmBot/wiki/Account-User%E2%80%90Agent"
+                      class="ml-2 bg-blue-400 text-white rounded-full py-1 px-3"
+                      target="_blank"
+                    >
+                      <i class="fa-solid fa-question"></i>
+                    </a>
+                  </label>
+                  <input
+                    type="text"
+                    name="user_agent"
+                    id="user_agent"
+                    placeholder="User Agent"
+                    required
+                    class="input input-bordered bg-gray-900"
+                  />
+                </div>
+                <div class="flex flex-col my-3">
+                  <label for="proxy" class="text-white mb-2"
+                    >Proxy
+                    <a
+                      href="https://github.com/masterking32/MasterCryptoFarmBot/wiki/Account-Proxy"
+                      class="ml-2 bg-blue-400 text-white rounded-full py-1 px-3"
+                      target="_blank"
+                    >
+                      <i class="fa-solid fa-question"></i>
+                    </a>
+                  </label>
+                  <input
+                    type="text"
+                    name="proxy"
+                    id="proxy"
+                    placeholder="Proxy"
+                    class="input input-bordered bg-gray-900"
+                  />
+                </div>
+                <input
+                  type="hidden"
+                  name="add_account"
+                  value="{{ bot.id }}"
+                  class="input input-bordered bg-gray-900"
+                />
+                <div class="flex flex-col mt-5">
+                  <button type="submit" class="btn btn-primary">
+                    Add Account
+                  </button>
+                </div>
+              </form>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <div class="modal-action">
+                <form method="dialog">
+                  <button class="btn">Close</button>
+                </form>
+              </div>
+            </div>
+          </dialog>
+          <button
             class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded"
             onclick="bot_modal{{ bot.id }}.showModal()"
           >
@@ -106,8 +387,11 @@
                       class="tooltip"
                       data-tip="{{ setting_type.description }}"
                     >
-                      <button class="btn btn-sm btn-info ml-2" type="button">
-                        Need Help?
+                      <button
+                        class="ml-2 bg-blue-400 text-white rounded-full py-1 px-3"
+                        type="button"
+                      >
+                        <i class="fa-solid fa-question"></i>
                       </button>
                     </div>
                     {% endif %}
@@ -132,8 +416,11 @@
                       class="tooltip"
                       data-tip="{{ setting_type.description }}"
                     >
-                      <button class="btn btn-sm btn-info ml-2" type="button">
-                        Need Help?
+                      <button
+                        class="ml-2 bg-blue-400 text-white rounded-full py-1 px-3"
+                        type="button"
+                      >
+                        <i class="fa-solid fa-question"></i>
                       </button>
                     </div>
                     {% endif %}</label
@@ -171,8 +458,11 @@
                         class="tooltip"
                         data-tip="{{ setting_type.description }}"
                       >
-                        <button class="btn btn-sm btn-info ml-2" type="button">
-                          Need Help?
+                        <button
+                          class="ml-2 bg-blue-400 text-white rounded-full py-1 px-3"
+                          type="button"
+                        >
+                          <i class="fa-solid fa-question"></i>
                         </button>
                       </div>
                       {% endif %}</span
@@ -194,6 +484,7 @@
                 </div>
               </form>
               {% endif %}
+              <hr class="h-px my-4 border-0 bg-gray-700" />
               <div class="modal-action">
                 <form method="dialog">
                   <button class="btn">Close</button>

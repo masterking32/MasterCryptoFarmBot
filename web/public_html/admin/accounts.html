@@ -28,19 +28,12 @@
       </div>
       <div class="divider divider-neutral">How To Add Account</div>
       <div class="text-white text-sm text-center">
-        To add an account, Just run the following command
-        <div class="my-2 text-center bg-gray-800 p-2 rounded text-blue-400">
-          {% if SystemOS == "Windows" %}
-          <pre><code>python add_account.py</code></pre>
-          {% elif SystemOS == "Linux" %}
-          <pre><code>python3 add_account.py</code></pre>
-          {% elif SystemOS == "Mac" %}
-          <pre><code>python3 add_account.py</code></pre>
-          {% else %}
-          <pre><code>python add_account.py</code></pre>
-          {% endif %}
-        </div>
-        and follow the instructions.
+        <a
+          href="https://github.com/masterking32/MasterCryptoFarmBot/wiki/How-to:-Add-New-Accounts"
+          target="_blank"
+          class="btn bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
+          >How to Add Account</a
+        >
       </div>
       <div class="flex w-full flex-col">
         <div class="divider divider-neutral">Accounts</div>
@@ -63,11 +56,11 @@
           {% else %}
           <i class="fa-solid fa-user-circle text-4xl text-green-700"></i>
           {% endif %}
-
           <div class="ml-3">
             <p class="text-white">{{ account.session_name }}</p>
             <p class="text-xs text-gray-400">
-              {{ account.username }} - {{ account.id }}
+              {{ account.username }} -
+              <span class="blur hover:blur-0">{{ account.id }}</span>
             </p>
           </div>
         </div>
