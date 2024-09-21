@@ -263,6 +263,166 @@ class admin:
                         accounts = json.load(f)
 
                 bot["accounts"] = accounts
+
+                bot["settings_inputs"] = {}
+                if bot["settings_types"] is None:
+                    bots.append(bot)
+                    continue
+
+                for bot_setting_type in bot["settings_types"]:
+                    if (
+                        "key" not in bot_setting_type
+                        or "name" not in bot_setting_type
+                        or "type" not in bot_setting_type
+                    ):
+                        continue
+
+                    key = bot_setting_type["key"]
+                    name = bot_setting_type["name"]
+                    type = bot_setting_type["type"]
+                    placeholder = (
+                        None
+                        if "placeholder" not in bot_setting_type
+                        else bot_setting_type["placeholder"]
+                    )
+                    description = (
+                        None
+                        if "description" not in bot_setting_type
+                        else bot_setting_type["description"]
+                    )
+                    min_value = (
+                        None
+                        if "min" not in bot_setting_type
+                        else bot_setting_type["min"]
+                    )
+                    max_value = (
+                        None
+                        if "max" not in bot_setting_type
+                        else bot_setting_type["max"]
+                    )
+                    options = (
+                        None
+                        if "options" not in bot_setting_type
+                        else bot_setting_type["options"]
+                    )
+                    default_value = (
+                        None
+                        if "default_value" not in bot_setting_type
+                        else bot_setting_type["default_value"]
+                    )
+
+                    multi_select = (
+                        False
+                        if "multi_select" not in bot_setting_type
+                        else bot_setting_type["multi_select"]
+                    )
+
+                    required = (
+                        False
+                        if "required" not in bot_setting_type
+                        else bot_setting_type["required"]
+                    )
+
+                    if type == "text":
+                        bot["settings_inputs"][key] = {
+                            "key": key,
+                            "name": name,
+                            "type": "text",
+                            "placeholder": placeholder,
+                            "description": description,
+                            "value": (
+                                bot["settings"][key]
+                                if key in bot["settings"]
+                                else (
+                                    default_value if default_value is not None else ""
+                                )
+                            ),
+                            "required": required,
+                        }
+                    elif type == "number":
+                        bot["settings_inputs"][key] = {
+                            "key": key,
+                            "name": name,
+                            "type": "number",
+                            "placeholder": placeholder,
+                            "description": description,
+                            "value": (
+                                bot["settings"][key]
+                                if key in bot["settings"]
+                                else (default_value if default_value is not None else 0)
+                            ),
+                            "min": min_value,
+                            "max": max_value,
+                            "required": required,
+                        }
+                    elif type == "checkbox":
+                        bot["settings_inputs"][key] = {
+                            "key": key,
+                            "name": name,
+                            "type": "checkbox",
+                            "description": description,
+                            "value": (
+                                bot["settings"][key]
+                                if key in bot["settings"]
+                                else (
+                                    default_value
+                                    if default_value is not None
+                                    else False
+                                )
+                            ),
+                        }
+                    elif type == "select":
+                        bot["settings_inputs"][key] = {
+                            "key": key,
+                            "name": name,
+                            "type": "select",
+                            "description": description,
+                            "value": (
+                                bot["settings"][key]
+                                if key in bot["settings"]
+                                else (
+                                    default_value if default_value is not None else ""
+                                )
+                            ),
+                            "options": options,
+                            "multi_select": multi_select,
+                            "required": required,
+                        }
+
+                        for option in options:
+                            if not bot["settings_inputs"][key]["multi_select"]:
+                                if (
+                                    bot["settings_inputs"][key]["value"]
+                                    == option["value"]
+                                ):
+                                    option["selected"] = True
+                                else:
+                                    option["selected"] = False
+                            else:
+                                if (
+                                    bot["settings_inputs"][key]["value"]
+                                    and option["value"]
+                                    in bot["settings_inputs"][key]["value"]
+                                ):
+                                    option["selected"] = True
+                                else:
+                                    option["selected"] = False
+
+                    elif type == "range":
+                        bot["settings_inputs"][key] = {
+                            "key": key,
+                            "name": name,
+                            "type": "range",
+                            "description": description,
+                            "value": (
+                                bot["settings"][key]
+                                if key in bot["settings"]
+                                else (default_value if default_value is not None else 0)
+                            ),
+                            "min": min_value,
+                            "max": max_value,
+                        }
+
                 bots.append(bot)
 
         if "disable" in requests.args:
@@ -349,17 +509,79 @@ class admin:
             settings = {}
             for bot in bots:
                 if str(bot["id"]) == str(BotID):
-                    for key in requests.form:
-                        if key != "bot_id":
+                    settings = bot["settings"]
+                    settings_types = bot["settings_types"]
+                    settings_inputs = bot["settings_inputs"]
+                    if settings_inputs is None:
+                        error = "Bot does not have any settings."
+                        break
+
+                    for key in settings_inputs:
+                        if (
+                            key not in requests.form
+                            and "required" in settings_inputs[key]
+                            and settings_inputs[key]["required"]
+                        ):
+                            error = "Please fill all the fields."
+                            break
+
+                        if key not in requests.form:
+                            if settings_inputs[key]["type"] == "checkbox":
+                                settings[key] = False
+                            elif settings_inputs[key]["type"] == "select":
+                                settings[key] = (
+                                    settings_inputs[key]["options"][0]["value"]
+                                    if not settings_inputs[key]["multi_select"]
+                                    else []
+                                )
+                            elif settings_inputs[key]["type"] == "number":
+                                settings[key] = 0
+                            elif settings_inputs[key]["type"] == "range":
+                                settings[key] = settings_inputs[key]["min"]
+                            else:
+                                settings[key] = ""
+                        elif (
+                            settings_inputs[key]["type"] == "number"
+                            or settings_inputs[key]["type"] == "range"
+                        ):
+                            try:
+                                settings[key] = int(requests.form[key])
+                            except:
+                                error = f"{settings_inputs[key]['name']} should be a number."
+                                break
+                        elif settings_inputs[key]["type"] == "checkbox":
+                            settings[key] = True if key in requests.form else False
+                        elif settings_inputs[key]["type"] == "select":
+                            if settings_inputs[key]["multi_select"]:
+                                settings[key] = requests.form.getlist(key)
+                            else:
+                                settings[key] = requests.form[key]
+                        else:
                             settings[key] = requests.form[key]
 
-                    with open(f"modules/{bot['name']}/bot_settings.json", "w") as f:
-                        json.dump(settings, f, indent=4)
-                    bots[bots.index(bot)]["settings"] = settings
-                    success = f"Bot {bot['name']} updated successfully."
-                    webServer.logger.info(
-                        f"{lc.g}🔄 Bot updated, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs}"
-                    )
+                        settings_inputs[key]["value"] = settings[key]
+                        if settings_inputs[key]["type"] == "select":
+                            for option in settings_inputs[key]["options"]:
+                                if not settings_inputs[key]["multi_select"]:
+                                    option["selected"] = (
+                                        settings[key] == option["value"]
+                                    )
+                                else:
+                                    option["selected"] = (
+                                        settings[key]
+                                        and option["value"] in settings[key]
+                                    )
+
+                    if error is None:
+                        with open(f"modules/{bot['name']}/bot_settings.json", "w") as f:
+                            json.dump(settings, f, indent=4)
+
+                        bots[bots.index(bot)]["settings"] = settings
+                        success = f"Settings updated successfully."
+                        webServer.logger.info(
+                            f"{lc.g}🔄 Bot settings updated, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs + lc.g}"
+                        )
+
                     break
 
         if "add_account" in requests.form:

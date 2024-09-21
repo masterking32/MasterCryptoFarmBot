@@ -373,19 +373,21 @@
                 </p>
               </div>
               <hr class="h-px my-4 border-0 bg-gray-700" />
-              {% if bot.settings_types is not none %}
+              {% if bot.settings_inputs is not none %}
               <form action="./bots.py" method="POST">
                 <input type="hidden" name="bot_id" value="{{ bot.id }}" />
 
-                {% for setting_type in bot.settings_types %} {% if
-                setting_type.type == "text" or setting_type.type == "number" %}
+                {% for settings_input_key in bot.settings_inputs %} {% set
+                settings_input = bot.settings_inputs[settings_input_key] %} {%
+                if settings_input.type == "text" or settings_input.type ==
+                "number" %}
                 <div class="flex flex-col my-3">
-                  <label for="{{ setting_type.key }}" class="text-white mb-2"
-                    >{{ setting_type.name }} {% if setting_type.description !=
-                    none %}
+                  <label for="{{ settings_input.key }}" class="text-white mb-2"
+                    >{{ settings_input.name }} {% if settings_input.description
+                    is not none %}
                     <div
                       class="tooltip"
-                      data-tip="{{ setting_type.description }}"
+                      data-tip="{{ settings_input.description }}"
                     >
                       <button
                         class="ml-2 bg-blue-400 text-white rounded-full py-1 px-3"
@@ -396,67 +398,28 @@
                     </div>
                     {% endif %}
                   </label>
-                  <input type="{{ setting_type.type }}" name="{{
-                  setting_type.key }}" id="{{ setting_type.key }}" value="{% if
-                  setting_type.key in bot.settings %}{{
-                  bot.settings[setting_type.key] }}{% else %}{{
-                  setting_type.default_value }}{% endif %}" {% if
-                  setting_type.type == "number" and setting_type.min is not none
-                  and setting_type.max is not none %} min="{{ setting_type.min
-                  }}" max="{{ setting_type.max }}" {% endif %} placeholder="{{
-                  setting_type.placeholder }}" required class="input
-                  input-bordered bg-gray-900" />
+                  <input type="{{ settings_input.type }}" name="{{
+                  settings_input.key }}" id="{{ settings_input.key }}"
+                  value="{{settings_input.value}}" {% if settings_input.type ==
+                  "number" and settings_input.min is not none and
+                  settings_input.max is not none %} min="{{ settings_input.min
+                  }}" max="{{ settings_input.max }}" {% endif %} placeholder="{{
+                  settings_input.placeholder }}" {% if settings_input.required
+                  %} required {% endif %} class="input input-bordered
+                  bg-gray-900" />
                 </div>
-                {% elif setting_type.type == "select" %}
-                <div class="flex flex-col my-3">
-                  <label for="{{ setting_type.key }}" class="text-white mb-2"
-                    >{{ setting_type.name }}{% if setting_type.description !=
-                    none %}
-                    <div
-                      class="tooltip"
-                      data-tip="{{ setting_type.description }}"
-                    >
-                      <button
-                        class="ml-2 bg-blue-400 text-white rounded-full py-1 px-3"
-                        type="button"
-                      >
-                        <i class="fa-solid fa-question"></i>
-                      </button>
-                    </div>
-                    {% endif %}</label
-                  >
-                  <select
-                    name="{{ setting_type.key }}"
-                    id="{{ setting_type.key }}"
-                    class="input input-bordered bg-gray-900"
-                    required
-                  >
-                    {%if setting_type.key in bot.settings %}
-                    <option
-                      value="{{ bot.settings[setting_type.key] }}"
-                      selected
-                    >
-                      {{ bot.settings[setting_type.key] }}
-                    </option>
-                    {% endif %} {% for option in setting_type.options %}
-                    <option value="{{ option.value }}">
-                      {{ option.name }}
-                    </option>
-                    {% endfor %}
-                  </select>
-                </div>
-                {% elif setting_type.type == "checkbox" %}
+                {% elif settings_input.type == "checkbox" %}
                 <div class="form-control my-3">
                   <label
                     class="label cursor-pointer"
-                    for="{{setting_type.key }}"
+                    for="{{settings_input.key }}"
                   >
                     <span class="label-text"
-                      >{{setting_type.name}}{% if setting_type.description !=
-                      none %}
+                      >{{settings_input.name}}{% if settings_input.description
+                      is not none %}
                       <div
                         class="tooltip"
-                        data-tip="{{ setting_type.description }}"
+                        data-tip="{{ settings_input.description }}"
                       >
                         <button
                           class="ml-2 bg-blue-400 text-white rounded-full py-1 px-3"
@@ -467,14 +430,114 @@
                       </div>
                       {% endif %}</span
                     >
-                    <input type="checkbox" {% if setting_type.key in
-                    bot.settings and bot.settings[setting_type.key] == 'on' %}
-                    checked {% elif setting_type.key not in bot.settings and
-                    setting_type.default_value == 'on' %} checked {% endif %}
-                    class="checkbox" id="{{setting_type.key}}" name="{{
-                    setting_type.key }}" />
+                    <input
+                      type="checkbox"
+                      {%
+                      if
+                      settings_input.value
+                      %}
+                      checked
+                      {%
+                      endif
+                      %}
+                      class="checkbox"
+                      id="{{settings_input.key}}"
+                      name="{{
+                        settings_input.key }}"
+                    />
                   </label>
                 </div>
+                {% elif settings_input.type == "range" %}
+                <div class="form-control my-3">
+                  <label for="{{ settings_input.key }}" class="text-white mb-2"
+                    >{{ settings_input.name }}
+                    <span
+                      id="{{settings_input.key}}_value"
+                      class="mx-2 badge badge-info"
+                      >{{settings_input.value}}</span
+                    >
+                    {% if settings_input.description is not none %}
+                    <div
+                      class="tooltip"
+                      data-tip="{{ settings_input.description }}"
+                    >
+                      <button
+                        class="ml-2 bg-blue-400 text-white rounded-full py-1 px-3"
+                        type="button"
+                      >
+                        <i class="fa-solid fa-question"></i>
+                      </button>
+                    </div>
+                    {% endif %}
+                  </label>
+                  <input
+                    type="range"
+                    name="{{settings_input.key}}"
+                    id="{{settings_input.key}}"
+                    value="{{settings_input.value}}"
+                    min="{{settings_input.min}}"
+                    max="{{settings_input.max}}"
+                    step="{{settings_input.step}}"
+                    class="range range-info range-xs"
+                  />
+                  <script>
+                    document.getElementById("{{settings_input.key}}").oninput =
+                      function () {
+                        document.getElementById(
+                          "{{settings_input.key}}_value"
+                        ).textContent = this.value;
+                      };
+                  </script>
+                </div>
+                {% elif settings_input.type == "select" %}
+                <div class="form-control my-3">
+                  <label for="{{ settings_input.key }}" class="text-white mb-2"
+                    >{{ settings_input.name }} {% if settings_input.description
+                    is not none %}
+                    <div
+                      class="tooltip"
+                      data-tip="{{ settings_input.description }}"
+                    >
+                      <button
+                        class="ml-2 bg-blue-400 text-white rounded-full py-1 px-3"
+                        type="button"
+                      >
+                        <i class="fa-solid fa-question"></i>
+                      </button>
+                    </div>
+                    {% endif %}
+                  </label>
+                  <select
+                    name="{{ settings_input.key }}"
+                    id="{{ settings_input.key }}"
+                    class="select select-bordered select-info"
+                    {%
+                    if
+                    settings_input.multi_select
+                    %}
+                    multiple
+                    {%
+                    endif
+                    %}
+                  >
+                    {% for option in settings_input.options %}
+                    <option
+                      value="{{ option.value }}"
+                      {%
+                      if
+                      option.selected
+                      %}
+                      selected
+                      {%
+                      endif
+                      %}
+                    >
+                      {{ option.name }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+
                 {% endif %} {% endfor %}
 
                 <div class="flex flex-col mt-5">
@@ -524,5 +587,6 @@
         </a>
       </div>
     </div>
+    <script src="../js/multiselect-dropdown.js"></script>
   </body>
 </html>
