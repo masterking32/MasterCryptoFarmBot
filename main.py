@@ -152,7 +152,7 @@ async def start_bot():
 
     while True:
         try:
-            await asyncio.sleep(1)
+            time.sleep(0.1)
         except KeyboardInterrupt:
             log.info(f"{lc.r}🛑 Bot is stopping ... {lc.rs}")
             web_server.stop()

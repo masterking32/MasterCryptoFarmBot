@@ -62,6 +62,111 @@
         {% endif %}
       </ul>
 
+      {% if ton_wallet is not none and user_id is not none %}
+      <div class="text-center">
+        <button
+          class="btn btn-error mt-2"
+          onClick="increase_license_credit.showModal();"
+        >
+          <i class="fa-solid fa-coins mr-2"></i>
+          Increase Your License Credit
+        </button>
+
+        <script>
+          function CopyToClipboard(copyText) {
+            navigator.clipboard.writeText(copyText);
+            alert("Copied to clipboard");
+          }
+        </script>
+
+        <dialog id="increase_license_credit" class="modal">
+          <div class="modal-box">
+            <h1 class="text-white">Increase Your License Credit</h1>
+            <hr class="h-px my-4 border-0 bg-gray-700" />
+            <p class="text-center">
+              To increase your license credit, You can scan the QR code below
+              with <span class="text-cyan-400">TonKeeper App</span> and send any
+              amount of <span class="text-orange-400">USDT</span> on TON, just
+              make sure the amount is above 1 USDT.
+            </p>
+            <a
+              href="ton://transfer/{{ ton_wallet }}?text={{ user_id }}"
+              target="_blank"
+            >
+              <p class="text-center m-2">
+                <img
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=512x512&data=ton://transfer/{{ton_wallet}}?text={{user_id}}"
+                  alt="Ton Wallet QR Code"
+                  class="w-52 h-52 m-auto"
+                />
+              </p>
+              <p class="text-center text-cyan-400">Open TonKeeper App</p>
+            </a>
+            <div class="flex w-full flex-col">
+              <div class="divider divider-neutral">OR</div>
+            </div>
+            <p class="text-center">
+              You can send any amount of
+              <span class="text-orange-400">USDT</span>
+              to the following wallet address:
+            </p>
+            <p
+              class="text-center text-green-400 text-sm cursor-pointer my-2"
+              onClick="CopyToClipboard('{{ ton_wallet }}')"
+            >
+              {{ ton_wallet }}
+            </p>
+            <p class="text-center">
+              with the following comment:
+              <span
+                class="text-green-400"
+                onClick="CopyToClipboard('{{ user_id }}')"
+                >{{ user_id }}</span
+              >
+            </p>
+
+            <p class="text-center">
+              <span class="text-red-400">Note:</span>
+            </p>
+            <ul class="text-justify list-disc mx-2">
+              <li>
+                We just accept <span class="text-orange-400">USDT</span> on TON.
+              </li>
+              <li>
+                DO <span class="text-red-400">NOT</span> encrypt the comment.
+              </li>
+              <li>
+                Payments of less than 1 USDT will be ignored and not refunded.
+              </li>
+              <li>
+                After sending <strong>USDT</strong>, your license credit will be
+                updated <span class="text-green-400">automatically</span>, and
+                we will notify you via Telegram Bot. Please allow
+                <span class="text-cyan-400">1-10 minutes</span> for the payment
+                to process.
+              </li>
+              <li>
+                Please send <span class="text-cyan-400">/tos</span> to
+                <a
+                  href="https://t.me/MasterCryptoFarmBot_bot"
+                  class="text-cyan-400"
+                  target="_blank"
+                  >MasterCryptoFarmBot</a
+                >
+                to read the terms of service before making the payment.
+              </li>
+            </ul>
+
+            <div class="modal-action">
+              <form method="dialog">
+                <button class="btn">Close</button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+      </div>
+      {% endif %}
+
       <div class="flex w-full flex-col">
         <div class="divider divider-neutral">Get License Key</div>
       </div>
@@ -73,8 +178,9 @@
         <a
           href="https://t.me/MasterCryptoFarmBot_bot"
           target="_blank"
-          class="btn btn-success mt-2"
-          >Get License Key</a
+          class="btn btn-success mt-2 btn-sm"
+        >
+          <span class="fa-solid fa-key mr-2"></span>Get License Key</a
         >
       </div>
       <div class="flex w-full flex-col">

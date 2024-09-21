@@ -176,9 +176,12 @@ class admin:
         db = Database("database.db", webServer.logger)
         license = db.getSettings("license", "Free License")
         credit = None
+        ton_wallet = None
+        user_id = None
+        apiObj = api.API(webServer.logger)
+
         if request.method == "POST" and "license" in request.form:
             license_key = request.form["license"]
-            apiObj = api.API(webServer.logger)
             response = apiObj.ValidateLicense(license_key)
             if response != None:
                 db.updateSettings("license", license_key)
@@ -191,6 +194,16 @@ class admin:
                 )
                 license = license_key
                 credit = response["credit"]
+                ton_wallet = response["ton_wallet"]
+                user_id = response["user_id"]
+            else:
+                error = "Invalid license key."
+        else:
+            response = apiObj.ValidateLicense(license)
+            if response != None:
+                credit = response["credit"]
+                ton_wallet = response["ton_wallet"]
+                user_id = response["user_id"]
             else:
                 error = "Invalid license key."
         db.Close()
@@ -201,6 +214,8 @@ class admin:
             server_ip=webServer.public_ip,
             license=license,
             credit=credit,
+            ton_wallet=ton_wallet,
+            user_id=user_id,
         )
 
     def bots(self, requests, webServer):
@@ -282,9 +297,7 @@ class admin:
                     accounts = bot["accounts"]
                     for account in accounts:
                         if str(account["id"]) == str(AccountID):
-                            success = (
-                                f"Account {account['display_name']} deleted successfully."
-                            )
+                            success = f"Account {account['display_name']} deleted successfully."
                             accounts.remove(account)
                             with open(f"modules/{bot['name']}/accounts.json", "w") as f:
                                 json.dump(accounts, f, indent=4)
@@ -301,9 +314,7 @@ class admin:
                     accounts = bot["accounts"]
                     for account in accounts:
                         if str(account["id"]) == str(AccountID):
-                            success = (
-                                f"Account {account['display_name']} disabled successfully."
-                            )
+                            success = f"Account {account['display_name']} disabled successfully."
                             account["disabled"] = True
                             with open(f"modules/{bot['name']}/accounts.json", "w") as f:
                                 json.dump(accounts, f, indent=4)
@@ -320,9 +331,7 @@ class admin:
                     accounts = bot["accounts"]
                     for account in accounts:
                         if str(account["id"]) == str(AccountID):
-                            success = (
-                                f"Account {account['display_name']} enabled successfully."
-                            )
+                            success = f"Account {account['display_name']} enabled successfully."
                             account["disabled"] = False
                             with open(f"modules/{bot['name']}/accounts.json", "w") as f:
                                 json.dump(accounts, f, indent=4)
@@ -409,9 +418,7 @@ class admin:
                         json.dump(accounts, f, indent=4)
 
                     bots[bots.index(bot)]["accounts"] = accounts
-                    success = (
-                        f"Account {account['display_name']} added successfully."
-                    )
+                    success = f"Account {account['display_name']} added successfully."
 
                     webServer.logger.info(
                         f"{lc.g}➕ Account added, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs + lc.g}, Session Name: {lc.rs + lc.c + account['display_name'] + lc.rs}"
@@ -430,7 +437,9 @@ class admin:
                                 else ""
                             )
                             account["proxy"] = (
-                                requests.form["proxy"] if "proxy" in requests.form else ""
+                                requests.form["proxy"]
+                                if "proxy" in requests.form
+                                else ""
                             )
                             account["user_agent"] = (
                                 requests.form["user_agent"]
