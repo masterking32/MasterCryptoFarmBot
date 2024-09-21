@@ -4,7 +4,7 @@
 
 #### ⭐ If you find this project useful, please consider giving it a star! ⭐
 
-<a href="https://github.com/masterking32/MasterHamsterKombatBot/stargazers"><img align="center" src="https://raw.githubusercontent.com/masterking32/MasterCryptoFarmBot/main/web/public_html/images/github_star.png" alt="github_star" /></a>
+<a href="https://github.com/masterking32/MasterHamsterKombatBot/stargazers"><img align="center" src="https://raw.githubusercontent.com/masterking32/MasterCryptoFarmBot/refs/heads/main/web/public_html/images/github_star.png" alt="github_star" /></a>
 
 <hr>
 
