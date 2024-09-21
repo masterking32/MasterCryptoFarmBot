@@ -410,11 +410,11 @@ class admin:
 
                     bots[bots.index(bot)]["accounts"] = accounts
                     success = (
-                        f"Account {account["display_name"]} added successfully."
+                        f"Account {account['display_name']} added successfully."
                     )
 
                     webServer.logger.info(
-                        f"{lc.g}➕ Account added, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs + lc.g}, Session Name: {lc.rs + lc.c + account["display_name"] + lc.rs}"
+                        f"{lc.g}➕ Account added, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs + lc.g}, Session Name: {lc.rs + lc.c + account['display_name'] + lc.rs}"
                     )
 
         if "edit_account" in requests.form and "account_id" in requests.form:
