@@ -49,3 +49,27 @@ class Git:
             )
 
         return None
+
+    def CheckGitInstalled(self):
+        try:
+            response = (
+                os.popen(
+                    "git --version 2>/dev/null"
+                    if os.name != "nt"
+                    else "git --version 2>nul"
+                )
+                .read()
+                .strip()
+            )
+            if response:
+                return True
+            else:
+                self.logger.error(
+                    f"{lc.r} ❌ Git is not installed, Please install git{lc.rs}"
+                )
+        except Exception as e:
+            self.logger.error(
+                f"{lc.r} ❌ Git is not installed, Please install git{lc.rs}"
+            )
+
+        return False

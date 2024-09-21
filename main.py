@@ -18,6 +18,7 @@ from utils.webserver import WebServer
 import utils.variables as var
 import utils.api as api
 import utils.utils as utils
+import utils.Git as Git
 
 try:
     import config
@@ -52,6 +53,12 @@ print(banner)
 
 async def start_bot():
     log.info(f"{lc.g}🚀 Bot is running ...{lc.rs}")
+
+    git = Git.Git(log, config.config)
+    git_installed = git.CheckGitInstalled()
+    if not git_installed:
+        log.info(f"{lc.r}🛑 Bot is stopping ... {lc.rs}")
+        return
 
     if not os.path.exists("temp"):
         log.info(f"{lc.y}📁 Creating temp directory ...{lc.rs}")
