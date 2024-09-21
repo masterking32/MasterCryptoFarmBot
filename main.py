@@ -58,7 +58,7 @@ async def start_bot():
     git_installed = git.CheckGitInstalled()
     if not git_installed:
         log.info(f"{lc.r}🛑 Bot is stopping ... {lc.rs}")
-        return
+        exit()
 
     if not os.path.exists("temp"):
         log.info(f"{lc.y}📁 Creating temp directory ...{lc.rs}")
@@ -83,7 +83,7 @@ async def start_bot():
         log.info(f"{lc.g}🔑 Checking license ...{lc.rs}")
         apiObj = api.API(log)
         response = apiObj.ValidateLicense(licenseType)
-        if response != None:
+        if response is not None:
             log.info(
                 f"{lc.g}└─ ✅ License validated, Credit: {lc.rs + lc.c + str(response['credit']) + '$' + lc.rs + lc.g}, IP: {lc.rs + lc.c + utils.HideIP(response['ip']) + lc.rs}"
             )
