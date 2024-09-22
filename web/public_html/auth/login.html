@@ -11,8 +11,8 @@
     <title>MasterCryptoFarmBot - Login</title>
     <meta name="generator" content="MasterkinG CMS" />
   </head>
-  <body class="flex h-screen bg-indigo-950">
-    <div class="w-full max-w-xs m-auto bg-gray-900 rounded p-5">
+  <body class="flex h-screen bg-base-100">
+    <div class="w-full max-w-xs m-auto bg-base-300 rounded p-5">
       <h1 class="text-2xl pb-5 text-center text-white">MasterCryptoFarmBot</h1>
       <h3 class="text-lg pb-5 text-center">Admin Panel Login</h3>
       <div class="mb-4">
@@ -21,28 +21,28 @@
         {% endif %}
         <form action="./login.py" method="post">
           <div>
-            <label class="block mb-2 text-indigo-500" for="Password"
+            <label class="block mb-2 text-primary" for="Password"
               >Password</label
             >
             <input
-              class="w-full p-2 mb-6 text-indigo-300 border-b-2 border-indigo-500 outline-none focus:bg-gray-800"
+              class="w-full p-2 mb-6 text-content border-b-2 border-primary outline-none focus:bg-primary/20"
               type="password"
               name="password"
               placeholder="Password"
             />
           </div>
           <div>
-            <button
-              class="w-full bg-indigo-700 hover:bg-pink-700 text-white font-bold py-2 px-4 mb-6 rounded"
-              type="submit"
-            >
+            <button class="w-full btn btn-primary" type="submit">
               <i class="fa-solid fa-right-to-bracket mr-2"></i>Login
             </button>
           </div>
         </form>
       </div>
       <p class="text-center">
-        <a href="../" class="text-pink-400 hover:text-pink-800"
+        <a
+          href="../"
+          class="text-primary hover:text-primary/80"
+          title="Back to Home"
           ><i class="fa-solid fa-chevron-left mr-2"></i>Back to Home</a
         >
       </p>
