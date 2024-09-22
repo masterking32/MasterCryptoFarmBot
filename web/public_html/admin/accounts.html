@@ -11,13 +11,13 @@
     <title>MasterCryptoFarmBot</title>
     <meta name="generator" content="MasterkinG CMS" />
   </head>
-  <body class="flex min-h-screen bg-indigo-900">
-    <div class="w-full max-w-md m-auto bg-gray-900 rounded p-5">
-      <h1 class="text-2xl pb-5 text-center text-white">MasterCryptoFarmBot</h1>
+  <body class="flex min-h-screen bg-base-100 py-4">
+    <div class="w-full max-w-md m-auto bg-base-300 rounded p-5 text-content">
+      <h1 class="text-2xl pb-5 text-center">MasterCryptoFarmBot</h1>
       <div class="breadcrumbs text-sm">
         <ul>
           <li>
-            <a href="./dashboard.py" class="text-teal-200"
+            <a href="./dashboard.py" class="text-accent"
               ><span class="fa-solid fa-gauge mr-2"></span> Dashboard</a
             >
           </li>
@@ -27,71 +27,84 @@
         </ul>
       </div>
       <div class="divider divider-neutral">How To Add Account</div>
-      <div class="text-white text-sm text-center">
+      <div class="text-center mt-4">
         <a
           href="https://github.com/masterking32/MasterCryptoFarmBot/wiki/How-to:-Add-New-Accounts"
           target="_blank"
-          class="btn bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
-          >How to Add Account</a
+          class="btn btn-secondary"
         >
+          <i class="fa-solid fa-plus-circle"></i>
+          <span>How to Add Account</span>
+        </a>
       </div>
       <div class="flex w-full flex-col">
         <div class="divider divider-neutral">Accounts</div>
       </div>
 
       {% if error %}
-      <div class="bg-red-700 text-white p-2 rounded my-2 text-center">
-        {{ error }}
-      </div>
+      <div class="alert alert-error">{{ error }}</div>
       {% endif %} {% if success %}
-      <div class="bg-green-700 text-white p-2 rounded my-2 text-center">
-        {{ success }}
-      </div>
+      <div class="alert alert-success">{{ success }}</div>
       {% endif %} {% for account in accounts %}
       <!-- Accounts with allow disable them -->
       <div class="flex justify-between items-center mt-5">
         <div class="flex items-center">
           {% if account.disabled %}
-          <i class="fa-solid fa-user-circle text-4xl text-pink-700"></i>
+          <i class="fa-solid fa-user-circle text-4xl text-error"></i>
           {% else %}
-          <i class="fa-solid fa-user-circle text-4xl text-green-700"></i>
+          <i class="fa-solid fa-user-circle text-4xl text-success"></i>
           {% endif %}
           <div class="ml-3">
-            <p class="text-white">{{ account.session_name }}</p>
-            <p class="text-xs text-gray-400">
-              {{ account.username }} -
-              <span class="blur hover:blur-0">{{ account.id }}</span>
+            <p class="">{{ account.session_name }}</p>
+            <p class="text-xs">
+              <span class="blur hover:blur-0 text-info"
+                >{{ account.username }} -{{ account.id }}</span
+              >
             </p>
           </div>
         </div>
         <button
-          class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded"
+          class="btn btn-info btn-sm"
           onclick="account_model_{{ account.id }}.showModal()"
         >
           <i class="fa-solid fa-cog"></i>
         </button>
         <dialog id="account_model_{{ account.id }}" class="modal">
           <div class="modal-box">
-            <h1 class="text-white">Account Settings</h1>
+            <h1 class="">Account Settings</h1>
             <hr class="h-px my-4 border-0 bg-gray-700" />
-            <div class="">
-              <p class="text-white">Account ID: {{ account.id }}</p>
-              <p class="text-white">Username: {{ account.username }}</p>
-              <p class="text-white">Session Name: {{ account.session_name }}</p>
+            <div class="bg-base-100 rounded-lg shadow-lg max-w-md mx-auto">
+              <div class="">
+                <p class="flex items-center text-lg mb-2">
+                  <i class="fas fa-id-badge text-info mr-3"></i>
+                  <span class="font-semibold">Account ID:</span>
+                  <span class="ml-2 text-info">{{ account.id }}</span>
+                </p>
+                <p class="flex items-center text-lg mb-2">
+                  <i class="fas fa-user text-success mr-3"></i>
+                  <span class="font-semibold">Username:</span>
+                  <span class="ml-2 text-info">{{ account.username }}</span>
+                </p>
+                <p class="flex items-center text-lg">
+                  <i class="fas fa-file-alt text-warning mr-3"></i>
+                  <span class="font-semibold">Session Name:</span>
+                  <span class="ml-2 text-info">{{ account.session_name }}</span>
+                </p>
+              </div>
             </div>
             <hr class="h-px my-4 border-0 bg-gray-700" />
             <div class="text-center">
-              <p class="text-white">
+              <p class="">
                 {% if account.disabled %}
                 <a
                   href="./accounts.py?enable={{ account.id }}"
-                  class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-4 rounded"
+                  class="btn btn-success"
                   >Enable Account</a
                 >
                 {% else %}
                 <a
                   href="./accounts.py?disable={{ account.id }}"
-                  class="bg-pink-700 hover:bg-pink-800 text-white font-bold py-2 px-4 rounded"
+                  class="btn btn-error"
                   >Disable Account</a
                 >
                 {% endif %}
@@ -99,14 +112,16 @@
               <hr class="h-px my-4 border-0 bg-gray-700" />
               <form action="./accounts.py" method="POST">
                 <div class="flex flex-col">
-                  <label for="user_agent" class="text-white mb-2"
+                  <label for="user_agent" class="mb-2"
                     >User Agent:
                     <a
                       href="https://github.com/masterking32/MasterCryptoFarmBot/wiki/Account-User%E2%80%90Agent"
-                      class="text-blue-400"
+                      class="text-info hover:text-info/40"
                       target="_blank"
-                      >How to get User Agent?</a
                     >
+                      <i class="fa-solid fa-info-circle mr-1"></i>
+                      <span>How to get User Agent?</span>
+                    </a>
                   </label>
                   <input
                     type="text"
@@ -118,13 +133,15 @@
                   />
                 </div>
                 <div class="flex flex-col mt-5">
-                  <label for="proxy" class="text-white mb-2"
+                  <label for="proxy" class="mb-2"
                     >Proxy:
                     <a
                       href="https://github.com/masterking32/MasterCryptoFarmBot/wiki/Account-Proxy"
-                      class="text-blue-400"
+                      class="text-info hover:text-info/40"
                       target="_blank"
-                      >How to get/Use Proxy?</a
+                    >
+                      <i class="fa-solid fa-info-circle mr-1"></i>
+                      <span>How to get/Use Proxy?</span></a
                     ></label
                   >
                   <input
@@ -142,10 +159,7 @@
                     name="account_id"
                     value="{{ account.id }}"
                   />
-                  <button
-                    type="submit"
-                    class="btn bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
-                  >
+                  <button type="submit" class="btn btn-primary">
                     Save Changes
                   </button>
                 </div>
@@ -153,7 +167,7 @@
               <hr class="h-px my-4 border-0 bg-gray-700" />
               <div class="modal-action">
                 <form method="dialog">
-                  <button class="btn">Close</button>
+                  <button class="btn btn-secondary">Close</button>
                 </form>
               </div>
             </div>
@@ -162,12 +176,11 @@
       </div>
       <hr class="h-px my-4 border-0 bg-gray-700" />
       {% endfor %}
-
       <div class="text-center">
         <a
           href="https://github.com/masterking32/MasterCryptoFarmBot"
           target="_blank"
-          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+          class="btn btn-info btn-sm m-2"
         >
           <span class="fa-brands fa-github mr-2"></span>
           GitHub
@@ -175,7 +188,7 @@
         <a
           href="https://t.me/MasterCryptoFarmBot"
           target="_blank"
-          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+          class="btn btn-info btn-sm m-2"
         >
           <span class="fa-brands fa-telegram mr-2"></span>
           Channel
@@ -183,7 +196,7 @@
         <a
           href="https://t.me/MasterCryptoFarmBotGroup"
           target="_blank"
-          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+          class="btn btn-info btn-sm m-2"
         >
           <span class="fa-brands fa-telegram mr-2"></span>
           Group
