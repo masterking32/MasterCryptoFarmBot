@@ -21,6 +21,12 @@ def parseProxy(proxy_url):
     return proxy_dict
 
 
+def getConfig(config, key, default=None):
+    if key in config:
+        return config[key]
+    return default
+
+
 def testProxy(proxy_url):
     if not proxy_url:
         return True

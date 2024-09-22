@@ -4,6 +4,7 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 
 import signal
+import time
 import requests
 
 import utils.logColors as lc
@@ -89,6 +90,34 @@ class Git:
         except Exception as e:
             self.logger.error(
                 f"{lc.r} ❌ Git is not installed, Please install git{lc.rs}"
+            )
+
+        return False
+
+    async def UpdateProject(self):
+        self.logger.info(f"{lc.g}🔄 Updating project ...{lc.rs}")
+
+        try:
+            response = (
+                os.popen(
+                    "git pull 2>/dev/null" if os.name != "nt" else "git pull 2>nul"
+                )
+                .read()
+                .strip()
+            )
+            if response:
+                self.logger.info(f"{lc.g}🔄 Project updated successfully{lc.rs}")
+                self.logger.info(f"{lc.g}🔄 Restarting project ...{lc.rs}")
+                await time.sleep(2)
+                os.kill(os.getpid(), signal.SIGINT)
+                return True
+            else:
+                self.logger.error(
+                    f"{lc.r} ❌ Error while updating project, Please update manually{lc.rs}"
+                )
+        except Exception as e:
+            self.logger.error(
+                f"{lc.r} ❌ Error while updating project, Please update manually{lc.rs}"
             )
 
         return False

@@ -13,4 +13,5 @@ config = {
         "api_id": 1234,  # Telegram API ID
         "api_hash": "",  # Telegram API Hash
     },
+    "auto_update": True
 }

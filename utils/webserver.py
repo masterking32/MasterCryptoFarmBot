@@ -7,6 +7,7 @@ import os
 import random
 import signal
 import string
+import time
 from flask import Flask, render_template, request
 import requests
 
@@ -101,6 +102,8 @@ class WebServer:
                 f"{lc.g}🔵 Local Commit: {lc.rs + lc.c}{local_commit[:7]}{lc.rs}"
             )
             if github_commit["sha"] != local_commit:
+                if utils.getConfig(self.config, "auto_update", True):
+                    await git.UpdateProject()
                 self.logger.info(
                     f"{lc.r}💔 New update available, Please update your project{lc.rs}"
                 )
