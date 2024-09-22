@@ -11,13 +11,15 @@
     <title>MasterCryptoFarmBot</title>
     <meta name="generator" content="MasterkinG CMS" />
   </head>
-  <body class="flex min-h-screen bg-indigo-900">
-    <div class="w-full max-w-md m-auto bg-gray-900 rounded p-5">
-      <h1 class="text-2xl pb-5 text-center text-white">MasterCryptoFarmBot</h1>
+  <body class="flex min-h-screen bg-base-100">
+    <div
+      class="w-full max-w-md m-auto bg-base-300 rounded p-5 text-content my-5"
+    >
+      <h1 class="text-2xl pb-5 text-center">MasterCryptoFarmBot</h1>
       <div class="breadcrumbs text-sm">
         <ul>
           <li>
-            <a href="./dashboard.py" class="text-teal-200"
+            <a href="./dashboard.py" class="text-accent"
               ><span class="fa-solid fa-gauge mr-2"></span> Dashboard</a
             >
           </li>
@@ -27,45 +29,45 @@
       <div class="flex w-full flex-col">
         <div class="divider divider-neutral">Server Info</div>
       </div>
-      <ul class="mt-2 leading-loose">
-        <li>
-          <span class="text-white">
-            <i class="fa-solid fa-server mr-2"></i>
-            Server IP:</span
-          >
-          <span class="text-green-400 blur hover:blur-0">{{ server_ip }}</span>
-        </li>
-        <li>
-          <span class="text-white">
-            <i class="fa-solid fa-network-wired mr-2"></i>
-            License:</span
-          >
-          {% if license and "free" in license.lower() %}
-          <span class="text-orange-400">{{ license }}</span>
-          {% else %}
-          <span class="text-green-400">User License</span>
-          <p class="text-center">
-            <span class="text-xs text-green-400 blur hover:blur-0">
-              {{ license }}
+      <div class="bg-base-200 p-4 rounded-lg shadow-md mt-4">
+        <ul class="leading-loose">
+          <li class="flex items-center mb-2">
+            <i class="fa-solid fa-server mr-2 text-accent"></i>
+            <span class="font-semibold">Server IP:</span>
+            <span class="ml-auto text-success blur hover:blur-0"
+              >{{ server_ip }}</span
+            >
+          </li>
+          <li class="flex items-center mb-2">
+            <i class="fa-solid fa-network-wired mr-2 text-accent"></i>
+            <span class="font-semibold">License:</span>
+            <span class="ml-auto">
+              {% if license and "free" in license.lower() %}
+              <span class="text-warning">{{ license }}</span>
+              {% else %}
+              <span class="text-success">User License</span>
+              {% endif %}
             </span>
-          </p>
+          </li>
+          <li class="text-center">
+            <span class="text-xs text-error blur hover:blur-0"
+              >{{ license }}</span
+            >
+          </li>
+          {% if credit is not none %}
+          <li class="flex items-center mb-2">
+            <i class="fa-solid fa-coins mr-2 text-accent"></i>
+            <span class="font-semibold">Credit:</span>
+            <span class="ml-auto text-info">{{ credit }}$</span>
+          </li>
           {% endif %}
-        </li>
-        {% if credit is not none %}
-        <li>
-          <span class="text-white">
-            <i class="fa-solid fa-coins mr-2"></i>
-            Credit:</span
-          >
-          <span class="text-green-400">{{ credit }}$</span>
-        </li>
-        {% endif %}
-      </ul>
+        </ul>
+      </div>
 
       {% if ton_wallet is not none and user_id is not none %}
       <div class="text-center">
         <button
-          class="btn btn-error mt-2"
+          class="btn btn-error btn-lg my-5"
           onClick="increase_license_credit.showModal();"
         >
           <i class="fa-solid fa-coins mr-2"></i>
@@ -81,85 +83,93 @@
 
         <dialog id="increase_license_credit" class="modal">
           <div class="modal-box">
-            <h1 class="text-white">Increase Your License Credit</h1>
+            <h1>Increase Your License Credit</h1>
             <hr class="h-px my-4 border-0 bg-gray-700" />
-            <p class="text-center">
-              To increase your license credit, You can scan the QR code below
-              with <span class="text-cyan-400">TonKeeper App</span> and send any
-              amount of <span class="text-orange-400">USDT</span> on TON, just
-              make sure the amount is above 1 USDT.
-            </p>
-            <a
-              href="ton://transfer/{{ ton_wallet }}?text={{ user_id }}"
-              target="_blank"
-            >
-              <p class="text-center m-2">
+            <div class="bg-base-300 p-6 rounded-lg shadow-md">
+              <p class="text-center text-lg font-semibold mb-4">
+                To increase your license credit, you can scan the QR code below
+                with
+                <span class="text-blue-500">TonKeeper App</span> and send any
+                amount of <span class="text-yellow-500">USDT</span> on TON. Just
+                make sure the amount is above 1 USDT.
+              </p>
+              <a
+                href="ton://transfer/{{ ton_wallet }}?text={{ user_id }}"
+                target="_blank"
+                class="block text-center mb-4"
+              >
                 <img
                   src="https://api.qrserver.com/v1/create-qr-code/?size=512x512&data=ton://transfer/{{ton_wallet}}?text={{user_id}}"
                   alt="Ton Wallet QR Code"
-                  class="w-52 h-52 m-auto"
+                  class="w-52 h-52 mx-auto mb-2"
                 />
+                <p class="btn btn-info btn-sm mx-auto">Open TonKeeper App</p>
+              </a>
+              <div class="flex w-full flex-col items-center mb-4">
+                <div class="divider divider-neutral w-1/2 mx-auto">OR</div>
+              </div>
+              <p class="text-center mb-2">
+                You can send any amount of
+                <span class="text-yellow-500">USDT</span> to the following
+                wallet address:
               </p>
-              <p class="text-center text-cyan-400">Open TonKeeper App</p>
-            </a>
-            <div class="flex w-full flex-col">
-              <div class="divider divider-neutral">OR</div>
-            </div>
-            <p class="text-center">
-              You can send any amount of
-              <span class="text-orange-400">USDT</span>
-              to the following wallet address:
-            </p>
-            <p
-              class="text-center text-green-400 text-sm cursor-pointer my-2"
-              onClick="CopyToClipboard('{{ ton_wallet }}')"
-            >
-              {{ ton_wallet }}
-            </p>
-            <p class="text-center">
-              with the following comment:
-              <span
-                class="text-green-400"
-                onClick="CopyToClipboard('{{ user_id }}')"
-                >{{ user_id }}</span
+              <p
+                class="text-center text-green-500 text-sm cursor-pointer my-2 font-mono"
+                onClick="CopyToClipboard('{{ ton_wallet }}')"
               >
-            </p>
-
-            <p class="text-center">
-              <span class="text-red-400">Note:</span>
-            </p>
-            <ul class="text-justify list-disc mx-2">
-              <li>
-                We just accept <span class="text-orange-400">USDT</span> on TON.
-              </li>
-              <li>
-                DO <span class="text-red-400">NOT</span> encrypt the comment.
-              </li>
-              <li>
-                Payments of less than 1 USDT will be ignored and not refunded.
-              </li>
-              <li>
-                After sending <strong>USDT</strong>, your license credit will be
-                updated <span class="text-green-400">automatically</span>, and
-                we will notify you via Telegram Bot. Please allow
-                <span class="text-cyan-400">1-10 minutes</span> for the payment
-                to process.
-              </li>
-              <li>
-                Please send <span class="text-cyan-400">/tos</span> to
-                <a
-                  href="https://t.me/MasterCryptoFarmBot_bot"
-                  class="text-cyan-400"
-                  target="_blank"
-                  >MasterCryptoFarmBot</a
+                {{ ton_wallet }}
+              </p>
+              <p class="text-center">
+                with the following comment:
+                <span
+                  class="text-green-500 cursor-pointer"
+                  onClick="CopyToClipboard('{{ user_id }}')"
+                  >{{ user_id }}</span
                 >
-                to read the terms of service before making the payment.
-              </li>
-            </ul>
+              </p>
+            </div>
+
+            <div class="bg-base-300 p-4 rounded-lg shadow-md mt-5">
+              <p class="text-center text-lg font-semibold mb-4">
+                <span class="text-error">Note:</span>
+              </p>
+              <ul class="text-justify list-disc list-inside space-y-2 mx-4">
+                <li>
+                  We just accept
+                  <span class="text-warning font-bold">USDT</span> on TON.
+                </li>
+                <li>
+                  DO <span class="text-error font-bold">NOT</span> encrypt the
+                  comment.
+                </li>
+                <li>
+                  Payments of less than 1 USDT will be ignored and not refunded.
+                </li>
+                <li>
+                  After sending <strong>USDT</strong>, your license credit will
+                  be updated
+                  <span class="text-success font-bold">automatically</span>, and
+                  we will notify you via Telegram Bot. Please allow
+                  <span class="text-info font-bold">1-10 minutes</span> for the
+                  payment to process.
+                </li>
+                <li>
+                  Please send
+                  <span class="text-info font-bold">/tos</span> to
+                  <a
+                    href="https://t.me/MasterCryptoFarmBot_bot"
+                    class="text-accent underline"
+                    target="_blank"
+                    >MasterCryptoFarmBot</a
+                  >
+                  to read the terms of service before making the payment.
+                </li>
+              </ul>
+            </div>
 
             <div class="modal-action">
               <form method="dialog">
-                <button class="btn">Close</button>
+                <button class="btn btn-primary">Close</button>
               </form>
             </div>
           </div>
@@ -170,15 +180,16 @@
       <div class="flex w-full flex-col">
         <div class="divider divider-neutral">Get License Key</div>
       </div>
-      <div class="text-center">
-        <p class="text-white text-center">
+      <div class="text-center bg-base-200 p-4 rounded-lg shadow-md mt-4">
+        <h2 class="text-xl font-semibold mb-4">Get Your License Key</h2>
+        <p class="mb-4">
           To get a license key, please visit our Telegram bot and follow the
           instructions.
         </p>
         <a
           href="https://t.me/MasterCryptoFarmBot_bot"
           target="_blank"
-          class="btn btn-success mt-2 btn-sm"
+          class="btn btn-success mt-2 btn-lg"
         >
           <span class="fa-solid fa-key mr-2"></span>Get License Key</a
         >
@@ -206,7 +217,7 @@
         <div class="text-center mt-5">
           <button
             type="submit"
-            class="btn btn-primary"
+            class="btn btn-accent"
             name="change-password"
             value="true"
           >
@@ -220,7 +231,7 @@
         <a
           href="https://github.com/masterking32/MasterCryptoFarmBot"
           target="_blank"
-          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+          class="btn btn-info btn-sm m-2"
         >
           <span class="fa-brands fa-github mr-2"></span>
           GitHub
@@ -228,7 +239,7 @@
         <a
           href="https://t.me/MasterCryptoFarmBot"
           target="_blank"
-          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+          class="btn btn-info btn-sm m-2"
         >
           <span class="fa-brands fa-telegram mr-2"></span>
           Channel
@@ -236,7 +247,7 @@
         <a
           href="https://t.me/MasterCryptoFarmBotGroup"
           target="_blank"
-          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+          class="btn btn-info btn-sm m-2"
         >
           <span class="fa-brands fa-telegram mr-2"></span>
           Group
