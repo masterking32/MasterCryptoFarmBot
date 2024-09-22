@@ -719,3 +719,65 @@ class admin:
         return render_template(
             "admin/bots.html", error=error, success=success, bots=bots
         )
+
+    def add_bot(self, request, webServer):
+        if "admin" not in session:
+            return redirect("/auth/login.py")
+
+        error = None
+        success = None
+
+        apiObj = api.API(webServer.logger)
+        db = Database("database.db", webServer.logger)
+        license = db.getSettings("license", "Free License")
+        db.Close()
+
+        if license == "Free License":
+            error = "Please change your license to add bot."
+            return render_template(
+                "admin/add_bot.html", error=error, success=success, modules=[]
+            )
+        server_modules = apiObj.GetModules(license)
+        if server_modules is None:
+            error = "Unable to get modules, please try again later."
+            return render_template(
+                "admin/add_bot.html", error=error, success=success, modules=[]
+            )
+        elif "error" in server_modules:
+            error = server_modules["error"]
+            return render_template(
+                "admin/add_bot.html", error=error, success=success, modules=[]
+            )
+
+        installed_ModulesDir = os.listdir("modules")
+        installed_Modules = []
+        for module in installed_ModulesDir:
+            if os.path.isdir(f"modules/{module}") and os.path.exists(
+                f"modules/{module}/bot.py"
+            ):
+                installed_Modules.append(module)
+
+        for module in server_modules["modules"]:
+            if "commit_date" in module and module["commit_date"] is not None:
+                module["commit_date"] = utils.TimeAgo(module["commit_date"])
+            else:
+                module["commit_date"] = "Unknown"
+
+            if module["name"] in installed_Modules:
+                server_modules["modules"][server_modules["modules"].index(module)][
+                    "installed"
+                ] = True
+            else:
+                server_modules["modules"][server_modules["modules"].index(module)][
+                    "installed"
+                ] = False
+
+        if request.method == "POST" and "install_module" in request.form:
+            error = "Installing module is under development."
+
+        return render_template(
+            "admin/add_bot.html",
+            error=error,
+            success=success,
+            modules=server_modules["modules"],
+        )

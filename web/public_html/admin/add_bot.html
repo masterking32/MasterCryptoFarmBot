@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../css/main.css" rel="stylesheet" />
+    <link
+      href="../css/fontawesome-free-6.6.0-web/css/all.min.css"
+      rel="stylesheet"
+    />
+    <title>MasterCryptoFarmBot</title>
+    <meta name="generator" content="MasterkinG CMS" />
+  </head>
+  <body class="flex min-h-screen bg-base-100 py-5">
+    <div class="w-full max-w-md m-auto bg-base-300 rounded p-5 text-content">
+      <h1 class="text-2xl pb-5 text-center">MasterCryptoFarmBot</h1>
+      <div class="breadcrumbs text-sm">
+        <ul>
+          <li>
+            <a href="./dashboard.py" class="text-accent"
+              ><span class="fa-solid fa-gauge mr-2"></span> Dashboard</a
+            >
+          </li>
+          <li>
+            <a href="./bots.py" class="text-accent"
+              ><span class="fa-solid fa-robot mr-2"></span> Bot Modules</a
+            >
+          </li>
+          <li><span class="fa-solid fa-plus mr-2"></span> Install Module</li>
+        </ul>
+      </div>
+      <div class="divider divider-neutral">All available modules</div>
+
+      {% if error %}
+      <div class="alert alert-error">{{ error }}</div>
+      {% if "license" in error %}
+      <div class="p-2 rounded my-2 text-center">
+        <a href="./change_license.py" class="btn btn-primary"
+          >Activate License</a
+        >
+      </div>
+      {% endif %} {% endif %} {% if success %}
+      <div class="alert alert-success">{{ success }}</div>
+      {% endif %}
+      <hr class="h-px my-4 border-0 bg-gray-700" />
+
+      {% for module in modules %}
+
+      <input type="hidden" name="module" value="{{ module }}" />
+      <div class="flex items-center justify-between">
+        <div class="">{{ module.name }}</div>
+        <div class="flex items-center">
+          <button
+            type="button"
+            class="btn btn-info btn-sm"
+            name="info mr-2"
+            onClick="botInfo_{{ module.id }}.showModal()"
+          >
+            <i class="fa-solid fa-info-circle"></i>
+            Info
+          </button>
+          {% if module.installed %}
+          <button type="button" class="btn btn-warning btn-sm ml-2">
+            <i class="fa-solid fa-check"></i>
+            Installed
+          </button>
+          {% elif not module.allow_install %}
+          <button type="button" class="btn btn-secondary btn-sm ml-2">
+            <i class="fa-solid fa-lock"></i>
+            Unavailable
+          </button>
+          {% else %}
+          <button
+            type="button"
+            class="btn btn-success btn-sm ml-2"
+            name="install"
+            onClick="install_{{ module.id }}.showModal()"
+          >
+            <i class="fa-solid fa-download"></i>
+            Install
+          </button>
+          <dialog id="install_{{ module.id }}" class="modal">
+            <div class="modal-box">
+              <h1 class="">Install Bot Module</h1>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <div
+                class="bg-base-300 p-6 rounded-lg shadow-lg max-w-md mx-auto"
+              >
+                <div class="text-content space-y-4">
+                  <p class="text-lg">
+                    <span class="font-semibold">
+                      <i class="fa-solid fa-robot text-info mr-2"></i>
+                      Name:
+                    </span>
+                    <span class="ml-2">{{ module.name }}</span>
+                  </p>
+                  <p class="text-lg">
+                    <span class="font-semibold">
+                      <i class="fa-solid fa-dollar-sign text-success mr-2"></i>
+                      Price:
+                    </span>
+                    <span class="ml-2 badge badge-info">
+                      {% if module.price == 0 %} Free {% else %} ${{
+                      module.price }} {% endif %}
+                    </span>
+                    {% if module.owned %}
+                    <span class="ml-2 badge badge-success">
+                      <i class="fa-solid fa-check mr-2"></i>
+                      Included in your license
+                    </span>
+                    {% endif %}
+                  </p>
+                </div>
+              </div>
+
+              {% if module.price > 0 and not module.owned %}
+              <p class="alert alert-warning my-4 text-center">
+                Module is not included in your license. By installing this
+                module, you will be charged ${{ module.price }}. Do you want to
+                continue?
+              </p>
+              <form action="./add_bot.py" method="post">
+                <div class="text-center mt-5">
+                  <input
+                    type="hidden"
+                    name="install_module"
+                    value="{{ module.id }}"
+                  />
+                  <button
+                    type="submit"
+                    class="btn btn-success btn-sm"
+                    name="install"
+                  >
+                    <i class="fa-solid fa-download"></i>
+                    Install Module
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-sm"
+                    onclick="install_{{ module.id }}.close()"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+              {% else %}
+              <form action="./add_bot.py" method="post">
+                <div class="text-center mt-5">
+                  <input
+                    type="hidden"
+                    name="install_module"
+                    value="{{ module.id }}"
+                  />
+                  <button
+                    type="submit"
+                    class="btn btn-success btn-sm"
+                    name="install"
+                  >
+                    <i class="fa-solid fa-download"></i>
+                    Install Module
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-sm"
+                    onclick="install_{{ module.id }}.close()"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+              {% endif %}
+            </div>
+          </dialog>
+
+          {% endif %}
+          <dialog id="botInfo_{{ module.id }}" class="modal">
+            <div class="modal-box">
+              <h1 class="">Bot Module Info</h1>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <div
+                class="bg-base-300 p-6 rounded-lg shadow-lg max-w-md mx-auto"
+              >
+                <div class="text-content space-y-4">
+                  <p class="flex items-center text-lg">
+                    <span class="font-semibold flex items-center">
+                      <i class="fa-solid fa-robot text-info mr-2"></i>
+                      Name:
+                    </span>
+                    <span class="ml-2">{{ module.name }}</span>
+                  </p>
+                  <p class="text-lg">
+                    <span class="font-semibold">
+                      <i class="fa-solid fa-dollar-sign text-success mr-2"></i>
+                      Price:
+                    </span>
+                    <span class="ml-2 badge badge-info">
+                      {% if module.price == 0 %} Free {% else %} ${{
+                      module.price }} {% endif %}
+                    </span>
+                    {% if module.owned %}
+                    <span class="ml-2 badge badge-success">
+                      <i class="fa-solid fa-check mr-2"></i>
+                      Included in your license
+                    </span>
+                    {% endif %}
+                  </p>
+                  <p class="text-lg">
+                    <span class="font-semibold">
+                      <i class="fa-solid fa-clock text-success mr-2"></i>
+                      Update date:
+                    </span>
+                    <span class="ml-2">{{ module.commit_date }} ago</span>
+                  </p>
+
+                  <p class="text-lg">
+                    <span class="font-semibold">
+                      <i class="fa-solid fa-info-circle text-success mr-2"></i>
+                      Description:
+                    </span>
+                  </p>
+                  <p class="ml-2">{{ module.description }}</p>
+                </div>
+                {% if "link" in module %}
+                <div class="text-center mt-4">
+                  <a
+                    href="{{ module.link }}"
+                    target="_blank"
+                    class="btn btn-info btn-sm"
+                  >
+                    <span class="fa-solid fa-link mr-2"></span>
+                    Project Link
+                  </a>
+                </div>
+                {% endif %}
+              </div>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <div class="text-center">
+                <button
+                  class="btn btn-secondary btn-sm"
+                  onclick="botInfo_{{ module.id }}.close()"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </dialog>
+        </div>
+      </div>
+      {% endfor %}
+
+      <hr class="h-px my-4 border-0 bg-gray-700" />
+      <div class="text-center">
+        <a
+          href="https://github.com/masterking32/MasterCryptoFarmBot"
+          target="_blank"
+          class="btn btn-info btn-sm m-2"
+        >
+          <span class="fa-brands fa-github mr-2"></span>
+          GitHub
+        </a>
+        <a
+          href="https://t.me/MasterCryptoFarmBot"
+          target="_blank"
+          class="btn btn-info btn-sm m-2"
+        >
+          <span class="fa-brands fa-telegram mr-2"></span>
+          Channel
+        </a>
+        <a
+          href="https://t.me/MasterCryptoFarmBotGroup"
+          target="_blank"
+          class="btn btn-info btn-sm m-2"
+        >
+          <span class="fa-brands fa-telegram mr-2"></span>
+          Group
+        </a>
+      </div>
+    </div>
+    <script src="../js/multiselect-dropdown.js"></script>
+  </body>
+</html>

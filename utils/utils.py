@@ -2,6 +2,7 @@
 # Date: 2024
 # Github: https://github.com/masterking32
 # Telegram: https://t.me/MasterCryptoFarmBot
+from datetime import datetime
 from urllib.parse import urlparse
 import requests
 import re
@@ -74,3 +75,22 @@ def ansi_to_html(text):
     text = text.replace("\n", "<br>")
     text = text.replace("\r", "")
     return text + "</span>"
+
+
+def TimeAgo(time):
+    if not time:
+        return "Unknown"
+
+    if isinstance(time, str):
+        time = datetime.strptime(time, "%Y-%m-%d %H:%M:%S")
+
+    now = datetime.now()
+    diff = (now - time).total_seconds()
+
+    if diff < 60:
+        return f"{int(diff)} seconds"
+    if diff < 3600:
+        return f"{int(diff // 60)} minutes"
+    if diff < 86400:
+        return f"{int(diff // 3600)} hours"
+    return f"{int(diff // 86400)} days"
