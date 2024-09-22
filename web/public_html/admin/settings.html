@@ -11,13 +11,13 @@
     <title>MasterCryptoFarmBot</title>
     <meta name="generator" content="MasterkinG CMS" />
   </head>
-  <body class="flex min-h-screen bg-indigo-900">
-    <div class="w-full max-w-md m-auto bg-gray-900 rounded p-5">
-      <h1 class="text-2xl pb-5 text-center text-white">MasterCryptoFarmBot</h1>
+  <body class="flex min-h-screen bg-base-100">
+    <div class="w-full max-w-md m-auto bg-base-300 rounded p-5 text-content">
+      <h1 class="text-2xl pb-5 text-center">MasterCryptoFarmBot</h1>
       <div class="breadcrumbs text-sm">
         <ul>
           <li>
-            <a href="./dashboard.py" class="text-teal-200"
+            <a href="./dashboard.py" class="text-accent"
               ><span class="fa-solid fa-gauge mr-2"></span> Dashboard</a
             >
           </li>
@@ -27,30 +27,32 @@
       <div class="flex w-full flex-col">
         <div class="divider divider-neutral">Server Info</div>
       </div>
-      <ul class="mt-2 leading-loose">
-        <li>
-          <span class="text-white">
-            <i class="fa-solid fa-server mr-2"></i>
-            Server IP:</span
-          >
-          <span class="text-green-400 blur hover:blur-0">{{ server_ip }}</span>
-        </li>
-        <li>
-          <span class="text-white">
-            <i class="fa-solid fa-network-wired mr-2"></i>
-            License:</span
-          >
-          {% if license and "free" in license.lower() %}
-          <span class="text-orange-400">{{ license }}</span>
-          {% else %}
-          <span class="text-green-400">User License</span>
-          {% endif %}
-        </li>
-      </ul>
-      <div class="my-4 text-center">
+      <div class="mt-5 p-4 bg-base-200 rounded-lg shadow-md">
+        <ul class="leading-loose">
+          <li class="flex items-center mb-2">
+            <i class="fa-solid fa-server mr-2 text-primary"></i>
+            <span class="font-semibold">Server IP:</span>
+            <span class="ml-auto text-success blur hover:blur-0"
+              >{{ server_ip }}</span
+            >
+          </li>
+          <li class="flex items-center">
+            <i class="fa-solid fa-network-wired mr-2 text-primary"></i>
+            <span class="font-semibold">License:</span>
+            <span class="ml-auto">
+              {% if license and "free" in license.lower() %}
+              <span class="text-warning">{{ license }}</span>
+              {% else %}
+              <span class="text-success">User License</span>
+              {% endif %}
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div class="mt-8 text-center">
         <a
           href="./change_license.py"
-          class="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 mb-6 rounded"
+          class="btn btn-sm btn-success mb-6 inline-flex items-center"
           ><span class="fa-solid fa-key mr-2"></span> Get or Change License</a
         >
       </div>
@@ -65,9 +67,7 @@
 
       <form action="./settings.py" method="POST" class="mt-5">
         <div class="flex flex-col">
-          <label for="current-password" class="text-white mb-2"
-            >Current Password</label
-          >
+          <label for="current-password" class="mb-2">Current Password</label>
           <input
             type="password"
             name="current-password"
@@ -77,7 +77,7 @@
           />
         </div>
         <div class="flex flex-col mt-3">
-          <label for="new-password" class="text-white mb-2">New Password</label>
+          <label for="new-password" class="mb-2">New Password</label>
           <input
             type="password"
             name="new-password"
@@ -87,9 +87,7 @@
           />
         </div>
         <div class="flex flex-col mt-3">
-          <label for="confirm-password" class="text-white mb-2"
-            >Confirm Password</label
-          >
+          <label for="confirm-password" class="mb-2">Confirm Password</label>
           <input
             type="password"
             name="confirm-password"
@@ -102,7 +100,7 @@
         <div class="text-center mt-5">
           <button
             type="submit"
-            class="btn btn-success"
+            class="btn btn-secondary"
             name="change-password"
             value="true"
           >
@@ -116,7 +114,7 @@
         <a
           href="https://github.com/masterking32/MasterCryptoFarmBot"
           target="_blank"
-          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+          class="btn btn-info btn-sm m-2"
         >
           <span class="fa-brands fa-github mr-2"></span>
           GitHub
@@ -124,7 +122,7 @@
         <a
           href="https://t.me/MasterCryptoFarmBot"
           target="_blank"
-          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+          class="btn btn-info btn-sm m-2"
         >
           <span class="fa-brands fa-telegram mr-2"></span>
           Channel
@@ -132,7 +130,7 @@
         <a
           href="https://t.me/MasterCryptoFarmBotGroup"
           target="_blank"
-          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+          class="btn btn-info btn-sm m-2"
         >
           <span class="fa-brands fa-telegram mr-2"></span>
           Group
