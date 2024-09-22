@@ -3,9 +3,11 @@
 # Github: https://github.com/masterking32
 # Telegram: https://t.me/MasterCryptoFarmBot
 
+import signal
 import requests
 
 import utils.logColors as lc
+import utils.utils as utils
 import os
 
 
@@ -40,6 +42,7 @@ class Git:
             if response and len(response) == 40:
                 return response
             else:
+
                 self.logger.error(
                     f"{lc.r} ❌ Project is not a git repository, Please initialize git{lc.rs}"
                 )
@@ -47,7 +50,23 @@ class Git:
             self.logger.error(
                 f"{lc.r} ❌ Project is not a git repository, Please initialize git{lc.rs}"
             )
+        self.logger.error(
+            f"{lc.r} ❌ You need install project as git repository{lc.rs}"
+        )
+        self.logger.error(
+            f"{lc.r} ❌ Please remove the project and clone it again{lc.rs}"
+        )
+        self.logger.error(
+            f"{lc.r} ❌ If you have any changes, Please backup it before removing{lc.rs}"
+        )
+        self.logger.error(
+            f"{lc.r} ❌ To clone the project, Please run the following command:{lc.rs}"
+        )
 
+        self.logger.error(
+            f"{lc.g} ❯ git clone https://github.com/masterking32/MasterCryptoFarmBot{lc.rs}"
+        )
+        os.kill(os.getpid(), signal.SIGINT)
         return None
 
     def CheckGitInstalled(self):
