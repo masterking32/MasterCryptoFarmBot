@@ -39,7 +39,7 @@ timeout /t 2
 echo ==========================================
 echo Updating requirements...
 echo ==========================================
-pip install -r requirements.txt >nul 2>nul
+py -m pip install -r requirements.txt >nul 2>nul
 if %errorlevel% neq 0 (
     echo Failed to install requirements. Retrying in 5 seconds...
     timeout /t 5
