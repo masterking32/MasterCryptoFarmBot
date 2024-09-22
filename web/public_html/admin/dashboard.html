@@ -11,9 +11,9 @@
     <title>MasterCryptoFarmBot</title>
     <meta name="generator" content="MasterkinG CMS" />
   </head>
-  <body class="flex min-h-screen bg-indigo-900">
-    <div class="w-full max-w-md m-auto bg-gray-900 rounded p-5">
-      <h1 class="text-2xl pb-5 text-center text-white">MasterCryptoFarmBot</h1>
+  <body class="flex min-h-screen bg-base-100">
+    <div class="w-full max-w-md m-auto bg-base-300 rounded p-5 text-content">
+      <h1 class="text-2xl pb-5 text-center">MasterCryptoFarmBot</h1>
       <div class="breadcrumbs text-sm">
         <ul>
           <li><span class="fa-solid fa-gauge mr-2"></span> Dashboard</li>
@@ -22,85 +22,111 @@
       <hr class="h-px my-2 border-0 bg-gray-700" />
       <div class="flex justify-between items-center mt-5">
         <div class="flex items-center">
-          <i class="fa-solid fa-user-circle text-4xl text-pink-700"></i>
+          <i class="fa-solid fa-user-circle text-4xl text-primary"></i>
           <div class="ml-3">
-            <p class="text-white">Welcome, Admin</p>
+            <p>Welcome, Admin</p>
             <p class="text-xs text-gray-400">You are logged in as an admin</p>
           </div>
         </div>
-        <a
-          href="../auth/logout.py"
-          class="bg-pink-700 hover:bg-pink-800 text-white font-bold py-2 px-4 rounded"
-          >Logout</a
-        >
+        <a href="../auth/logout.py" class="btn btn-error">Logout</a>
       </div>
       <hr class="h-px my-4 border-0 bg-gray-700" />
       <div>
-        <h2 class="text-lg text-white">Quick Links</h2>
-        <ul class="mt-2 leading-loose">
-          <li>
-            <a href="./bots.py" class="text-pink-400 hover:text-pink-800"
-              ><span class="fa-solid fa-robot mr-2"></span> Manage Bot
-              Modules</a
-            >
-          </li>
-          <li>
-            <a href="./accounts.py" class="text-pink-400 hover:text-pink-800"
-              ><span class="fa-solid fa-users mr-2"></span> Manage Accounts</a
-            >
-          </li>
-          <li>
-            <a
-              href="./change_license.py"
-              class="text-pink-400 hover:text-pink-800"
-              ><span class="fa-solid fa-key mr-2"></span> Get or Change
-              License</a
-            >
-          </li>
-          <li>
-            <a href="./settings.py" class="text-pink-400 hover:text-pink-800"
-              ><span class="fa-solid fa-cog mr-2"></span> Panel Settings</a
-            >
-          </li>
-        </ul>
+        <h2 class="text-lg text-center">Quick Links</h2>
+        <div class="grid grid-cols-1 gap-4 mt-2 leading-loose">
+          <a
+            href="./bots.py"
+            class="flex items-center p-4 bg-base-200 rounded-lg shadow hover:bg-secondary/10 transition"
+          >
+            <span class="fa-solid fa-robot text-2xl text-primary mr-3"></span>
+            <div>
+              <p class="text-primary font-semibold">Manage Bot Modules</p>
+              <p class="text-xs text-gray-400">
+                Configure, install, and manage your bot modules
+              </p>
+            </div>
+          </a>
+          <a
+            href="./accounts.py"
+            class="flex items-center p-4 bg-base-200 rounded-lg shadow hover:bg-secondary/10 transition"
+          >
+            <span class="fa-solid fa-users text-2xl text-primary mr-3"></span>
+            <div>
+              <p class="text-primary font-semibold">Manage Accounts</p>
+              <p class="text-xs text-gray-400">Manage Pyrogram Accounts</p>
+            </div>
+          </a>
+          <a
+            href="./change_license.py"
+            class="flex items-center p-4 bg-base-200 rounded-lg shadow hover:bg-secondary/10 transition"
+          >
+            <span class="fa-solid fa-key text-2xl text-primary mr-3"></span>
+            <div>
+              <p class="text-primary font-semibold">Get or Change License</p>
+              <p class="text-xs text-gray-400">
+                Update or obtain a new license
+              </p>
+            </div>
+          </a>
+          <a
+            href="./settings.py"
+            class="flex items-center p-4 bg-base-200 rounded-lg shadow hover:bg-secondary/10 transition"
+          >
+            <span class="fa-solid fa-cog text-2xl text-primary mr-3"></span>
+            <div>
+              <p class="text-primary font-semibold">Panel Settings</p>
+              <p class="text-xs text-gray-400">Adjust your panel settings</p>
+            </div>
+          </a>
+        </div>
       </div>
       <hr class="h-px my-4 border-0 bg-gray-700" />
-      <div>
-        <h2 class="text-lg text-white">System Information</h2>
-        <ul class="mt-2 leading-loose">
-          <li>
-            <span class="fa-solid fa-server mr-2"></span> Server IP:
-            <span class="text-cyan-400 blur hover:blur-0"> {{Server_IP}} </span>
+      <div class="bg-base-200 p-4 rounded-lg shadow mt-5">
+        <h2 class="text-lg text-center text-primary font-semibold">
+          System Information
+        </h2>
+        <ul class="mt-4 leading-loose">
+          <li class="flex items-center">
+            <span class="fa-solid fa-server mr-2 text-primary"></span>
+            <span class="font-semibold">Server IP:</span>
+            <span class="ml-2 text-accent blur hover:blur-0">
+              {{Server_IP}}
+            </span>
           </li>
-          <li>
-            <span class="fa-solid fa-network-wired mr-2"></span> License: {% if
-            "free" in License.lower() %}
-            <span class="text-orange-400"> {{License}} </span>
-            {% else %}
-            <span class="text-green-400"> User License </span>
-            {% endif %}
+          <li class="flex items-center mt-2">
+            <span class="fa-solid fa-network-wired mr-2 text-primary"></span>
+            <span class="font-semibold">License:</span>
+            <span class="ml-2">
+              {% if "free" in License.lower() %}
+              <span class="text-warning"> {{License}} </span>
+              {% else %}
+              <span class="text-success"> User License </span>
+              {% endif %}
+            </span>
           </li>
-          <li>
-            <span class="fa-solid fa-code-branch mr-2"></span> App Version:
-            <span class="text-green-400"> {{App_Version}} </span>
+          <li class="flex items-center mt-2">
+            <span class="fa-solid fa-code-branch mr-2 text-primary"></span>
+            <span class="font-semibold">App Version:</span>
+            <span class="ml-2 text-success"> {{App_Version}} </span>
           </li>
-          <li>
-            <span class="fa-solid fa-calendar-day mr-2"></span> Last Update:
-            <span class="text-rose-400"> {{Last_Update}} </span>
+          <li class="flex items-center mt-2">
+            <span class="fa-solid fa-calendar-day mr-2 text-primary"></span>
+            <span class="font-semibold">Last Update:</span>
+            <span class="ml-2 text-info"> {{Last_Update}} </span>
           </li>
-          <li>
+          <li class="flex items-center mt-2 text-center">
             {% if Update_Available %}
             <a
-              class="text-red-400"
+              class="text-warning flex items-center"
               href="https://github.com/masterking32/MasterCryptoFarmBot"
               target="_blank"
             >
               <span class="fa-solid fa-arrow-up mr-2"></span> Update Available
             </a>
             {% else %}
-            <span class="text-green-400">
-              <span class="fa-solid fa-check mr-2"></span> Up to Date</span
-            >
+            <span class="text-success flex items-center mx-auto">
+              <span class="fa-solid fa-check mr-2"></span> Up to Date
+            </span>
             {% endif %}
           </li>
         </ul>
@@ -111,7 +137,7 @@
         <a
           href="https://github.com/masterking32/MasterCryptoFarmBot"
           target="_blank"
-          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+          class="btn btn-info btn-sm m-2"
         >
           <span class="fa-brands fa-github mr-2"></span>
           GitHub
@@ -119,7 +145,7 @@
         <a
           href="https://t.me/MasterCryptoFarmBot"
           target="_blank"
-          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+          class="btn btn-info btn-sm m-2"
         >
           <span class="fa-brands fa-telegram mr-2"></span>
           Channel
@@ -127,7 +153,7 @@
         <a
           href="https://t.me/MasterCryptoFarmBotGroup"
           target="_blank"
-          class="bg-gray-800 p-2 rounded text-blue-400 m-2"
+          class="btn btn-info btn-sm m-2"
         >
           <span class="fa-brands fa-telegram mr-2"></span>
           Group
