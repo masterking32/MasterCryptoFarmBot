@@ -105,9 +105,15 @@ class admin:
         accounts = []
         success = ""
         error = ""
-        with open("telegram_accounts/accounts.json", "r") as f:
-            accounts = json.load(f)
-            f.close()
+        try:
+            if os.path.exists("telegram_accounts/accounts.json"):
+                with open("telegram_accounts/accounts.json", "r") as f:
+                    accounts = json.load(f)
+                    f.close()
+            else:
+                error = "No accounts found."
+        except:
+            pass
 
         if "disable" in request.args:
             AccountID = request.args.get("disable", 0)
@@ -280,10 +286,13 @@ class admin:
                     bot["settings_types"] = None
 
                 accounts = []
-                if os.path.exists(f"modules/{module}/accounts.json"):
-                    with open(f"modules/{module}/accounts.json", "r") as f:
-                        accounts = json.load(f)
-                        f.close()
+                try:
+                    if os.path.exists(f"modules/{module}/accounts.json"):
+                        with open(f"modules/{module}/accounts.json", "r") as f:
+                            accounts = json.load(f)
+                            f.close()
+                except:
+                    pass
 
                 bot["accounts"] = accounts
 
