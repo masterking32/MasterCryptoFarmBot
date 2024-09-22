@@ -7,6 +7,7 @@ import json
 import os
 import hashlib
 import base64
+import re
 from flask import redirect, render_template, session
 
 from utils.database import Database
@@ -14,6 +15,7 @@ import utils.variables as vr
 import utils.Git as Git
 import utils.logColors as lc
 import utils.api as api
+import utils.utils as utils
 
 
 class admin:
@@ -105,6 +107,7 @@ class admin:
         error = ""
         with open("telegram_accounts/accounts.json", "r") as f:
             accounts = json.load(f)
+            f.close()
 
         if "disable" in request.args:
             AccountID = request.args.get("disable", 0)
@@ -121,6 +124,7 @@ class admin:
 
             with open("telegram_accounts/accounts.json", "w") as f:
                 json.dump(accounts, f, indent=4)
+                f.close()
 
         if "enable" in request.args:
             AccountID = request.args.get("enable", 0)
@@ -135,6 +139,7 @@ class admin:
 
             with open("telegram_accounts/accounts.json", "w") as f:
                 json.dump(accounts, f, indent=4)
+                f.close()
 
         if request.method == "POST" and "account_id" in request.form:
             AccountID = request.form["account_id"]
@@ -157,6 +162,7 @@ class admin:
 
             with open("telegram_accounts/accounts.json", "w") as f:
                 json.dump(accounts, f, indent=4)
+                f.close()
 
         return render_template(
             "admin/accounts.html",
@@ -237,16 +243,31 @@ class admin:
                 if os.path.exists(f"modules/{module}/logo.png"):
                     with open(f"modules/{module}/logo.png", "rb") as f:
                         logo_data = base64.b64encode(f.read()).decode()
+                        f.close()
                     bot["logo"] = f"data:image/png;base64,{logo_data}"
                 else:
                     bot["logo"] = ""
 
                 bot["disabled"] = db.getSettings(f"{module}_disabled", False)
 
+                bot["logs"] = "No logs available."
+                if os.path.exists(f"modules/{module}/bot.log"):
+                    with open(f"modules/{module}/bot.log", "r", encoding="utf-8") as f:
+                        lines = f.readlines()
+                        f.close()
+                        bot["logs"] = "".join(lines[-100:])
+                        bot["logs"] = utils.ansi_to_html(bot["logs"])
+                        bot["logs"] = re.sub(
+                            r"\[MasterCryptoFarmBot\] \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\]",
+                            "",
+                            bot["logs"],
+                        )
+
                 if os.path.exists(f"modules/{module}/bot_settings.json"):
                     with open(f"modules/{module}/bot_settings.json", "r") as f:
                         bot_settings = json.load(f)
                         bot["settings"] = bot_settings
+                        f.close()
                 else:
                     bot["settings"] = {}
 
@@ -254,6 +275,7 @@ class admin:
                     with open(f"modules/{module}/bot_settings_types.json", "r") as f:
                         bot_settings = json.load(f)
                         bot["settings_types"] = bot_settings
+                        f.close()
                 else:
                     bot["settings_types"] = None
 
@@ -261,6 +283,7 @@ class admin:
                 if os.path.exists(f"modules/{module}/accounts.json"):
                     with open(f"modules/{module}/accounts.json", "r") as f:
                         accounts = json.load(f)
+                        f.close()
 
                 bot["accounts"] = accounts
 
@@ -459,6 +482,7 @@ class admin:
                             accounts.remove(account)
                             with open(f"modules/{bot['name']}/accounts.json", "w") as f:
                                 json.dump(accounts, f, indent=4)
+                                f.close()
                             bots[bots.index(bot)]["accounts"] = accounts
                             webServer.logger.info(
                                 f"{lc.r}🗑 Account deleted, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs + lc.r}, Session Name: {lc.rs + lc.c + account['display_name'] + lc.rs}"
@@ -476,6 +500,7 @@ class admin:
                             account["disabled"] = True
                             with open(f"modules/{bot['name']}/accounts.json", "w") as f:
                                 json.dump(accounts, f, indent=4)
+                                f.close()
                             bots[bots.index(bot)]["accounts"] = accounts
                             webServer.logger.info(
                                 f"{lc.r}🔒 Account disabled, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs + lc.r}, Session Name: {lc.rs + lc.c + account['display_name'] + lc.rs}"
@@ -493,6 +518,7 @@ class admin:
                             account["disabled"] = False
                             with open(f"modules/{bot['name']}/accounts.json", "w") as f:
                                 json.dump(accounts, f, indent=4)
+                                f.close()
                             bots[bots.index(bot)]["accounts"] = accounts
                             webServer.logger.info(
                                 f"{lc.g}🔓 Account enabled, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs + lc.g}, Session Name: {lc.rs + lc.c + account['display_name'] + lc.rs}"
@@ -575,6 +601,7 @@ class admin:
                     if error is None:
                         with open(f"modules/{bot['name']}/bot_settings.json", "w") as f:
                             json.dump(settings, f, indent=4)
+                            f.close()
 
                         bots[bots.index(bot)]["settings"] = settings
                         success = f"Settings updated successfully."
@@ -636,6 +663,7 @@ class admin:
 
                     with open(f"modules/{bot['name']}/accounts.json", "w") as f:
                         json.dump(accounts, f, indent=4)
+                        f.close()
 
                     bots[bots.index(bot)]["accounts"] = accounts
                     success = f"Account {account['display_name']} added successfully."
@@ -669,6 +697,7 @@ class admin:
 
                             with open(f"modules/{bot['name']}/accounts.json", "w") as f:
                                 json.dump(accounts, f, indent=4)
+                                f.close()
 
                             bots[bots.index(bot)]["accounts"] = accounts
                             success = f"Account {account['display_name']} updated successfully."

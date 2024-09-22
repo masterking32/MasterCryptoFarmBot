@@ -61,7 +61,35 @@
         </div>
         <div class="flex items-center">
           <button
-            class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded mr-2"
+            class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-2 rounded mr-2"
+            onclick="bot_logs{{ bot.id }}.showModal()"
+          >
+            <i class="fa-solid fa-clipboard-list"></i>
+          </button>
+          <dialog id="bot_logs{{ bot.id }}" class="modal">
+            <div class="modal-box max-w-5xl">
+              <h1 class="text-white">Bot Logs</h1>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <div class="text-center">
+                <p class="text-white">Bot Name: {{ bot.name }}</p>
+              </div>
+              <div class="divider divider-neutral">Bot Logs</div>
+              <div
+                class="mx-5 bg-black p-3 rounded text-white text-sm overflow-scroll"
+                style="max-height: 300px"
+              >
+                <pre>{{ bot.logs | safe }}</pre>
+              </div>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <div class="modal-action">
+                <form method="dialog">
+                  <button class="btn">Close</button>
+                </form>
+              </div>
+            </div>
+          </dialog>
+          <button
+            class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-2 rounded mr-2"
             onclick="bot_accounts{{ bot.id }}.showModal()"
           >
             <i class="fa-solid fa-users"></i>
@@ -105,7 +133,7 @@
                 </div>
                 <div>
                   <button
-                    class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded"
+                    class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-2 rounded"
                     onclick="account_model_{{ account.id }}.showModal()"
                   >
                     <i class="fa-solid fa-cog"></i>
@@ -342,7 +370,7 @@
             </div>
           </dialog>
           <button
-            class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded"
+            class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-2 rounded"
             onclick="bot_modal{{ bot.id }}.showModal()"
           >
             <i class="fa-solid fa-cog"></i>

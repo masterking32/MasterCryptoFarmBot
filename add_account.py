@@ -86,11 +86,13 @@ async def register_sessions() -> None:
     if os.path.exists("telegram_accounts/accounts.json"):
         with open("telegram_accounts/accounts.json", "r") as f:
             accounts = json.load(f)
+            f.close()
 
     accounts.append(account)
 
     with open("telegram_accounts/accounts.json", "w") as f:
         json.dump(accounts, f, indent=2)
+        f.close()
 
     print(f"\n{lc.y}User Information:{lc.rs}")
     print(f"{lc.y}ID: {lc.rs}{user_data.id}")
@@ -119,6 +121,7 @@ async def import_sessions() -> None:
         if os.path.exists("telegram_accounts/accounts.json"):
             with open("telegram_accounts/accounts.json", "r") as f:
                 accounts = json.load(f)
+                f.close()
             if any(account["session_name"] == session_name for account in accounts):
                 print(f"{lc.r}Session {session_name} already exists!{lc.rs}")
                 continue
@@ -144,9 +147,11 @@ async def import_sessions() -> None:
         if os.path.exists("telegram_accounts/accounts.json"):
             with open("telegram_accounts/accounts.json", "r") as f:
                 accounts = json.load(f)
+                f.close()
         accounts.append(account)
         with open("telegram_accounts/accounts.json", "w") as f:
             json.dump(accounts, f, indent=2)
+            f.close()
         print(f"{lc.g}Session {session_name} imported successfully!{lc.rs}")
 
 

@@ -35,7 +35,9 @@ class WebServer:
     def LoadFile(self, file):
         try:
             with open(file, "r") as f:
-                return f.read()
+                file_content = f.read()
+                f.close()
+                return file_content
         except FileNotFoundError:
             return "404 Not Found"
 
@@ -181,6 +183,7 @@ class WebServer:
                     try:
                         with open(file_dir, "rb") as f:
                             content = f.read()
+                            f.close()
                         return (
                             content,
                             200,

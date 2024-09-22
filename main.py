@@ -100,16 +100,18 @@ async def start_bot():
     db.Close()
 
     if os.path.exists("./telegram_accounts/accounts.json"):
-        log.info(f"{lc.g}👤 Reading accounts.json file ...{lc.rs}")
+        log.info(f"{lc.g}👤 Reading accounts.json file (Pyrogram Accounts) ...{lc.rs}")
         with open("./telegram_accounts/accounts.json", "r") as f:
             accounts = json.load(f)
             f.close()
             if accounts:
                 log.info(
-                    f"{lc.g}└─ ✅ Found {lc.rs + lc.c + str(len(accounts)) + lc.rs + lc.g} accounts ...{lc.rs}"
+                    f"{lc.g}└─ ✅ Found {lc.rs + lc.c + str(len(accounts)) + lc.rs + lc.g} Pyrogram accounts ...{lc.rs}"
                 )
 
-                log.info(f"{lc.g}🔍 Checking session and account files ...{lc.rs}")
+                log.info(
+                    f"{lc.g}🔍 Checking Pyrogram session and account files ...{lc.rs}"
+                )
                 sessions = [
                     f
                     for f in os.listdir("./telegram_accounts")
@@ -135,10 +137,12 @@ async def start_bot():
 
                 with open("./telegram_accounts/accounts.json", "w") as f:
                     json.dump(accounts, f, indent=2)
+                    f.close()
 
                 log.info(f"{lc.g}└─ ✅ Session files are up to date ...{lc.rs}")
             else:
-                log.info(f"{lc.r}└─ ❌ No accounts found ...{lc.rs}")
+                log.info(f"{lc.r}└─ ❌ No Pyrogram accounts found ...{lc.rs}")
+        f.close()
     else:
         log.info(f"{lc.r}└─ ❌ No accounts found ...{lc.rs}")
 
