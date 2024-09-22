@@ -126,7 +126,14 @@ class Database:
         return True
 
     def __del__(self):
-        self.conn.close()
+        try:
+            self.conn.close()
+        except Exception as e:
+            pass
 
     def Close(self):
-        self.conn.close()
+        try:
+            self.conn.close()
+            self.logger.info(f"{lc.r}🔌 Database Connection Closed!{lc.rs}")
+        except Exception as e:
+            pass
