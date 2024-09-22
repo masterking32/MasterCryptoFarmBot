@@ -12,7 +12,8 @@ def change_license(license: str) -> None:
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
         cursor.execute(
-            "UPDATE settings SET value = ? WHERE name = 'license'", (license,)
+            "INSERT OR REPLACE INTO settings (name, value) VALUES ('license', ?)",
+            (license,),
         )
         conn.commit()
         conn.close()
