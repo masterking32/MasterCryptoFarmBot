@@ -103,7 +103,7 @@ class WebServer:
             )
             if github_commit["sha"] != local_commit:
                 if utils.getConfig(self.config, "auto_update", True):
-                    await git.UpdateProject()
+                    git.UpdateProject()
                 self.logger.info(
                     f"{lc.r}💔 New update available, Please update your project{lc.rs}"
                 )
