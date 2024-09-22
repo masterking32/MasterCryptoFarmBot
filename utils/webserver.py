@@ -56,15 +56,19 @@ class WebServer:
         )
         return file_dir
 
-    def GetPublicIP(self):
+    def GetPublicIP(self, retry=5):
+        if retry == 0:
+            return "127.0.0.1"
+
         try:
             response = requests.get("https://api.masterking32.com/ip.php?json=true")
             if response.status_code == 200:
                 return response.json()["ipAddress"]
+            else:
+                return self.GetPublicIP(retry - 1)
         except Exception as e:
-            self.logger.error(f"{lc.r}Error: {e}{lc.rs}")
-
-        return "127.0.0.1"
+            # self.logger.error(f"{lc.r}Error: {e}{lc.rs}")
+            return self.GetPublicIP(retry - 1)
 
     async def start(self):
         if os.name == "nt":
