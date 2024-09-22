@@ -199,10 +199,10 @@ class admin:
                 db.updateSettings("license", license_key)
                 success = "License updated successfully."
                 webServer.logger.info(
-                    f"{lc.g}🔑 License updated successfully, New license: {lc.rs + lc.c + license + lc.rs}"
+                    f"{lc.g}🔑 License updated successfully, New license: {lc.rs + lc.c + license_key[5:15] + lc.rs}"
                 )
                 webServer.logger.info(
-                    f"{lc.g}📖 License Credit: {lc.rs + lc.c + str(response['credit']) + '$' + lc.rs + lc.g}, IP: {lc.rs + lc.c + response['ip'] + lc.rs}"
+                    f"{lc.g}📖 License Credit: {lc.rs + lc.c + str(response['credit']) + '$' + lc.rs + lc.g}, IP: {lc.rs + lc.c + utils.HideIP(response['ip']) + lc.rs}"
                 )
                 license = license_key
                 credit = response["credit"]
