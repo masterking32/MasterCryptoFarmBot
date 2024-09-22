@@ -134,6 +134,6 @@ class Database:
     def Close(self):
         try:
             self.conn.close()
-            self.logger.info(f"{lc.r}🔌 Database Connection Closed!{lc.rs}")
+            # self.logger.info(f"{lc.r}🔌 Database Connection Closed!{lc.rs}")
         except Exception as e:
             pass
