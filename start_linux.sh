@@ -6,12 +6,6 @@ if ! command -v git &> /dev/null; then
     exit 1
 fi
 
-# check if pip exists
-if ! command -v pip &> /dev/null; then
-    echo "Pip is not installed. Please install python3-pip and try again."
-    exit 1
-fi
-
 echo "=========================================="
 echo "Press CTRL+C to stop the bot"
 echo "=========================================="
@@ -29,23 +23,6 @@ while true; do
         continue
     fi
     echo "Project updated successfully"
-    sleep 2
-
-    # updating requirements
-    echo "=========================================="
-    echo "Updating requirements..."
-    echo "=========================================="
-    if [ -f "requirements.txt" ]; then
-        pip install -r requirements.txt > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo "Failed to install required libraries. Exiting..."
-            exit 1
-        else
-            echo "Update requirements successfully."
-        fi
-    else
-        echo "requirements.txt not found. Skipping library check..."
-    fi
     sleep 2
 
     # start the bot
