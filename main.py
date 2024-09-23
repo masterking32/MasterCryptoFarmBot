@@ -60,6 +60,46 @@ async def start_bot():
         log.info(f"{lc.r}🛑 Bot is stopping ... {lc.rs}")
         exit()
 
+    log.info(f"{lc.g}🔍 Checking git repository ...{lc.rs}")
+    localGitCommit = git.GetRecentLocalCommit()
+    if localGitCommit is None:
+        log.error(f"{lc.r}🛑 Bot is stopping ... {lc.rs}")
+        return
+
+    log.info(
+        f"{lc.g}└─ ✅ Local Git Commit: {lc.rs + lc.c + localGitCommit[:7] + lc.rs}"
+    )
+
+    apiObj = api.API(log)
+    log.info(f"{lc.g}🌐 Checking MCF version ...{lc.rs}")
+    mcf_version = apiObj.GetMCFVersion()
+    commit_hash = None
+    commit_date = None
+    if mcf_version is not None:
+        commit_hash = mcf_version["commit_hash"]
+        commit_date = mcf_version["commit_date"]
+        log.info(
+            f"{lc.g}└─ ✅ MCF Version: {lc.rs + lc.c + commit_hash[:7] + lc.rs + lc.g}, Updated: {lc.rs + lc.c + commit_date + lc.rs}"
+        )
+
+        if not git.GitHasCommit(commit_hash):
+            log.warning(f"{lc.y}🔄 Project update is required...{lc.rs}")
+            if utils.getConfig(config.config, "auto_update", True):
+                git.UpdateProject()
+                log.info(f"{lc.g}🔄 Project updated successfully ...{lc.rs}")
+                log.error(f"{lc.r}🛑 Please restart the bot ... {lc.rs}")
+                return
+            else:
+                log.warning(f"{lc.r}❌ Please update the project...{lc.rs}")
+                log.info(f"{lc.r}🛑 Bot is stopping ... {lc.rs}")
+                return
+        else:
+            log.info(f"{lc.g}✅ Project is up to date ...{lc.rs}")
+    else:
+        log.info(f"{lc.r}└─ ❌ Unable to get MCF version ...{lc.rs}")
+        log.info(f"{lc.r}🛑 Bot is stopping ... {lc.rs}")
+        return
+
     if not os.path.exists("temp"):
         log.info(f"{lc.y}📁 Creating temp directory ...{lc.rs}")
         os.makedirs("temp")
@@ -81,7 +121,6 @@ async def start_bot():
     log.info(f"{lc.g}🔑 Bot License: {lc.rs + licenseTypeMessage}")
     if "free" not in licenseType.lower():
         log.info(f"{lc.g}🔑 Checking license ...{lc.rs}")
-        apiObj = api.API(log)
         response = apiObj.ValidateLicense(licenseType)
         if response is not None:
             log.info(

@@ -17,18 +17,6 @@ class Git:
         self.logger = logger
         self.config = config
 
-    def GetGitHubRecentCommit(self, repository):
-        try:
-            response = requests.get(
-                f"https://api.github.com/repos/{repository}/commits"
-            )
-            if response.status_code == 200:
-                return response.json()[0]
-        except Exception as e:
-            self.logger.error(f"{lc.r}Error: {e}{lc.rs}")
-
-        return None
-
     def GetRecentLocalCommit(self):
         try:
             response = (
@@ -69,6 +57,24 @@ class Git:
         )
         os.kill(os.getpid(), signal.SIGINT)
         return None
+
+    def GitHasCommit(self, commit_hash):
+        try:
+            response = (
+                os.popen(
+                    f"git rev-parse --verify {commit_hash} 2>/dev/null"
+                    if os.name != "nt"
+                    else f"git rev-parse --verify {commit_hash} 2>nul"
+                )
+                .read()
+                .strip()
+            )
+            if response:
+                return True
+        except Exception as e:
+            pass
+
+        return False
 
     def CheckGitInstalled(self):
         try:

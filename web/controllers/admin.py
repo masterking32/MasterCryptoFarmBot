@@ -36,40 +36,27 @@ class admin:
         license = db.getSettings("license", "Free License")
         db.Close()
         git = Git.Git(webServer.logger, webServer.config)
-        github_commit = git.GetGitHubRecentCommit(vr.GITHUB_REPOSITORY)
-        local_commit = git.GetRecentLocalCommit()
-        webServer.local_git_commit = local_commit
-        webServer.github_git_commit = github_commit
-        Update_Available = True
+        apiObj = api.API(webServer.logger)
+        mcf_version = apiObj.GetMCFVersion()
+        commit_hash = None if mcf_version is None else mcf_version["commit_hash"]
+        commit_date = None if mcf_version is None else mcf_version["commit_date"]
 
-        if webServer.github_git_commit != None:
-            Last_Update = webServer.github_git_commit["commit"]["author"]["date"]
-            Last_Update = Last_Update.replace("T", " ").replace("Z", "")
-            if (
-                webServer.local_git_commit != None
-                and webServer.local_git_commit == webServer.github_git_commit["sha"]
-            ):
-                Update_Available = False
-            elif webServer.local_git_commit != None and "update" in request.args:
-                git = Git.Git(webServer.logger, webServer.config)
-                git.UpdateProject()
-                return redirect("/admin/dashboard.py")
-        else:
-            Last_Update = "Failed to fetch GitHub commit"
-            Update_Available = False
+        Update_Available = False
+        if commit_hash is not None and not git.GitHasCommit(commit_hash):
+            Update_Available = True
+
+        if Update_Available and "update" in request.args:
+            git.UpdateProject()
+            return redirect("/admin/dashboard.py")
 
         if "update" in request.args:
             return redirect("/admin/dashboard.py")
-
-        if webServer.local_git_commit == None:
-            Last_Update = "Failed to fetch local commit, Please initialize git"
-            Update_Available = False
 
         return render_template(
             "admin/dashboard.html",
             Server_IP=webServer.public_ip,
             App_Version=vr.APP_VERSION,
-            Last_Update=Last_Update,
+            Last_Update=commit_date,
             Update_Available=Update_Available,
             License=license,
             theme=self.theme,

@@ -7,7 +7,6 @@ import os
 import random
 import signal
 import string
-import time
 from flask import Flask, render_template, request
 import requests
 
@@ -17,7 +16,6 @@ from utils.database import Database
 import utils.logColors as lc
 import utils.variables as vr
 import logging
-import utils.Git as Git
 import utils.utils as utils
 
 
@@ -29,8 +27,6 @@ class WebServer:
         self.port = self.config["web_server"]["port"]
         self.server = None
         self.public_ip = "127.0.0.1"
-        self.local_git_commit = None
-        self.github_git_commit = None
         self.SystemOS = os.name
 
     def LoadFile(self, file):
@@ -91,26 +87,6 @@ class WebServer:
         self.logger.info(
             f"{lc.g}🗺️ Public IP: {lc.rs + lc.y}{utils.HideIP(self.public_ip)}{lc.rs}"
         )
-
-        git = Git.Git(self.logger, self.config)
-        github_commit = git.GetGitHubRecentCommit(vr.GITHUB_REPOSITORY)
-        local_commit = git.GetRecentLocalCommit()
-        self.local_git_commit = local_commit
-        self.github_git_commit = github_commit
-
-        if github_commit is not None and local_commit is not None:
-            self.logger.info(
-                f"{lc.g}🟢 GitHub Commit: {lc.rs + lc.c}{github_commit['sha'][:7]}{lc.rs}"
-            )
-            self.logger.info(
-                f"{lc.g}🔵 Local Commit: {lc.rs + lc.c}{local_commit[:7]}{lc.rs}"
-            )
-            if github_commit["sha"] != local_commit:
-                if utils.getConfig(self.config, "auto_update", True):
-                    git.UpdateProject()
-                self.logger.info(
-                    f"{lc.r}💔 New update available, Please update your project{lc.rs}"
-                )
 
         self.logger.info(f"{lc.g}🌐 Starting web server ...{lc.rs}")
         os.environ["FLASK_ENV"] = "production"

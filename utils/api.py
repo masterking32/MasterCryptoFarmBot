@@ -81,3 +81,20 @@ class API:
         except Exception as e:
             # self.logger.error(f"API Error: {e}")
             return self.InstallModule(license, moduleID, retries)
+
+    def GetMCFVersion(self, retries=5):
+        if retries == 0:
+            return None
+
+        retries -= 1
+        try:
+            response = requests.get(
+                "https://api.masterking32.com/mcf_bot/mcf_version.php"
+            )
+            if response.status_code == 200:
+                return json.loads(response.text)
+            else:
+                return self.GetVersion(retries)
+        except Exception as e:
+            # self.logger.error(f"API Error: {e}")
+            return self.GetVersion(retries)
