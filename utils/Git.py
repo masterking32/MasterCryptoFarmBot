@@ -62,18 +62,14 @@ class Git:
         try:
             response = (
                 os.popen(
-                    f"git rev-parse --verify {commit_hash} 2>/dev/null"
+                    f"git cat-file -t {commit_hash} 2>/dev/null"
                     if os.name != "nt"
-                    else f"git rev-parse --verify {commit_hash} 2>nul"
+                    else f"git cat-file -t {commit_hash} 2>nul"
                 )
                 .read()
                 .strip()
             )
-            if (
-                response
-                and len(response) == 40
-                and ("fatal" not in response or "error" not in response)
-            ):
+            if response == "commit":
                 return True
         except Exception as e:
             pass
