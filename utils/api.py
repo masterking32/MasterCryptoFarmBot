@@ -94,7 +94,7 @@ class API:
             if response.status_code == 200:
                 return json.loads(response.text)
             else:
-                return self.GetVersion(retries)
+                return self.GetMCFVersion(retries)
         except Exception as e:
             # self.logger.error(f"API Error: {e}")
-            return self.GetVersion(retries)
+            return self.GetMCFVersion(retries)
