@@ -224,4 +224,7 @@ class WebServer:
 
     def stop(self):
         self.logger.info(f"{lc.r}🌐 Stopping web server ...{lc.rs}")
-        os.kill(os.getpid(), signal.SIGINT)
+        try:
+            os.kill(os.getpid(), signal.SIGINT)
+        except Exception as e:
+            exit()
