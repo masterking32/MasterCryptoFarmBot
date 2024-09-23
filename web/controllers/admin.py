@@ -22,6 +22,7 @@ class admin:
     def dashboard(self, request, webServer):
         if "admin" not in session:
             return redirect("/auth/login.py")
+
         Last_Update = "..."
 
         db = Database("database.db", webServer.logger)
@@ -42,13 +43,17 @@ class admin:
                 and webServer.local_git_commit == webServer.github_git_commit["sha"]
             ):
                 Update_Available = False
+            elif webServer.local_git_commit != None and "update" in request.args:
+                git = Git.Git(webServer.logger, webServer.config)
+                git.UpdateProject()
+                return redirect("/admin/dashboard.py")
         else:
             Last_Update = "Failed to fetch GitHub commit"
             Update_Available = False
 
         if webServer.local_git_commit == None:
             Last_Update = "Failed to fetch local commit, Please initialize git"
-            Update_Available = True
+            Update_Available = False
 
         return render_template(
             "admin/dashboard.html",
