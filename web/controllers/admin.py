@@ -773,7 +773,44 @@ class admin:
                 ] = False
 
         if request.method == "POST" and "install_module" in request.form:
-            error = "Installing module is under development."
+            moduleID = int(request.form["install_module"])
+            for module in server_modules["modules"]:
+                if int(module["id"]) == moduleID:
+                    response = apiObj.InstallModule(license, moduleID)
+                    if "error" in response:
+                        error = response["error"]
+                        break
+
+                    if (
+                        response["status"] != "success"
+                        or "name" not in response
+                        or "download_link" not in response
+                    ):
+                        error = "Unable to install module, please try again later."
+                        break
+
+                    webServer.logger.info(
+                        f"{lc.g}➕ Installing module, Module Name: {lc.rs + lc.c + module['name'] + lc.rs}"
+                    )
+
+                    # Clone the module inside modules directory
+                    git = Git.Git(webServer.logger, webServer.config)
+                    response = git.gitClone(
+                        response["download_link"], f"modules/{response['name']}"
+                    )
+
+                    success = f"Module installed successfully."
+                    webServer.logger.info(
+                        f"{lc.g}➕ Module installed, Module Name: {lc.rs + lc.c + module['name'] + lc.rs}"
+                    )
+
+                    server_modules["modules"][server_modules["modules"].index(module)][
+                        "installed"
+                    ] = True
+                    server_modules["modules"][server_modules["modules"].index(module)][
+                        "owned"
+                    ] = True
+                    break
 
         return render_template(
             "admin/add_bot.html",

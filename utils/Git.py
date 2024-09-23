@@ -115,3 +115,25 @@ class Git:
             )
 
         return False
+
+    def gitClone(self, url, directory):
+        self.logger.info(f"{lc.g}🔄 Cloning project ...{lc.rs}")
+
+        try:
+            (
+                os.popen(
+                    f"git clone {url} {directory} 2>/dev/null"
+                    if os.name != "nt"
+                    else f"git clone {url} {directory} 2>nul"
+                )
+                .read()
+                .strip()
+            )
+            self.logger.info(f"{lc.g}🔄 Project cloned successfully{lc.rs}")
+            return True
+        except Exception as e:
+            self.logger.error(
+                f"{lc.r} ❌ Error while cloning project, Please clone manually{lc.rs}"
+            )
+
+        return False

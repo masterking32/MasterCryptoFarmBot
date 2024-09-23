@@ -33,11 +33,13 @@
 
       {% if error %}
       <div class="alert alert-error">{{ error }}</div>
-      {% if "license" in error %}
+      {% if "license" in error or "credit" in error %}
       <div class="p-2 rounded my-2 text-center">
-        <a href="./change_license.py" class="btn btn-primary"
-          >Activate License</a
-        >
+        <a href="./change_license.py" class="btn btn-success">
+          <span class="fa-solid fa-key mr-2"></span>
+          Activate License or Add Credit
+          <span class="fa-solid fa-dollar-sign ml-2"></span
+        ></a>
       </div>
       {% endif %} {% endif %} {% if success %}
       <div class="alert alert-success">{{ success }}</div>
