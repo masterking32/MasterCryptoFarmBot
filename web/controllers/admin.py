@@ -30,8 +30,6 @@ class admin:
         if "admin" not in session:
             return redirect("/auth/login.py")
 
-        Last_Update = "..."
-
         db = Database("database.db", webServer.logger)
         license = db.getSettings("license", "Free License")
         db.Close()

@@ -69,7 +69,11 @@ class Git:
                 .read()
                 .strip()
             )
-            if response:
+            if (
+                response
+                and len(response) == 40
+                and ("fatal" not in response or "error" not in response)
+            ):
                 return True
         except Exception as e:
             pass
