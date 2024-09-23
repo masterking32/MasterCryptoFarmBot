@@ -111,8 +111,8 @@ class Git:
                 .read()
                 .strip()
             )
-            self.logger.info(f"{lc.g}🔄 Project updated successfully{lc.rs}")
-            self.logger.info(f"{lc.g}🔄 Stopping project ...{lc.rs}")
+            self.logger.info(f"{lc.g}└─ ✅ Project updated successfully{lc.rs}")
+            self.logger.info(f"{lc.g}└─ 🛑 Stopping project ...{lc.rs}")
             os.kill(os.getpid(), signal.SIGINT)
             return True
         except Exception as e:
