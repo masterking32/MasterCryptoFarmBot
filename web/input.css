@@ -1,3 +1,58 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.multiselect-dropdown {
+  @apply inline-block p-1 rounded border border-primary bg-base-100 relative bg-no-repeat bg-right bg-center;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23primary' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  background-size: 16px 12px;
+}
+.multiselect-dropdown span.optext,
+.multiselect-dropdown span.placeholder {
+  @apply mr-2 mb-1 p-1 rounded inline-block;
+}
+.multiselect-dropdown span.optext {
+  @apply bg-primary px-3 text-base-100;
+}
+.multiselect-dropdown span.optext .optdel {
+  @apply float-right m-0 -mr-1 mt-1 text-xs cursor-pointer text-base-100;
+}
+.multiselect-dropdown span.optext .optdel:hover {
+  @apply text-accent;
+}
+.multiselect-dropdown span.placeholder {
+  @apply text-base-100;
+}
+.multiselect-dropdown-list-wrapper {
+  @apply shadow-lg z-50 p-1 rounded border border-primary hidden m-0 absolute top-0 left-0 right-0 bg-base-100;
+}
+.multiselect-dropdown-list-wrapper .multiselect-dropdown-search {
+  @apply mb-1;
+}
+.multiselect-dropdown-list {
+  @apply p-1 h-60 overflow-y-auto overflow-x-hidden;
+}
+.multiselect-dropdown-list::-webkit-scrollbar {
+  @apply w-1.5;
+}
+.multiselect-dropdown-list::-webkit-scrollbar-thumb {
+  @apply bg-primary rounded;
+}
+
+.multiselect-dropdown-list div {
+  @apply p-1;
+}
+.multiselect-dropdown-list input {
+  @apply h-4 w-4 mr-1;
+}
+.multiselect-dropdown-list div.checked {
+}
+.multiselect-dropdown-list div:hover {
+  @apply bg-primary text-base-100;
+}
+.multiselect-dropdown span.maxselected {
+  @apply w-full;
+}
+.multiselect-dropdown-all-selector {
+  @apply border-b border-base-300;
+}
