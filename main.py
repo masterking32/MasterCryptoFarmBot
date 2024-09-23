@@ -4,6 +4,7 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 
 import asyncio
+import signal
 import threading
 import time
 import os
@@ -198,12 +199,20 @@ async def start_bot():
             time.sleep(0.1)
         except KeyboardInterrupt:
             log.info(f"{lc.r}🛑 Bot is stopping ... {lc.rs}")
-            web_server.stop()
+            os.kill(os.getpid(), signal.SIGINT)
+            # web_server.stop()
             break
 
 
 def main():
-    asyncio.run(start_bot())
+    try:
+        asyncio.run(start_bot())
+    except KeyboardInterrupt:
+        log.info(f"{lc.r}🛑 Bot interrupted by user ... {lc.rs}")
+        os.kill(os.getpid(), signal.SIGINT)
+    except Exception as e:
+        log.error(f"{lc.r}🛑 Bot stopped with an error: {e} ... {lc.rs}")
+        os.kill(os.getpid(), signal.SIGINT)
 
 
 if __name__ == "__main__":
