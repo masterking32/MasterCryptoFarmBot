@@ -14,13 +14,16 @@ class Git:
         self.logger = logger
         self.config = config
 
-    def GetRecentLocalCommit(self):
+    def GetRecentLocalCommit(self, directory=None):
         try:
+            if not directory:
+                directory = os.getcwd()
+
             response = (
                 os.popen(
-                    "git log -1 --pretty=format:%H 2>/dev/null"
+                    f'cd "{directory}" && git log -1 --pretty=format:%H 2>/dev/null'
                     if os.name != "nt"
-                    else "git log -1 --pretty=format:%H 2>nul"
+                    else f'cd "{directory}" && git log -1 --pretty=format:%H 2>nul'
                 )
                 .read()
                 .strip()
@@ -55,13 +58,15 @@ class Git:
         os.kill(os.getpid(), signal.SIGINT)
         return None
 
-    def GitHasCommit(self, commit_hash):
+    def GitHasCommit(self, commit_hash, directory=None):
         try:
+            if not directory:
+                directory = os.getcwd()
             response = (
                 os.popen(
-                    f"git cat-file -t {commit_hash} 2>/dev/null"
+                    f'cd "{directory}" && git cat-file -t {commit_hash} 2>/dev/null'
                     if os.name != "nt"
-                    else f"git cat-file -t {commit_hash} 2>nul"
+                    else f'cd "{directory}" && git cat-file -t {commit_hash} 2>nul'
                 )
                 .read()
                 .strip()
@@ -97,13 +102,18 @@ class Git:
 
         return False
 
-    def UpdateProject(self):
+    def UpdateProject(self, directory=None):
         self.logger.info(f"{lc.g}🔄 Updating project ...{lc.rs}")
 
         try:
+            if not directory:
+                directory = os.getcwd()
+
             (
                 os.popen(
-                    "git pull 2>/dev/null" if os.name != "nt" else "git pull 2>nul"
+                    f'cd "{directory}" && git pull 2>/dev/null'
+                    if os.name != "nt"
+                    else f'cd "{directory}" && git pull 2>nul'
                 )
                 .read()
                 .strip()
