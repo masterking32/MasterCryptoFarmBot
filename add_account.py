@@ -77,7 +77,7 @@ async def register_sessions() -> None:
         "id": user_data.id,
         "first_name": user_data.first_name,
         "username": user_data.username,
-        "disabled": False,
+        "disabled": True,
         "user_agent": "",
         "proxy": "",
     }
@@ -139,7 +139,7 @@ async def import_sessions() -> None:
             "id": user_data.id,
             "first_name": user_data.first_name,
             "username": user_data.username,
-            "disabled": False,
+            "disabled": True,
             "user_agent": "",
             "proxy": "",
         }
@@ -159,7 +159,12 @@ if __name__ == "__main__":
     if not os.path.exists("telegram_accounts"):
         os.mkdir("telegram_accounts")
     print(
-        f"{lc.y}Welcome to MasterCryptoFarmBot Telegram Account Manager!{lc.rs}\n"
+        f"{lc.c}Welcome to MasterCryptoFarmBot Telegram Account Manager!{lc.rs}\n"
+        f"{lc.g}----------------------------------------------------{lc.rs}\n"
+        f"{lc.r} After creating a session, run main.py{lc.rs}\n"
+        f"{lc.r} Then go to Control Panel > Manage Accounts, set the User-Agent (Proxy is optional), and enable the account.{lc.rs}\n"
+        f"{lc.r} By default, the accounts are disabled after creation and need to be enabled manually.{lc.rs}\n"
+        f"{lc.g}----------------------------------------------------{lc.rs}\n"
         f"{lc.y}Please select an option:{lc.rs}"
         f"\n{lc.g}1. Register new sessions{lc.rs}"
         f"\n{lc.g}2. Import existing sessions{lc.rs}"
