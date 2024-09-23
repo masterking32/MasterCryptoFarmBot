@@ -44,7 +44,7 @@ class API:
                     return response
                 else:
                     return {"error": response["message"]}
-            elif response.status_code == 400:
+            elif response.status_code == 403:
                 return {"error": "License is not valid, please check your license"}
             else:
                 return {"error": "Unable to get modules, please try again later"}
