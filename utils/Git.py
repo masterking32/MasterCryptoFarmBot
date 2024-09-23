@@ -4,11 +4,8 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 
 import signal
-import time
-import requests
 
 import utils.logColors as lc
-import utils.utils as utils
 import os
 
 

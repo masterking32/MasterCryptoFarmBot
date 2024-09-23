@@ -4,7 +4,6 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 
 from flask import redirect, render_template, session
-
 from utils.database import Database
 
 

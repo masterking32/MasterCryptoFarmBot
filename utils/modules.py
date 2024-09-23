@@ -6,7 +6,6 @@
 import os
 
 import utils.logColors as lc
-import utils.database as db
 
 
 class Module:

@@ -11,7 +11,6 @@ import os
 
 from flask import json
 
-
 import utils.logColors as lc
 from utils.database import Database
 from utils.modules import Module
