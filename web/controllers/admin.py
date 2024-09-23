@@ -51,6 +51,9 @@ class admin:
             Last_Update = "Failed to fetch GitHub commit"
             Update_Available = False
 
+        if "update" in request.args:
+            return redirect("/admin/dashboard.py")
+
         if webServer.local_git_commit == None:
             Last_Update = "Failed to fetch local commit, Please initialize git"
             Update_Available = False
