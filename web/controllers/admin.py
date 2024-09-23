@@ -799,7 +799,8 @@ class admin:
                         response["download_link"], f"modules/{response['name']}"
                     )
 
-                    success = f"Module installed successfully."
+                    success = "Module installed successfully. Please configure the module and enable it."
+
                     webServer.logger.info(
                         f"{lc.g}➕ Module installed, Module Name: {lc.rs + lc.c + module['name'] + lc.rs}"
                     )
@@ -810,6 +811,9 @@ class admin:
                     server_modules["modules"][server_modules["modules"].index(module)][
                         "owned"
                     ] = True
+                    db = Database("database.db", webServer.logger)
+                    db.updateSettings(f"{module['name']}_disabled", True)
+                    db.Close()
                     break
 
         return render_template(
