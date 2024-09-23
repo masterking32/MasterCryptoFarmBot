@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="{{ theme }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -74,7 +74,7 @@
               </div>
               <div class="divider divider-neutral">Bot Logs</div>
               <div
-                class="mx-5 bg-black p-3 rounded text-sm overflow-scroll text-left"
+                class="mx-5 p-3 rounded text-sm overflow-scroll text-left bg-base-200 text-base-content"
                 style="max-height: 300px"
               >
                 <pre>{{ bot.logs | safe }}</pre>
@@ -204,7 +204,7 @@
                               id="web_app_url"
                               placeholder="Web App URL"
                               required=""
-                              class="input input-bordered bg-gray-900"
+                              class="input input-bordered bg-base-100"
                               value="{{ account.web_app_data }}"
                             />
                           </div>
@@ -225,7 +225,7 @@
                               id="user_agent"
                               placeholder="User Agent"
                               required=""
-                              class="input input-bordered bg-gray-900"
+                              class="input input-bordered bg-base-100"
                               value="{{ account.user_agent }}"
                             />
                           </div>
@@ -245,7 +245,7 @@
                               name="proxy"
                               id="proxy"
                               placeholder="Proxy"
-                              class="input input-bordered bg-gray-900"
+                              class="input input-bordered bg-base-100"
                               value="{{ account.proxy }}"
                             />
                           </div>
@@ -304,7 +304,7 @@
                     id="session_name"
                     placeholder="Session Name"
                     required
-                    class="input input-bordered bg-gray-900"
+                    class="input input-bordered bg-base-100"
                   />
                 </div>
                 <div class="flex flex-col my-3">
@@ -324,7 +324,7 @@
                     id="web_app_url"
                     placeholder="Web App URL"
                     required
-                    class="input input-bordered bg-gray-900"
+                    class="input input-bordered bg-base-100"
                   />
                 </div>
                 <div class="flex flex-col my-3">
@@ -344,7 +344,7 @@
                     id="user_agent"
                     placeholder="User Agent"
                     required
-                    class="input input-bordered bg-gray-900"
+                    class="input input-bordered bg-base-100"
                   />
                 </div>
                 <div class="flex flex-col my-3">
@@ -363,14 +363,14 @@
                     name="proxy"
                     id="proxy"
                     placeholder="Proxy"
-                    class="input input-bordered bg-gray-900"
+                    class="input input-bordered bg-base-100"
                   />
                 </div>
                 <input
                   type="hidden"
                   name="add_account"
                   value="{{ bot.id }}"
-                  class="input input-bordered bg-gray-900"
+                  class="input input-bordered bg-base-100"
                 />
                 <div class="flex flex-col mt-5">
                   <button type="submit" class="btn btn-primary">
@@ -452,7 +452,7 @@
                   }}" max="{{ settings_input.max }}" {% endif %} placeholder="{{
                   settings_input.placeholder }}" {% if settings_input.required
                   %} required {% endif %} class="input input-bordered
-                  bg-gray-900" />
+                  bg-base-100" />
                 </div>
                 {% elif settings_input.type == "checkbox" %}
                 <div class="form-control my-3">

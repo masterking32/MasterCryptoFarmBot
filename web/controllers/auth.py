@@ -9,6 +9,13 @@ from utils.database import Database
 
 
 class auth:
+    def __init__(self, logger):
+        self.logger = logger
+        self.theme = "night"
+        db = Database("database.db", self.logger)
+        self.theme = db.getSettings("theme", "night")
+        db.Close()
+
     def login(self, request, webServer):
         db = Database("database.db", webServer.logger)
         if "admin" in session:
@@ -23,9 +30,11 @@ class auth:
                     session["admin"] = True
                     return redirect("/admin/dashboard.py")
                 else:
-                    return render_template("auth/login.html", error="Invalid password")
+                    return render_template(
+                        "auth/login.html", error="Invalid password", theme=self.theme
+                    )
 
-        return render_template("auth/login.html")
+        return render_template("auth/login.html", theme=self.theme)
 
     def logout(self, request, webServer):
         if "admin" in session:

@@ -133,8 +133,13 @@ class WebServer:
         def index():
             fileName = "index.html"
             template_path = self.GetPublicHTMLPath(fileName)
+            db = Database("database.db", self.logger)
+            theme = db.getSettings("theme", "dark")
+            db.Close()
             if os.path.isfile(template_path):
-                return render_template(fileName, App_Version=vr.APP_VERSION)
+                return render_template(
+                    fileName, App_Version=vr.APP_VERSION, theme=theme
+                )
             else:
                 return "404 Not Found"
 
@@ -163,7 +168,11 @@ class WebServer:
             try:
                 exec("import web.controllers." + split_path[0])
                 Module = eval(
-                    "web.controllers." + split_path[0] + "." + split_path[0] + "()"
+                    "web.controllers."
+                    + split_path[0]
+                    + "."
+                    + split_path[0]
+                    + "(self.logger)"
                 )
                 if hasattr(Module, split_path[1]):
                     return eval("Module" + "." + split_path[1] + "(request, self)")

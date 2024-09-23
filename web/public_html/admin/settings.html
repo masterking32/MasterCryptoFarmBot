@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="{{ theme }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -57,14 +57,44 @@
         >
       </div>
       <div class="flex w-full flex-col">
-        <div class="divider divider-neutral">Change Password</div>
+        <div class="divider divider-neutral">Change Settings</div>
       </div>
       {% if error %}
       <div class="alert alert-error">{{ error }}</div>
       {% endif %} {% if success %}
       <div class="alert alert-success">{{ success }}</div>
       {% endif %}
+      <form action="./settings.py" method="POST" class="mt-5">
+        <div class="flex flex-col">
+          <label for="theme" class="mb-2">Theme</label>
+          <select name="theme" id="theme" class="input input-neutral">
+            {% for theme_name in themeList %} {% if theme_name == theme %}
+            <option value="{{ theme_name }}" selected>
+              {{ theme_name | capitalize }}
+            </option>
+            {% else %}
+            <option value="{{ theme_name }}">
+              {{ theme_name | capitalize }}
+            </option>
+            {% endif %} {% endfor %}
+          </select>
+        </div>
+        <input type="hidden" name="change_settings" value="change_settings" />
+        <div class="text-center mt-5">
+          <button
+            type="submit"
+            class="btn btn-secondary"
+            name="change-theme"
+            value="true"
+          >
+            Change Settings
+          </button>
+        </div>
+      </form>
 
+      <div class="flex w-full flex-col">
+        <div class="divider divider-neutral">Change Password</div>
+      </div>
       <form action="./settings.py" method="POST" class="mt-5">
         <div class="flex flex-col">
           <label for="current-password" class="mb-2">Current Password</label>

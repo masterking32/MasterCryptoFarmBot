@@ -19,6 +19,13 @@ import utils.utils as utils
 
 
 class admin:
+    def __init__(self, logger):
+        self.logger = logger
+        self.theme = "night"
+        db = Database("database.db", self.logger)
+        self.theme = db.getSettings("theme", "night")
+        db.Close()
+
     def dashboard(self, request, webServer):
         if "admin" not in session:
             return redirect("/auth/login.py")
@@ -65,6 +72,7 @@ class admin:
             Last_Update=Last_Update,
             Update_Available=Update_Available,
             License=license,
+            theme=self.theme,
         )
 
     def settings(self, request, webServer):
@@ -96,14 +104,58 @@ class admin:
 
             else:
                 error = "Please fill all the fields."
+        elif request.method == "POST" and "change_settings" in request.form:
+            if "theme" in request.form:
+                db.updateSettings("theme", request.form["theme"])
+                self.theme = request.form["theme"]
+                success = "Settings updated successfully."
+                webServer.logger.info(
+                    f"{lc.g}🔄 Settings updated, Theme: {lc.rs + lc.c + request.form['theme'] + lc.rs}"
+                )
 
         db.Close()
+        themeList = [
+            "night",
+            "light",
+            "dark",
+            "cupcake",
+            "bumblebee",
+            "emerald",
+            "corporate",
+            "synthwave",
+            "retro",
+            "cyberpunk",
+            "Valentine",
+            "halloween",
+            "garden",
+            "forest",
+            "aqua",
+            "lofi",
+            "pastel",
+            "fantasy",
+            "wireframe",
+            "black",
+            "luxury",
+            "dracula",
+            "cmyk",
+            "autumn",
+            "business",
+            "acid",
+            "lemonade",
+            "coffee",
+            "winter",
+            "dim",
+            "nord",
+            "sunset",
+        ]
         return render_template(
             "admin/settings.html",
             error=error,
             success=success,
             server_ip=webServer.public_ip,
             license=license,
+            theme=self.theme,
+            themeList=themeList,
         )
 
     def accounts(self, request, webServer):
@@ -184,6 +236,7 @@ class admin:
             SystemOS=webServer.SystemOS,
             error=error,
             success=success,
+            theme=self.theme,
         )
 
     def change_license(self, request, webServer):
@@ -234,6 +287,7 @@ class admin:
             credit=credit,
             ton_wallet=ton_wallet,
             user_id=user_id,
+            theme=self.theme,
         )
 
     def bots(self, requests, webServer):
@@ -544,7 +598,11 @@ class admin:
         if requests.method != "POST":
             db.Close()
             return render_template(
-                "admin/bots.html", error=error, success=success, bots=bots
+                "admin/bots.html",
+                error=error,
+                success=success,
+                bots=bots,
+                theme=self.theme,
             )
 
         if "bot_id" in requests.form:
@@ -725,7 +783,11 @@ class admin:
 
         db.Close()
         return render_template(
-            "admin/bots.html", error=error, success=success, bots=bots
+            "admin/bots.html",
+            error=error,
+            success=success,
+            bots=bots,
+            theme=self.theme,
         )
 
     def add_bot(self, request, webServer):
@@ -743,18 +805,30 @@ class admin:
         if license == "Free License":
             error = "Please change your license to add bot."
             return render_template(
-                "admin/add_bot.html", error=error, success=success, modules=[]
+                "admin/add_bot.html",
+                error=error,
+                success=success,
+                modules=[],
+                theme=self.theme,
             )
         server_modules = apiObj.GetModules(license)
         if server_modules is None:
             error = "Unable to get modules, please try again later."
             return render_template(
-                "admin/add_bot.html", error=error, success=success, modules=[]
+                "admin/add_bot.html",
+                error=error,
+                success=success,
+                modules=[],
+                theme=self.theme,
             )
         elif "error" in server_modules:
             error = server_modules["error"]
             return render_template(
-                "admin/add_bot.html", error=error, success=success, modules=[]
+                "admin/add_bot.html",
+                error=error,
+                success=success,
+                modules=[],
+                theme=self.theme,
             )
 
         installed_ModulesDir = os.listdir("modules")
@@ -829,4 +903,5 @@ class admin:
             error=error,
             success=success,
             modules=server_modules["modules"],
+            theme=self.theme,
         )
