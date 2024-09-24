@@ -15,4 +15,5 @@ config = {
     },
     "auto_update": True,  # Auto update Main Bot
     "auto_update_modules": True,  # Auto update Modules
+    "update_check_interval": 1200,  # Update check interval in seconds (Default: 1200)
 }

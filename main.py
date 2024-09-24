@@ -19,6 +19,7 @@ import utils.variables as var
 import utils.api as api
 import utils.utils as utils
 import utils.Git as Git
+from utils.modules_thread import Module_Thread
 
 try:
     import config
@@ -138,6 +139,9 @@ async def start_bot():
 
     db.Close()
 
+    modulesThread = Module_Thread(log)
+    module_update_thread = None
+
     if os.path.exists("./telegram_accounts/accounts.json"):
         log.info(f"{lc.g}👤 Reading accounts.json file (Pyrogram Accounts) ...{lc.rs}")
         with open("./telegram_accounts/accounts.json", "r") as f:
@@ -192,6 +196,19 @@ async def start_bot():
 
     await asyncio.sleep(1)
     log.info(f"{lc.g}🚀 Bot is ready ... {lc.rs}")
+    await asyncio.sleep(1)
+
+    if utils.getConfig(config.config, "auto_update_modules", True):
+        update_interval = utils.getConfig(config.config, "update_check_interval", 1200)
+        if update_interval < 600:
+            update_interval = 600
+        log.info(
+            f"{lc.g}🔄 Auto module update checker is running. Checking every {update_interval} seconds.{lc.rs}"
+        )
+        module_update_thread = threading.Thread(
+            target=modulesThread.UpdateCheckThread, args=()
+        )
+        module_update_thread.start()
 
     while True:
         try:
