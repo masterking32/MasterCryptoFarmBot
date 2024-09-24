@@ -118,6 +118,8 @@ class Module_Thread:
         if update_check_interval < 600:
             update_check_interval = 600
 
+        time.sleep(update_check_interval)
+
         while True:
             self.logger.info(f"{lc.g}🔄 Checking for updates ...{lc.rs}")
             self.CheckMainProjectUpdate()
