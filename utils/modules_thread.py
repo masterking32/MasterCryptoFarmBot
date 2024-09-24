@@ -20,7 +20,7 @@ class Module_Thread:
         self.logger = logger
         self.api = api.API(self.logger)
 
-    def getModules(self):
+    def getModules(self, Update=False):
         if not os.path.exists("modules"):
             return []
 
@@ -28,13 +28,16 @@ class Module_Thread:
 
         db = database.Database("database.db", self.logger)
         license = db.getSettings("license", "Free License")
-        license_modules = self.api.GetUserModules(license)
-        if not license_modules:
+
+        license_modules = None
+        if license != "Free License" and Update:
+            license_modules = self.api.GetUserModules(license)
+
+        if license_modules is None:
             license_modules = []
 
         modules_output = []
         for module in modules:
-
             if not os.path.isdir(f"modules/{module}") or not os.path.exists(
                 f"modules/{module}/bot.py"
             ):
@@ -59,6 +62,11 @@ class Module_Thread:
                         if not l_module["enabled"]:
                             new_module["disabled"] = True
                         new_module["commit_hash"] = l_module["commit_hash"]
+                        break
+
+                if not Update:
+                    modules_output.append(new_module)
+                    continue
 
                 if (
                     utils.getConfig(config.config, "auto_update_modules", True)
@@ -110,16 +118,15 @@ class Module_Thread:
         if update_check_interval < 600:
             update_check_interval = 600
 
-        time.sleep(update_check_interval)
         while True:
             self.logger.info(f"{lc.g}🔄 Checking for updates ...{lc.rs}")
             self.CheckMainProjectUpdate()
             try:
-                modules = self.getModules()
+                modules = self.getModules(Update=True)
                 for module in modules:
                     if module["restart_required"]:
                         self.logger.warning(
-                            f"{lc.y}└─ 🔄 Restart required for {lc.c}{module['name']}{lc.y} module ...{lc.rs}"
+                            f"{lc.y}└─ 🔄 Module Restart required for {lc.c}{module['name']}{lc.y} module ...{lc.rs}"
                         )
                         # restart module.
 
