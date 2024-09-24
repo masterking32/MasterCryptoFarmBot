@@ -15,7 +15,7 @@ config = {
     },
     "auto_update": True,  # Auto update Main Bot
     "auto_update_modules": True,  # Auto update Modules
-    "update_check_interval": 1200,  # Update check interval in seconds (Default: 1200)
+    "update_check_interval": 3600,  # Update check interval in seconds (Default: 3600)
     "run_delay": 60,  # Delay before starting the bot modules in seconds (Default: 60)
     "display_module_logs_in_console": False,  # Display module logs in console
 }

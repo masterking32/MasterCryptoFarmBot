@@ -34,35 +34,32 @@ class admin:
         git = Git.Git(webServer.logger, webServer.config)
         apiObj = api.API(webServer.logger)
         mcf_version = apiObj.get_mcf_version()
-        commit_hash = (
-            None
-            if mcf_version is None or "commit_hash" not in mcf_version
-            else mcf_version["commit_hash"]
-        )
-        commit_date = (
-            None
-            if mcf_version is None or "commit_date" not in mcf_version
-            else mcf_version["commit_date"]
-        )
 
-        Update_Available = False
-        if commit_hash is not None and not git.GitHasCommit(commit_hash):
-            Update_Available = True
+        commit_hash = mcf_version.get("commit_hash") if mcf_version else None
+        commit_date = mcf_version.get("commit_date") if mcf_version else None
 
-        if Update_Available and "update" in request.args:
+        update_available = commit_hash and not git.GitHasCommit(commit_hash)
+
+        if update_available and "update" in request.args:
             git.UpdateProject()
-            return redirect("/admin/dashboard.py")
+            return "Updating..."
 
-        if "update" in request.args:
+        if update_available and "start_update" in request.args:
+            return render_template(
+                "admin/updating.html",
+                theme=self.theme,
+            )
+
+        if "update" in request.args or "start_update" in request.form:
             return redirect("/admin/dashboard.py")
 
         return render_template(
             "admin/dashboard.html",
-            Server_IP=webServer.public_ip,
-            App_Version=vr.APP_VERSION,
-            Last_Update=commit_date,
-            Update_Available=Update_Available,
-            License=license,
+            server_ip=webServer.public_ip,
+            app_version=vr.APP_VERSION,
+            last_update=commit_date,
+            update_available=update_available,
+            license=license,
             theme=self.theme,
         )
 

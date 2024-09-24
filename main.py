@@ -115,7 +115,7 @@ async def start_bot():
 
     licenseType = db.getSettings("license", "Free License")
     licenseTypeMessage = (
-        f"<yellow>{licenseType}</yellow>"
+        f"<yellow>No License</yellow>"
         if licenseType == "Free License"
         else f"<cyan>User License: ***{licenseType[5:20]}...</cyan>"
     )
@@ -201,9 +201,9 @@ async def start_bot():
     await asyncio.sleep(1)
 
     if utils.getConfig(config.config, "auto_update_modules", True):
-        update_interval = utils.getConfig(config.config, "update_check_interval", 1200)
-        if update_interval < 600:
-            update_interval = 600
+        update_interval = max(
+            utils.getConfig(config.config, "update_check_interval", 3600), 3600
+        )
         log.info(
             f"<green>🔄 Auto module update checker is running. Checking every </green><cyan>{update_interval}</cyan><green> seconds.</green>"
         )

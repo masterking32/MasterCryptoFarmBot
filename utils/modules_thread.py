@@ -138,7 +138,7 @@ class Module_Thread:
             return
 
         update_check_interval = max(
-            utils.getConfig(config.config, "update_check_interval", 1200), 600
+            utils.getConfig(config.config, "update_check_interval", 3600), 3600
         )
         time.sleep(update_check_interval)
 
