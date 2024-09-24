@@ -102,7 +102,7 @@ class Git:
 
         return False
 
-    def UpdateProject(self, directory=None):
+    def UpdateProject(self, directory=None, RestartAfterUpdate=True):
         self.logger.info(f"{lc.g}🔄 Updating project ...{lc.rs}")
 
         try:
@@ -119,8 +119,9 @@ class Git:
                 .strip()
             )
             self.logger.info(f"{lc.g}└─ ✅ Project updated successfully{lc.rs}")
-            self.logger.info(f"{lc.g}└─ 🛑 Stopping project ...{lc.rs}")
-            os.kill(os.getpid(), signal.SIGINT)
+            if RestartAfterUpdate:
+                self.logger.info(f"{lc.g}└─ 🛑 Stopping project ...{lc.rs}")
+                os.kill(os.getpid(), signal.SIGINT)
             return True
         except Exception as e:
             self.logger.error(

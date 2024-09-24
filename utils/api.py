@@ -103,3 +103,28 @@ class API:
         except Exception as e:
             # self.logger.error(f"API Error: {e}")
             return self.GetMCFVersion(retries)
+
+    def GetUserModules(self, license, retries=5):
+        if retries == 0:
+            return None
+
+        if license == "Free License":
+            return None
+
+        try:
+            retries -= 1
+            response = requests.post(
+                "https://api.masterking32.com/mcf_bot/api.php",
+                data={"license_key": license, "action": "get_user_modules"},
+            )
+            if response.status_code == 200:
+                response = json.loads(response.text)
+                if response["status"] == "success" and "modules" in response:
+                    return response["modules"]
+                else:
+                    return None
+            else:
+                return None
+        except Exception as e:
+            # self.logger.error(f"API Error: {e}")
+            return self.GetUserModules(license, retries)
