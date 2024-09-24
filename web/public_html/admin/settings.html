@@ -41,7 +41,7 @@
             <span class="font-semibold">License:</span>
             <span class="ml-auto">
               {% if license and "free" in license.lower() %}
-              <span class="text-warning">{{ license }}</span>
+              <span class="text-warning">No License</span>
               {% else %}
               <span class="text-success">User License</span>
               {% endif %}
@@ -79,7 +79,7 @@
             {% endif %} {% endfor %}
           </select>
         </div>
-        <input type="hidden" name="change_settings" value="change_settings" />
+        <input type="hidden" name="action" value="change_settings" />
         <div class="text-center mt-5">
           <button
             type="submit"
@@ -126,7 +126,7 @@
             required
           />
         </div>
-        <input type="hidden" name="action" value="change-password" />
+        <input type="hidden" name="action" value="change_password" />
         <div class="text-center mt-5">
           <button
             type="submit"

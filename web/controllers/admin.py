@@ -72,36 +72,39 @@ class admin:
 
         db = Database("database.db", webServer.logger)
         license = db.getSettings("license", "Free License")
-        if request.method == "POST" and "action" in request.form:
-            if (
-                "current-password" in request.form
-                and "new-password" in request.form
-                and "confirm-password" in request.form
-            ):
-                if db.getSettings("admin_password") != request.form["current-password"]:
-                    error = "Current password is incorrect!"
-                elif request.form["new-password"] == request.form["confirm-password"]:
-                    db.updateSettings("admin_password", request.form["new-password"])
 
+        if request.method == "POST":
+            action = request.form.get("action")
+            if action == "change_password":
+                current_password = request.form.get("current-password")
+                new_password = request.form.get("new-password")
+                confirm_password = request.form.get("confirm-password")
+
+                if not current_password or not new_password or not confirm_password:
+                    error = "Please fill all the fields."
+                elif db.getSettings("admin_password") != current_password:
+                    error = "Current password is incorrect!"
+                elif new_password != confirm_password:
+                    error = "New password and confirm password do not match."
+                elif len(new_password) < 8:
+                    error = "Password should be at least 8 characters long."
+                else:
+                    db.updateSettings("admin_password", new_password)
                     success = "Password changed successfully."
                     webServer.logger.info(
-                        f"<green>🔑 Admin password changed successfully, New password: </green><red>{request.form['new-password']}</red>"
+                        f"<green>🔑 Admin password changed successfully, New password: </green><red>{new_password}</red>"
                     )
-                else:
-                    error = "New password and confirm password does not match."
+            elif action == "change_settings":
+                theme = request.form.get("theme")
+                if theme:
+                    db.updateSettings("theme", theme)
+                    self.theme = theme
+                    success = "Settings updated successfully."
+                    webServer.logger.info(
+                        f"<green>🔄 Settings updated, Theme: </green><cyan>{theme}</cyan>"
+                    )
 
-            else:
-                error = "Please fill all the fields."
-        elif request.method == "POST" and "change_settings" in request.form:
-            if "theme" in request.form:
-                db.updateSettings("theme", request.form["theme"])
-                self.theme = request.form["theme"]
-                success = "Settings updated successfully."
-                webServer.logger.info(
-                    f"<green>🔄 Settings updated, Theme: </green><cyan>{request.form['theme']}</cyan>"
-                )
-
-        themeList = [
+        theme_list = [
             "night",
             "light",
             "dark",
@@ -135,6 +138,7 @@ class admin:
             "nord",
             "sunset",
         ]
+
         return render_template(
             "admin/settings.html",
             error=error,
@@ -142,7 +146,7 @@ class admin:
             server_ip=webServer.public_ip,
             license=license,
             theme=self.theme,
-            themeList=themeList,
+            themeList=theme_list,
         )
 
     def accounts(self, request, webServer):
