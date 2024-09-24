@@ -3,3 +3,7 @@ flask
 requests
 requests[socks]
 pyrogram
+aiohttp
+loguru
+websocket-client
+websockets
