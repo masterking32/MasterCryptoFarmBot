@@ -279,11 +279,22 @@ class Module_Thread:
             modules = self.get_modules()
             for module in modules:
                 if module["disabled"]:
+                    if any(
+                        rm["module"] == module["name"] and rm["is_running"]
+                        for rm in self.running_modules
+                    ):
+                        self.stop_module(module["name"])
+
                     self.logger.warning(
                         f"<yellow>└─ ⚠️ <cyan>{module['name']}</cyan> is disabled!</yellow>"
                     )
                     continue
-                self.run_module(module["name"])
+
+                if not any(
+                    rm["module"] == module["name"] and rm["is_running"]
+                    for rm in self.running_modules
+                ):
+                    self.run_module(module["name"])
 
             self.logger.info(
                 f"<green>✅ <cyan>{len(self.running_modules)}</cyan> modules running!</green>"
