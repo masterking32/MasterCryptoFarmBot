@@ -7,3 +7,4 @@ aiohttp
 loguru
 websocket-client
 websockets
+psutil
