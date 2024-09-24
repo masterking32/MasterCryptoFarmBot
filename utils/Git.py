@@ -103,7 +103,11 @@ class Git:
         return False
 
     def UpdateProject(self, directory=None, RestartAfterUpdate=True):
-        self.logger.info(f"{lc.g}🔄 Updating project ...{lc.rs}")
+        ProjecTName = "Project"
+        if directory is not None:
+            ProjecTName = directory.split("/")[-1]
+
+        self.logger.info(f"{lc.g}🔄 Updating {ProjecTName} ...{lc.rs}")
 
         try:
             if not directory:
@@ -118,7 +122,11 @@ class Git:
                 .read()
                 .strip()
             )
-            self.logger.info(f"{lc.g}└─ ✅ Project updated successfully{lc.rs}")
+            if ProjecTName == "Project":
+                self.logger.info(
+                    f"{lc.g}└─ ✅ {ProjecTName} updated successfully{lc.rs}"
+                )
+
             if RestartAfterUpdate:
                 self.logger.info(f"{lc.g}└─ 🛑 Stopping project ...{lc.rs}")
                 os.kill(os.getpid(), signal.SIGINT)
