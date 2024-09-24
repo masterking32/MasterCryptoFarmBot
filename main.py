@@ -197,7 +197,7 @@ async def start_bot():
     thread.start()
 
     await asyncio.sleep(1)
-    log.info("<green>🚀 Bot is ready ... </green>")
+    log.info("<green>🟢 MCF is ready to use! Check your Web Control Panel.</green>")
     await asyncio.sleep(1)
 
     if utils.getConfig(config.config, "auto_update_modules", True):

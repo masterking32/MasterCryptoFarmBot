@@ -223,7 +223,6 @@ class admin:
         return render_template(
             "admin/accounts.html",
             accounts=accounts,
-            SystemOS=webServer.SystemOS,
             error=error,
             success=success,
             theme=self.theme,
@@ -250,7 +249,7 @@ class admin:
                 db.updateSettings("license", license_key)
                 success = "License updated successfully."
                 webServer.logger.info(
-                    f"<green>🔑 License updated successfully, New license: </green><cyan>{license_key[5:15]}</cyan>"
+                    f"<green>🔑 License updated successfully, New license: </green><cyan>***{license_key[5:15]}***</cyan>"
                 )
                 webServer.logger.info(
                     f"<green>📖 License Credit: </green><cyan>{str(response['credit'])}$</cyan><green>, IP: </green><cyan>{utils.HideIP(response['ip'])}</cyan>"

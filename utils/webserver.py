@@ -4,18 +4,16 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 
 import os
+import platform
 import random
-import signal
 import string
-from flask import Flask, render_template, request
-import requests
-
+import logging
+from flask import Flask, render_template, request, send_from_directory
 import flask.cli
-
 from utils.database import Database
 import utils.variables as vr
-import logging
 import utils.utils as utils
+import utils.api as api
 
 
 class WebServer:
@@ -26,95 +24,66 @@ class WebServer:
         self.port = self.config["web_server"]["port"]
         self.server = None
         self.public_ip = "127.0.0.1"
-        self.SystemOS = os.name
+        self.system_os = None
 
-    def LoadFile(self, file):
+    def load_file(self, file):
         try:
             with open(file, "r") as f:
-                file_content = f.read()
-                f.close()
-                return file_content
+                return f.read()
         except FileNotFoundError:
             return "404 Not Found"
-
-    def GetPublicHTMLPath(self, path):
-        current_Dir = os.path.dirname(__file__)
-        file_dir = os.path.abspath(
-            os.path.join(current_Dir, "../web/public_html/" + path)
-        )
-        return file_dir
-
-    def GetControllersPath(self, path):
-        current_Dir = os.path.dirname(__file__)
-        file_dir = os.path.abspath(
-            os.path.join(current_Dir, "../web/controllers/" + path)
-        )
-        return file_dir
-
-    def GetPublicIP(self, retry=5):
-        if retry == 0:
-            return "127.0.0.1"
-
-        try:
-            response = requests.get("https://api.masterking32.com/ip.php?json=true")
-            if response.status_code == 200:
-                return response.json()["ipAddress"]
-            else:
-                return self.GetPublicIP(retry - 1)
         except Exception as e:
-            # self.logger.error(f"<red>Error: {e}</red>")
-            return self.GetPublicIP(retry - 1)
+            self.logger.error(f"Error: {e}")
+            return "500 Internal Server Error"
+
+    def get_public_html_path(self, path):
+        current_dir = os.path.dirname(__file__)
+        return os.path.abspath(os.path.join(current_dir, "../web/public_html/", path))
+
+    def get_controllers_path(self, path):
+        current_dir = os.path.dirname(__file__)
+        return os.path.abspath(os.path.join(current_dir, "../web/controllers/", path))
 
     async def start(self):
-        if os.name == "nt":
-            self.SystemOS = "Windows"
-        elif os.name == "posix":
-            if os.uname().sysname == "Darwin":
-                self.SystemOS = "Mac"
-            else:
-                self.SystemOS = "Linux"
-        else:
-            self.SystemOS = "Termux"
-
+        self.system_os = platform.system()
         self.logger.info(
-            f"<green>🖥️ You are running on </green><yellow>{self.SystemOS}</yellow> <green>OS</green>"
+            f"<green>🖥️ System OS: </green><yellow>{self.system_os}</yellow>"
         )
 
         db = Database("database.db", self.logger)
-        self.logger.info(f"<green>🗺️ Getting public IP ...</green>")
-        self.public_ip = self.GetPublicIP()
+        self.logger.info("<green>🗺️ Getting public IP ...</green>")
+        apiObj = api.API(self.logger)
+        self.public_ip = apiObj.get_public_ip()
         self.logger.info(
             f"<green>🗺️ Public IP: </green><yellow>{utils.HideIP(self.public_ip)}</yellow>"
         )
 
-        self.logger.info(f"<green>🌐 Starting web server ...</green>")
+        self.logger.info("<green>🌐 Starting Web Server ...</green>")
         os.environ["FLASK_ENV"] = "production"
         flask.cli.show_server_banner = lambda *args: None
 
-        self.app = Flask(__name__, template_folder=self.GetPublicHTMLPath(""))
-        SecretKey = db.getSettings("flask_secret_key", None)
-        if SecretKey is None:
-            self.logger.info(
-                f"<yellow>🔐 Generating new secret key for flask ...</yellow>"
-            )
-            SecretKey = "".join(
+        self.app = Flask(__name__, template_folder=self.get_public_html_path(""))
+
+        secret_key = db.getSettings("flask_secret_key", None)
+        if secret_key is None:
+            self.logger.info("<green>🔐 [Flask] Generating secret key ...</green>")
+            secret_key = "".join(
                 random.choices(string.ascii_letters + string.digits, k=32)
             )
             db.queryScript(
-                f"INSERT OR REPLACE INTO settings (name, value) VALUES ('flask_secret_key', '{SecretKey}');"
+                f"INSERT OR REPLACE INTO settings (name, value) VALUES ('flask_secret_key', '{secret_key}');"
             )
-            self.logger.info(f"<green>🔐 Secret key generated successfully</green>")
-        self.app.secret_key = SecretKey
+            self.logger.info("<green>└─ ✅ Secret key generated successfully</green>")
+        self.app.secret_key = secret_key
 
         @self.app.route("/")
         def index():
-            fileName = "index.html"
-            template_path = self.GetPublicHTMLPath(fileName)
-            db = Database("database.db", self.logger)
+            file_name = "index.html"
+            template_path = self.get_public_html_path(file_name)
             theme = db.getSettings("theme", "dark")
             if os.path.isfile(template_path):
                 return render_template(
-                    fileName, App_Version=vr.APP_VERSION, theme=theme
+                    file_name, App_Version=vr.APP_VERSION, theme=theme
                 )
             else:
                 return "404 Not Found"
@@ -123,75 +92,56 @@ class WebServer:
         def python_file(path):
             path = path.replace(".py", "")
             split_path = path.split("/")
-            if len(split_path) != 2:
-                return "404 Not Found"
-
-            if (
-                not split_path[0].isalnum()
-                or not split_path[1].replace("_", "").isalnum()
+            if len(split_path) != 2 or not all(
+                part.isalnum() or part.replace("_", "").isalnum() for part in split_path
             ):
                 return "404 Not Found"
 
-            file_path = self.GetControllersPath(f"{split_path[0]}.py")
-
-            base_folder = self.GetControllersPath("")
-            if base_folder not in file_path:
-                return "403 Forbidden"
-
-            if not os.path.isfile(file_path):
+            file_path = self.get_controllers_path(f"{split_path[0]}.py")
+            base_folder = self.get_controllers_path("")
+            if not file_path.startswith(base_folder) or not os.path.isfile(file_path):
                 return "404 Not Found"
 
             try:
-                exec("import web.controllers." + split_path[0])
-                Module = eval(
-                    "web.controllers."
-                    + split_path[0]
-                    + "."
-                    + split_path[0]
-                    + "(self.logger)"
+                exec(f"import web.controllers.{split_path[0]}")
+                module = eval(
+                    f"web.controllers.{split_path[0]}.{split_path[0]}(self.logger)"
                 )
-                if hasattr(Module, split_path[1]):
-                    return eval("Module" + "." + split_path[1] + "(request, self)")
+                if hasattr(module, split_path[1]):
+                    return eval(f"module.{split_path[1]}(request, self)")
                 else:
                     return "404 Not Found"
             except Exception as e:
-                self.logger.error(f"<red>Error: {e}</red>")
+                self.logger.error(f"Error: {e}")
                 return "500 Internal Server Error"
 
         @self.app.route("/<path:path>")
         def static_file(path):
-            base_folder = self.GetPublicHTMLPath("")
+            base_folder = self.get_public_html_path("")
+            file_dir = self.get_public_html_path(path)
 
-            file_dir = self.GetPublicHTMLPath(path)
-
-            if base_folder not in file_dir or os.path.isdir(file_dir):
+            if not file_dir.startswith(base_folder):
+                return "404 Not Found"
+            if os.path.isdir(file_dir):
                 return "403 Forbidden"
-
-            if os.path.isfile(file_dir):
-                if self.get_content_type(file_dir):
-                    if self.get_content_type(file_dir) == "text/html":
-                        # return render_template(path)
-                        return "403 Forbidden"
-                    try:
-                        with open(file_dir, "rb") as f:
-                            content = f.read()
-                            f.close()
-                        return (
-                            content,
-                            200,
-                            {"Content-Type": self.get_content_type(file_dir)},
-                        )
-                    except FileNotFoundError:
-                        return "404 Not Found"
-                    except Exception as e:
-                        self.logger.error(f"<red>Error: {e}</red>")
-                        return "500 Internal Server Error"
-            return self.LoadFile(file_dir), 200
+            if os.path.exists(file_dir) and os.path.isfile(file_dir):
+                content_type = self.get_content_type(file_dir)
+                if content_type == "text/html":
+                    return "403 Forbidden"
+                try:
+                    return send_from_directory(base_folder, path)
+                except FileNotFoundError:
+                    return "404 Not Found"
+                except Exception as e:
+                    self.logger.error(f"<red>Error: {e}</red>")
+                    return "500 Internal Server Error"
+            else:
+                return "404 Not Found"
 
         log = logging.getLogger("werkzeug")
         log.setLevel(logging.ERROR)
         self.logger.info(
-            f"<green>🌐 Web server started on 🔗 </green><yellow>http://{self.host}:{self.port}</yellow> 🔗"
+            f"<green>⚙️ To access the panel, visit: </green>🌐<b><yellow> http://{self.host}:{self.port} </yellow></b>🌐"
         )
         self.logger.info(
             f"<green>🔐 Panel Password: </green><red>{db.getSettings('admin_password', 'admin')}</red>"
@@ -200,13 +150,13 @@ class WebServer:
         self.server = self.app.run(host=self.host, port=self.port, threaded=True)
 
     def get_content_type(self, path):
-        extension = os.path.splitext(path)[1]
+        extension = os.path.splitext(path)[1].lower()
         content_types = {
             ".css": "text/css",
             ".js": "application/javascript",
             ".html": "text/html",
             ".png": "image/png",
-            ".jpg": "image/jpg",
+            ".jpg": "image/jpeg",
             ".jpeg": "image/jpeg",
             ".gif": "image/gif",
             ".svg": "image/svg+xml",
@@ -215,15 +165,7 @@ class WebServer:
             ".woff": "font/woff",
             ".woff2": "font/woff2",
             ".ttf": "font/ttf",
-            ".eot": "font/eot",
+            ".eot": "application/vnd.ms-fontobject",
             ".otf": "font/otf",
         }
-
-        return content_types.get(extension)
-
-    def stop(self):
-        self.logger.info(f"<red>🌐 Stopping web server ...</red>")
-        try:
-            os.kill(os.getpid(), signal.SIGINT)
-        except Exception as e:
-            exit()
+        return content_types.get(extension, "application/octet-stream")

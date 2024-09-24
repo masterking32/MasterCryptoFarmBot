@@ -99,3 +99,16 @@ class API:
         if response and response.get("status") == "success" and "modules" in response:
             return response["modules"]
         return None
+
+    def get_public_ip(self, retry=5):
+        if retry == 0:
+            return "127.0.0.1"
+
+        try:
+            response = requests.get("https://api.masterking32.com/ip.php?json=true")
+            if response.status_code == 200:
+                return response.json()["ipAddress"]
+            else:
+                return self.get_public_ip(retry - 1)
+        except Exception:
+            return self.get_public_ip(retry - 1)
