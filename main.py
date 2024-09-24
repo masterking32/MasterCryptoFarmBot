@@ -25,7 +25,7 @@ try:
     import config
 except ImportError:
     print(
-        "Please create a config.py file with the required variables, check the example file (config.py.sample)"
+        f"{lc.r}Please create a config.py file with the required variables, check the example file (config.py.sample){lc.rs}"
     )
     raise ImportError(
         "Please create a config.py file with the required variables, check the example file (config.py.sample)"
@@ -53,7 +53,7 @@ print(banner)
 
 
 async def start_bot():
-    log.info(f"<green>Bot is running ...</green>")
+    log.info(f"<green>🚀 Starting MCF ...</green>")
 
     git = Git.Git(log, config.config)
     git_installed = git.CheckGitInstalled()
