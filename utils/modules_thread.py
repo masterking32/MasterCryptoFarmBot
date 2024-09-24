@@ -193,6 +193,11 @@ class Module_Thread:
                 )
                 return
 
+            db = database.Database("database.db", self.logger)
+            if db.getSettings(f"{module}_disabled", "0") == "1":
+                self.logger.error(f"<red>❌ {module} module is disabled!</red>")
+                return
+
             self.logger.info(
                 f"<green>🚀 Running <cyan>{module}</cyan> module ...</green>"
             )
@@ -256,7 +261,10 @@ class Module_Thread:
 
             self.logger.info(f"<green>🚀 Restarting {module} module ...</green>")
             self.stop_module(module)
-            self.run_module(module)
+
+            db = database.Database("database.db", self.logger)
+            if not db.getSettings(f"{module}_disabled", "0") == "1":
+                self.run_module(module)
         except Exception as e:
             self.logger.error(f"RestartModule: {e}")
 
