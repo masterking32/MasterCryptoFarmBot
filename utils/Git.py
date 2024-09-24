@@ -107,7 +107,9 @@ class Git:
         if directory is not None:
             ProjecTName = directory.split("/")[-1]
 
-        self.logger.info(f"{lc.g}🔄 Updating {ProjecTName} ...{lc.rs}")
+        self.logger.info(
+            f"{lc.g}🔄 Updating {lc.rs + lc.c}{ProjecTName}{lc.rs + lc.g} ...{lc.rs}"
+        )
 
         try:
             if not directory:
@@ -122,10 +124,10 @@ class Git:
                 .read()
                 .strip()
             )
-            if ProjecTName == "Project":
-                self.logger.info(
-                    f"{lc.g}└─ ✅ {ProjecTName} updated successfully{lc.rs}"
-                )
+
+            self.logger.info(
+                f"{lc.g}└─ ✅ {lc.rs + lc.c}{ProjecTName}{lc.rs + lc.g} updated successfully{lc.rs}"
+            )
 
             if RestartAfterUpdate:
                 self.logger.info(f"{lc.g}└─ 🛑 Stopping project ...{lc.rs}")

@@ -75,17 +75,17 @@ class Module:
                 ):
                     if self.UpdateRequired(module, commit_hash):
                         git = Git.Git(self.logger, None)
-                        if not noLog:
-                            self.logger.info(
-                                f"{lc.g}└─ 🔄 Updating {lc.rs + lc.c}{module}{lc.rs + lc.g} ...{lc.rs}"
-                            )
+                        # if not noLog:
+                        #     self.logger.info(
+                        #         f"{lc.g}└─ 🔄 Updating {lc.rs + lc.c}{module}{lc.rs + lc.g} ...{lc.rs}"
+                        #     )
 
                         directory = os.path.join(os.getcwd(), f"modules/{module}")
                         git.UpdateProject(directory, False)
-                        if not noLog:
-                            self.logger.info(
-                                f"{lc.g}└─ ✅ {lc.rs + lc.c}{module}{lc.rs + lc.g} updated successfully!{lc.rs}"
-                            )
+                        # if not noLog:
+                        #     self.logger.info(
+                        #         f"{lc.g}└─ ✅ {lc.rs + lc.c}{module}{lc.rs + lc.g} updated successfully!{lc.rs}"
+                        #     )
                     else:
                         if not noLog:
                             self.logger.info(
