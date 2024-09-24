@@ -50,13 +50,13 @@ class Git:
         return False
 
     def UpdateProject(self, directory=None, RestartAfterUpdate=True):
-        directory = directory or os.getcwd()
-        project_name = directory.split("/")[-1] if directory else "Project"
+        directory_path = directory or os.getcwd()
+        project_name = "Project" if directory is None else directory.split("/")[-1]
         self.logger.info(
             f"{lc.g}🔄 Updating {lc.rs + lc.c}{project_name}{lc.rs + lc.g} ...{lc.rs}"
         )
 
-        response = self._run_git_command("git pull", directory)
+        response = self._run_git_command("git pull", directory_path)
         if response is not None:
             self.logger.info(
                 f"{lc.g}└─ ✅ {lc.rs + lc.c}{project_name}{lc.rs + lc.g} updated successfully{lc.rs}"
