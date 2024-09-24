@@ -208,11 +208,11 @@ async def start_bot():
             f"<green>🔄 Auto module update checker is running. Checking every </green><cyan>{update_interval}</cyan><green> seconds.</green>"
         )
         module_update_thread = threading.Thread(
-            target=modulesThread.UpdateCheckThread, args=()
+            target=modulesThread.update_check_thread, args=()
         )
         module_update_thread.start()
 
-    modulesThread.RunAllModules()
+    modulesThread.run_all_modules()
 
     while True:
         try:
