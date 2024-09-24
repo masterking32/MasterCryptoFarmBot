@@ -88,7 +88,7 @@ class admin:
 
                     success = "Password changed successfully."
                     webServer.logger.info(
-                        f"{lc.g}🔑 Admin password changed successfully, New password: {lc.rs + lc.c + request.form['new-password'] + lc.rs}"
+                        f"<green>🔑 Admin password changed successfully, New password: </green><red>{request.form['new-password']}</red>"
                     )
                 else:
                     error = "New password and confirm password does not match."
@@ -101,7 +101,7 @@ class admin:
                 self.theme = request.form["theme"]
                 success = "Settings updated successfully."
                 webServer.logger.info(
-                    f"{lc.g}🔄 Settings updated, Theme: {lc.rs + lc.c + request.form['theme'] + lc.rs}"
+                    f"<green>🔄 Settings updated, Theme: </green><cyan>{request.form['theme']}</cyan>"
                 )
 
         themeList = [
@@ -174,7 +174,7 @@ class admin:
                     )
                     account["disabled"] = True
                     webServer.logger.info(
-                        f"{lc.r}🔒 Account disabled, Account ID: {lc.rs + lc.c + AccountID + lc.rs}"
+                        f"<red>🔒 Account disabled, Account ID: </red><cyan>{AccountID}</cyan>"
                     )
                     break
 
@@ -188,7 +188,7 @@ class admin:
                 if str(account["id"]) == str(AccountID):
                     success = f"Account {account['session_name']} enabled successfully."
                     webServer.logger.info(
-                        f"{lc.g}🔓 Account enabled, Account ID: {lc.rs + lc.c + AccountID + lc.rs}"
+                        f"<green>🔓 Account enabled, Account ID: </green><cyan>{AccountID}</cyan>"
                     )
                     account["disabled"] = False
                     break
@@ -212,7 +212,7 @@ class admin:
 
                     success = f"Account {account['session_name']} updated successfully."
                     webServer.logger.info(
-                        f"{lc.g}🔄 Account updated, Account ID: {lc.rs + lc.c + AccountID + lc.rs}"
+                        f"<green>🔄 Account updated, Account ID: </green><cyan>{AccountID}</cyan>"
                     )
                     break
 
@@ -250,10 +250,10 @@ class admin:
                 db.updateSettings("license", license_key)
                 success = "License updated successfully."
                 webServer.logger.info(
-                    f"{lc.g}🔑 License updated successfully, New license: {lc.rs + lc.c + license_key[5:15] + lc.rs}"
+                    f"<green>🔑 License updated successfully, New license: </green><cyan>{license_key[5:15]}</cyan>"
                 )
                 webServer.logger.info(
-                    f"{lc.g}📖 License Credit: {lc.rs + lc.c + str(response['credit']) + '$' + lc.rs + lc.g}, IP: {lc.rs + lc.c + utils.HideIP(response['ip']) + lc.rs}"
+                    f"<green>📖 License Credit: </green><cyan>{str(response['credit'])}$</cyan><green>, IP: </green><cyan>{utils.HideIP(response['ip'])}</cyan>"
                 )
                 license = license_key
                 credit = response["credit"]
@@ -315,7 +315,7 @@ class admin:
                         bot["logs"] = "".join(lines[-100:])
                         bot["logs"] = utils.ansi_to_html(bot["logs"])
                         bot["logs"] = re.sub(
-                            r"\[MasterCryptoFarmBot\] \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\]",
+                            r"\[MasterCryptoFarmBot\] \[(.*?)\] \[(.*?)\]",
                             "",
                             bot["logs"],
                         )
@@ -516,7 +516,7 @@ class admin:
                     db.updateSettings(f"{bot['name']}_disabled", True)
                     bots[bots.index(bot)]["disabled"] = True
                     webServer.logger.info(
-                        f"{lc.r}🔒 Bot disabled, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs}"
+                        f"<red>🔒 Bot disabled, Bot Name: <cyan>{bot['name']}</cyan></red>"
                     )
                     break
         elif "enable" in requests.args:
@@ -527,7 +527,7 @@ class admin:
                     db.deleteSettings(f"{bot['name']}_disabled")
                     bots[bots.index(bot)]["disabled"] = False
                     webServer.logger.info(
-                        f"{lc.g}🔓 Bot enabled, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs}"
+                        f"<green>🔓 Bot enabled, Bot Name: <cyan>{bot['name']}</cyan></green>"
                     )
                     break
         elif "delete_account" in requests.args and "bot_id" in requests.args:
@@ -545,7 +545,7 @@ class admin:
                                 f.close()
                             bots[bots.index(bot)]["accounts"] = accounts
                             webServer.logger.info(
-                                f"{lc.r}🗑 Account deleted, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs + lc.r}, Session Name: {lc.rs + lc.c + account['display_name'] + lc.rs}"
+                                f"<red>🗑 Account deleted, Bot Name: <cyan>{bot['name']}</cyan>, Session Name: <cyan>{account['display_name']}</cyan></red>"
                             )
                             break
         elif "disable_account" in requests.args and "bot_id" in requests.args:
@@ -563,7 +563,7 @@ class admin:
                                 f.close()
                             bots[bots.index(bot)]["accounts"] = accounts
                             webServer.logger.info(
-                                f"{lc.r}🔒 Account disabled, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs + lc.r}, Session Name: {lc.rs + lc.c + account['display_name'] + lc.rs}"
+                                f"<red>🔒 Account disabled, Bot Name: <cyan>{bot['name']}</cyan>, Session Name: <cyan>{account['display_name']}</cyan></red>"
                             )
                             break
         elif "enable_account" in requests.args and "bot_id" in requests.args:
@@ -581,7 +581,7 @@ class admin:
                                 f.close()
                             bots[bots.index(bot)]["accounts"] = accounts
                             webServer.logger.info(
-                                f"{lc.g}🔓 Account enabled, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs + lc.g}, Session Name: {lc.rs + lc.c + account['display_name'] + lc.rs}"
+                                f"<green>🔓 Account enabled, Bot Name: <cyan>{bot['name']}</cyan>, Session Name: <cyan>{account['display_name']}</cyan></green>"
                             )
 
         if requests.method != "POST":
@@ -669,7 +669,7 @@ class admin:
                         bots[bots.index(bot)]["settings"] = settings
                         success = f"Settings updated successfully."
                         webServer.logger.info(
-                            f"{lc.g}🔄 Bot settings updated, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs + lc.g}"
+                            f"<green>🔄 Bot settings updated, Bot Name: <cyan>{bot['name']}</cyan></green>"
                         )
 
                     break
@@ -732,7 +732,7 @@ class admin:
                     success = f"Account {account['display_name']} added successfully."
 
                     webServer.logger.info(
-                        f"{lc.g}➕ Account added, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs + lc.g}, Session Name: {lc.rs + lc.c + account['display_name'] + lc.rs}"
+                        f"<green>➕ Account added, Bot Name: <cyan>{bot['name']}</cyan>, Session Name: <cyan>{account['display_name']}</cyan></green>"
                     )
 
         if "edit_account" in requests.form and "account_id" in requests.form:
@@ -765,7 +765,7 @@ class admin:
                             bots[bots.index(bot)]["accounts"] = accounts
                             success = f"Account {account['display_name']} updated successfully."
                             webServer.logger.info(
-                                f"{lc.g}🔄 Account updated, Bot Name: {lc.rs + lc.c + bot['name'] + lc.rs + lc.g}, Session Name: {lc.rs + lc.c + account['display_name'] + lc.rs}"
+                                f"<green>🔄 Account updated, Bot Name: <cyan>{bot['name']}</cyan>, Session Name: <cyan>{account['display_name']}</cyan></green>"
                             )
                             break
 
@@ -858,7 +858,7 @@ class admin:
                         break
 
                     webServer.logger.info(
-                        f"{lc.g}➕ Installing module, Module Name: {lc.rs + lc.c + module['name'] + lc.rs}"
+                        f"<green>➕ Installing module, Module Name: <cyan>{module['name']}</cyan></green>"
                     )
 
                     # Clone the module inside modules directory
@@ -870,7 +870,7 @@ class admin:
                     success = "Module installed successfully. Please configure the module and enable it."
 
                     webServer.logger.info(
-                        f"{lc.g}➕ Module installed, Module Name: {lc.rs + lc.c + module['name'] + lc.rs}"
+                        f"<green>➕ Module installed, Module Name: <cyan>{module['name']}</cyan></green>"
                     )
 
                     server_modules["modules"][server_modules["modules"].index(module)][

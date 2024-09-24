@@ -20,7 +20,6 @@ from pyrogram.raw.functions.messages import RequestWebView, RequestAppWebView
 from pyrogram.raw.functions.account import UpdateNotifySettings
 from urllib.parse import unquote
 from utils.utils import testProxy, parseProxy
-import utils.logColors as lc
 
 
 class tgAccount:
@@ -50,7 +49,7 @@ class tgAccount:
             return self.tgClient
 
         if self.proxy and not testProxy(self.proxy):
-            self.log.error(f"{lc.r}└─ ❌ Proxy {self.proxy} is not working!{lc.rs}")
+            self.log.error(f"<red>└─ ❌ Proxy {self.proxy} is not working!</red>")
             return None
 
         self.tgClient = Client(
@@ -62,12 +61,12 @@ class tgAccount:
             proxy=parseProxy(self.proxy) if self.proxy else None,
         )
 
-        self.log.info(f"{lc.g}└─ 🌍 Connecting {self.accountName} session ...{lc.rs}")
+        self.log.info(f"<green>└─ 🌍 Connecting {self.accountName} session ...</green>")
         try:
             isConnected = await self.tgClient.connect()
             if isConnected:
                 self.log.info(
-                    f"{lc.g}└─ 🌍 Session {self.accountName} connected successfully!{lc.rs}"
+                    f"<green>└─ 🌍 Session {self.accountName} connected successfully!</green>"
                 )
                 return self.tgClient
             else:
@@ -78,36 +77,38 @@ class tgAccount:
 
     async def run(self):
         try:
-            self.log.info(f"{lc.g}🤖 Running {self.accountName} account ...{lc.rs}")
+            self.log.info(f"<green>🤖 Running {self.accountName} account ...</green>")
             if not os.path.exists(
                 self.bot_globals["mcf_dir"]
                 + f"/telegram_accounts/{self.accountName}.session"
             ):
                 self.log.error(
-                    f"{lc.r}❌ Account {self.accountName} session is not found!{lc.rs}"
+                    f"<red>❌ Account {self.accountName} session is not found!</red>"
                 )
                 return None
 
-            self.log.info(f"{lc.g}└─ 🔑 Loading {self.accountName} session ...{lc.rs}")
+            self.log.info(
+                f"<green>└─ 🔑 Loading {self.accountName} session ...</green>"
+            )
 
             tgClient = await self.Connect()
             if tgClient is None:
                 self.log.error(
-                    f"{lc.r}└─ ❌ Account {self.accountName} session is not connected!{lc.rs}"
+                    f"<red>└─ ❌ Account {self.accountName} session is not connected!</red>"
                 )
                 return None
             else:
                 self.log.info(
-                    f"{lc.g}└─ 🔑 {self.accountName} session is loaded successfully!{lc.rs}"
+                    f"<green>└─ 🔑 {self.accountName} session is loaded successfully!</green>"
                 )
             await self.accountSetup()
 
             return True
         except Exception as e:
             self.log.error(
-                f"{lc.r}└─ ❌ {self.accountName} session failed to authorize!{lc.rs}"
+                f"<red>└─ ❌ {self.accountName} session failed to authorize!</red>"
             )
-            self.log.error(f"{lc.r}└─ ❌ {e}{lc.rs}")
+            self.log.error(f"<red>└─ ❌ {e}</red>")
             return False
 
     async def getWebViewData(self):
@@ -117,7 +118,7 @@ class tgAccount:
         tgClient = await self.Connect()
         if tgClient is None:
             self.log.error(
-                f"{lc.r}└─ ❌ Account {self.accountName} session is not connected!{lc.rs}"
+                f"<red>└─ ❌ Account {self.accountName} session is not connected!</red>"
             )
             return None
 
@@ -178,22 +179,22 @@ class tgAccount:
             )
 
             self.log.info(
-                f"{lc.g}└─ 🔑 {self.accountName} session is authorized!{lc.rs}"
+                f"<green>└─ 🔑 {self.accountName} session is authorized!</green>"
             )
 
             return web_data
         except Exception as e:
             self.log.error(
-                f"{lc.r}└─ ❌ {self.accountName} session failed to authorize!{lc.rs}"
+                f"<red>└─ ❌ {self.accountName} session failed to authorize!</red>"
             )
-            self.log.error(f"{lc.r}└─ ❌ {e}{lc.rs}")
+            self.log.error(f"<red>└─ ❌ {e}</red>")
             return None
 
     async def accountSetup(self):
         tgClient = await self.Connect()
         if tgClient is None:
             self.log.error(
-                f"{lc.r}└─ ❌ Account {self.accountName} session is not connected!{lc.rs}"
+                f"<red>└─ ❌ Account {self.accountName} session is not connected!</red>"
             )
             return None
 
@@ -203,7 +204,7 @@ class tgAccount:
             UserAccount = await tgClient.get_me()
             if not UserAccount.username:
                 self.log.info(
-                    f"{lc.g}└─ 🗿 Account username is empty. Setting a username for the account...{lc.rs}"
+                    f"<green>└─ 🗿 Account username is empty. Setting a username for the account...</green>"
                 )
                 setUsername = False
                 maxTries = 5
@@ -212,34 +213,32 @@ class tgAccount:
                         random.choices(string.ascii_lowercase, k=random.randint(15, 30))
                     )
                     self.log.info(
-                        f"{lc.g}└─ 🗿 Setting username for {self.accountName} session, New username {lc.rs + lc.c + RandomUsername + lc.rs}"
+                        f"<green>└─ 🗿 Setting username for {self.accountName} session, New username <cyan>{RandomUsername}</cyan></green>"
                     )
                     setUsername = await tgClient.set_username(RandomUsername)
                     maxTries -= 1
                     await time.sleep(5)
 
             self.log.info(
-                f"{lc.g}└─ ✅ Account {self.accountName} session is setup successfully!{lc.rs}"
+                f"<green>└─ ✅ Account {self.accountName} session is setup successfully!</green>"
             )
 
         except Exception as e:
             self.log.error(
-                f"{lc.r}└─ ❌ Account {self.accountName} session is not setup!{lc.rs}"
+                f"<red>└─ ❌ Account {self.accountName} session is not setup!</red>"
             )
-            self.log.error(f"{lc.r}└─ ❌ {e}{lc.rs}")
+            self.log.error(f"<red>└─ ❌ {e}</red>")
             return None
 
     async def joinChat(self, url, noLog=False, mute=True):
         if not noLog:
-            self.log.info(
-                f"{lc.g}└─ 📰 Joining {lc.rs + lc.c + url + lc.rs + lc.g} ...{lc.rs}"
-            )
+            self.log.info(f"<green>└─ 📰 Joining <cyan>{url}</cyan> ...</green>")
         tgClient = await self.Connect()
         if tgClient is None:
             if noLog:
                 return None
             self.log.error(
-                f"{lc.r}└─ ❌ Account {self.accountName} session is not connected!{lc.rs}"
+                f"<red>└─ ❌ Account {self.accountName} session is not connected!</red>"
             )
             return None
 
@@ -262,24 +261,22 @@ class tgAccount:
                 return None
 
             self.log.info(
-                f"{lc.g}└─ ✅ {lc.rs + lc.c + url + lc.rs + lc.g} has been joined successfully!{lc.rs}"
+                f"<green>└─ ✅ <cyan>{url}</cyan> has been joined successfully!</green>"
             )
             return True
         except Exception as e:
             if noLog:
                 return None
 
-            self.log.error(
-                f"{lc.r}└─ ❌ {lc.rs + lc.c + url + lc.rs + lc.r} failed to join!{lc.rs}"
-            )
-            self.log.error(f"{lc.r}❌ {e}{lc.rs}")
+            self.log.error(f"<red>└─ ❌ <cyan>{url}</cyan> failed to join!</red>")
+            self.log.error(f"<red>❌ {e}</red>")
             return False
 
     async def setName(self, firstName, lastName=None):
         tgClient = await self.Connect()
         if tgClient is None:
             self.log.error(
-                f"{lc.r}└─ ❌ Account {self.accountName} session is not connected!{lc.rs}"
+                f"<red>└─ ❌ Account {self.accountName} session is not connected!</red>"
             )
             return None
         tgMe = await tgClient.get_me()
@@ -288,21 +285,21 @@ class tgAccount:
         try:
             await tgClient.update_profile(first_name=firstName, last_name=lastName)
             self.log.info(
-                f"{lc.g}└─ ✅ Account {self.accountName} session name is set successfully!{lc.rs}"
+                f"<green>└─ ✅ Account {self.accountName} session name is set successfully!</green>"
             )
             return True
         except Exception as e:
             self.log.error(
-                f"{lc.r}└─ ❌ Failed to set session {self.accountName} name!{lc.rs}"
+                f"<red>└─ ❌ Failed to set session {self.accountName} name!</red>"
             )
-            self.log.error(f"{lc.r}❌ {e}{lc.rs}")
+            self.log.error(f"<red>❌ {e}</red>")
             return False
 
     async def getMe(self):
         tgClient = await self.Connect()
         if tgClient is None:
             self.log.error(
-                f"{lc.r}└─ ❌ Account {self.accountName} session is not connected!{lc.rs}"
+                f"<red>└─ ❌ Account {self.accountName} session is not connected!</red>"
             )
             return None
         tgMe = await tgClient.get_me()
@@ -313,6 +310,6 @@ class tgAccount:
             self.log.info(f"└─ 💻 Disconnecting {self.accountName} session ...")
             await self.tgClient.disconnect()
             self.log.info(
-                f"{lc.g}└─── ❌ {self.accountName} session has been disconnected successfully!{lc.rs}"
+                f"<green>└─── ❌ {self.accountName} session has been disconnected successfully!</green>"
             )
         return True

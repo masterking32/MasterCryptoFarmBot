@@ -16,7 +16,7 @@ def get_db_connection(db_name, logger):
     try:
         yield conn
     except Exception as e:
-        logger.error(f"{lc.r}❌ Database Error: {e}{lc.rs}")
+        logger.error(f"<red>❌ Database Error: {e}</red>")
     finally:
         conn.close()
 
@@ -29,13 +29,13 @@ class Database:
     def migration(self):
         with get_db_connection(self.db_name, self.logger) as conn:
             cursor = conn.cursor()
-            self.logger.info(f"{lc.b}💽 Database Check and Migration ...{lc.rs}")
+            self.logger.info(f"<blue>💽 Database Check and Migration ...</blue>")
 
             query = "SELECT name FROM sqlite_master WHERE type='table' AND name='migration';"
             cursor.execute(query)
             result = cursor.fetchall()
             if not result:
-                self.logger.info(f"{lc.g}└─ 🗒️ Creating migration table ...{lc.rs}")
+                self.logger.info(f"<green>└─ 🗒️ Creating migration table ...</green>")
                 query = "CREATE TABLE migration (id INTEGER PRIMARY KEY AUTOINCREMENT, version INTEGER);"
                 cursor.execute(query)
                 conn.commit()
@@ -50,7 +50,7 @@ class Database:
                 cursor.execute(query, (sql_id,))
                 result = cursor.fetchall()
                 if not result:
-                    self.logger.info(f"{lc.g}└─ 🔍 Migrating {migration} ...{lc.rs}")
+                    self.logger.info(f"<green>└─ 🔍 Migrating {migration} ...</green>")
                     with open(f"database_migrations/{migration}", "r") as file:
                         query = file.read()
                         cursor.executescript(query)
@@ -59,13 +59,13 @@ class Database:
                         cursor.execute(query, (fileName,))
                         conn.commit()
 
-            self.logger.info(f"{lc.g}✅ Database Check and Migration Done!{lc.rs}")
+            self.logger.info(f"<green>✅ Database Check and Migration Done!</green>")
 
     def migration_modules(self, modules):
         with get_db_connection(self.db_name, self.logger) as conn:
             cursor = conn.cursor()
             self.logger.info(
-                f"{lc.b}💽 Database Modules Check and Migration ...{lc.rs}"
+                f"<blue>💽 Database Modules Check and Migration ...</blue>"
             )
 
             query = "SELECT name FROM sqlite_master WHERE type='table' AND name='modules_migration';"
@@ -73,7 +73,7 @@ class Database:
             result = cursor.fetchall()
             if not result:
                 self.logger.info(
-                    f"{lc.g}└─ 🗒️ Creating modules_migration table ...{lc.rs}"
+                    f"<green>└─ 🗒️ Creating modules_migration table ...</green>"
                 )
                 query = "CREATE TABLE modules_migration (id INTEGER PRIMARY KEY AUTOINCREMENT, module TEXT, version INTEGER);"
                 cursor.execute(query)
@@ -95,7 +95,7 @@ class Database:
                     result = cursor.fetchall()
                     if not result:
                         self.logger.info(
-                            f"{lc.g}└─ 🔍 Migrating {module}/{migration} ...{lc.rs}"
+                            f"<green>└─ 🔍 Migrating {module}/{migration} ...</green>"
                         )
                         with open(
                             f"modules/{module}/database_migrations/{migration}", "r"
@@ -108,7 +108,7 @@ class Database:
                             conn.commit()
 
             self.logger.info(
-                f"{lc.g}✅ Database Modules Check and Migration Done!{lc.rs}"
+                f"<green>✅ Database Modules Check and Migration Done!</green>"
             )
 
     def query(self, query, data):

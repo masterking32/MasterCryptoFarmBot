@@ -104,9 +104,9 @@ class Module_Thread:
             commit_hash = mcf_version["commit_hash"]
 
             if not git.GitHasCommit(commit_hash):
-                self.logger.error(f"{lc.r}🔄 Main Project is not updated ... {lc.rs}")
+                self.logger.error(f"<red>🔄 Main Project is not updated ... </red>")
                 git.UpdateProject()
-                self.logger.error(f"{lc.r}🔄 Please restart the bot ... {lc.rs}")
+                self.logger.error(f"<red>🔄 Please restart the bot ... </red>")
         except Exception as e:
             self.logger.error(f"CheckMainProjectUpdate: {e}")
 
@@ -123,19 +123,19 @@ class Module_Thread:
         time.sleep(update_check_interval)
 
         while True:
-            self.logger.info(f"{lc.g}🔄 Checking for updates ...{lc.rs}")
+            self.logger.info(f"<green>🔄 Checking for updates ...</green>")
             self.CheckMainProjectUpdate()
             try:
                 modules = self.getModules(Update=True)
                 for module in modules:
                     if module["restart_required"]:
                         self.logger.warning(
-                            f"{lc.y}└─ 🔄 Module Restart required for {lc.c}{module['name']}{lc.y} module ...{lc.rs}"
+                            f"<yellow>└─ 🔄 Module Restart required for <cyan>{module['name']}</cyan> module ...</yellow>"
                         )
 
                         self.RestartModule(module["name"])
 
-                self.logger.info(f"{lc.g}└─ ✅ Update check completed!{lc.rs}")
+                self.logger.info(f"<green>└─ ✅ Update check completed!</green>")
                 time.sleep(update_check_interval)
             except Exception as e:
                 self.logger.error(f"UpdateCheckThread: {e}")
@@ -183,18 +183,18 @@ class Module_Thread:
     def RunModule(self, module):
         try:
             if not os.path.exists(f"modules/{module}/bot.py"):
-                self.logger.error(f"{lc.r}❌ {module} module not found!{lc.rs}")
+                self.logger.error(f"<red>❌ {module} module not found!</red>")
                 return
 
             for running_module in self.running_modules:
                 if running_module["module"] == module and running_module["is_running"]:
                     self.logger.warning(
-                        f"{lc.y}🚀 {module} module is already running!{lc.rs}"
+                        f"<yellow>🚀 {module} module is already running!</yellow>"
                     )
                     return
 
             self.logger.info(
-                f"{lc.g}🚀 Running {lc.rs + lc.c}{module}{lc.rs + lc.g} module ...{lc.rs}"
+                f"<green>🚀 Running <cyan>{module}</cyan> module ...</green>"
             )
             python_executable = self.GetPythonExecutable()
 
@@ -232,10 +232,10 @@ class Module_Thread:
                     break
 
             if module_data is None:
-                self.logger.error(f"{lc.r}❌ {module} module not running!{lc.rs}")
+                self.logger.error(f"<red>❌ {module} module not running!</red>")
                 return
 
-            self.logger.info(f"{lc.g}🚀 Stopping {module} module ...{lc.rs}")
+            self.logger.info(f"<green>🚀 Stopping {module} module ...</green>")
 
             pid = module_data["process"].pid
             process = psutil.Process(pid)
@@ -244,7 +244,7 @@ class Module_Thread:
             process.kill()
 
             module_data["is_running"] = False
-            self.logger.info(f"{lc.g}🚀 {module} module stopped!{lc.rs}")
+            self.logger.info(f"<green>🚀 {module} module stopped!</green>")
 
         except Exception as e:
             self.logger.error(f"StopModule: {e}")
@@ -252,10 +252,10 @@ class Module_Thread:
     def RestartModule(self, module):
         try:
             if not os.path.exists(f"modules/{module}/bot.py"):
-                self.logger.error(f"{lc.r}❌ {module} module not found!{lc.rs}")
+                self.logger.error(f"<red>❌ {module} module not found!</red>")
                 return
 
-            self.logger.info(f"{lc.g}🚀 Restarting {module} module ...{lc.rs}")
+            self.logger.info(f"<green>🚀 Restarting {module} module ...</green>")
             for running_module in self.running_modules:
                 if running_module["module"] == module and running_module["is_running"]:
                     self.StopModule(module)
@@ -268,24 +268,24 @@ class Module_Thread:
     def RunAllModules(self):
         run_delay = utils.getConfig(config.config, "run_delay", 60)
         self.logger.info(
-            f"{lc.g}🚀 Launching all modules in {lc.rs + lc.c}{run_delay}{lc.rs + lc.g} seconds...{lc.rs}"
+            f"<green>🚀 Launching all modules in <cyan>{run_delay}</cyan> seconds...</green>"
         )
         time.sleep(run_delay)
         try:
-            self.logger.info(f"{lc.g}🚀 Running all modules ...{lc.rs}")
+            self.logger.info(f"<green>🚀 Running all modules ...</green>")
             modules = self.getModules()
             for module in modules:
                 if module["disabled"]:
                     self.logger.warning(
-                        f"{lc.y}└─ ⚠️ {lc.rs + lc.c}{module['name']}{lc.rs + lc.y} is disabled!{lc.rs}"
+                        f"<yellow>└─ ⚠️ <cyan>{module['name']}</cyan> is disabled!</yellow>"
                     )
                     continue
 
                 self.RunModule(module["name"])
 
             self.logger.info(
-                f"✅ {lc.c}{len(self.running_modules)}{lc.rs + lc.g} modules running!{lc.rs}"
+                f"<green>✅ <cyan>{len(self.running_modules)}</cyan> modules running!</green>"
             )
         except Exception as e:
             self.logger.error(f"RunAllModules: {e}")
-            self.logger.info(f"{lc.r}🛑 Bot is stopping ... {lc.rs}")
+            self.logger.info(f"<red>🛑 Bot is stopping ... </red>")

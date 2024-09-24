@@ -3,42 +3,41 @@
 # Github: https://github.com/masterking32
 # Telegram: https://t.me/MasterCryptoFarmBot
 
-import logging
-from colorlog import ColoredFormatter
-from logging.handlers import RotatingFileHandler
+from loguru import logger
+import sys
 
 
-def getLogger(logFile=None, max_log_size=1024 * 1024 * 1, backup_count=3):
+def getLogger(logFile=None, ModuleName=None, max_log_size=1, backup_count=3):
     # ---------------------------------------------#
     # Logging configuration
-    LOG_LEVEL = logging.DEBUG
-    # Include date and time in the log format
-    LOGFORMAT = f"{cb}[MasterCryptoFarmBot]{rs} {bt}[%(asctime)s]{bt} %(log_color)s[%(levelname)s]%(reset)s %(log_color)s%(message)s%(reset)s"
+    LOG_LEVEL = "DEBUG"
+    LOGFORMAT = f"<cyan>[MasterCryptoFarmBot]</cyan> <green>[{{time:HH:mm:ss}}]</green> <level>[{{level}}]</level> <white><b>{{message}}</b></white>"
 
-    logging.root.setLevel(LOG_LEVEL)
-    formatter = ColoredFormatter(
-        LOGFORMAT, "%Y-%m-%d %H:%M:%S"
-    )  # Specify the date/time format
+    logger.remove()
+    logger.add(
+        sink=sys.stdout,
+        level=LOG_LEVEL,
+        format=LOGFORMAT,
+        colorize=True,
+    )
 
-    LOGFILE_FORMAT = "[MasterCryptoFarmBot] [%(asctime)s] [%(levelname)s] %(message)s"
-    file_formatter = logging.Formatter(LOGFILE_FORMAT, "%Y-%m-%d %H:%M:%S")
-
-    stream = logging.StreamHandler()
-    stream.setLevel(LOG_LEVEL)
-    stream.setFormatter(formatter)
-    log = logging.getLogger("pythonConfig")
-    log.setLevel(LOG_LEVEL)
-    log.addHandler(stream)
     if logFile:
-        file_handler = RotatingFileHandler(
-            logFile, maxBytes=max_log_size, backupCount=backup_count, encoding="utf-8"
-        )
-        file_handler.setFormatter(file_formatter)
-        log.addHandler(file_handler)
+        log_file_format = "[MasterCryptoFarmBot] [{time:HH:mm:ss}] [{level}] {message}"
+        if ModuleName:
+            log_file_format = "[MasterCryptoFarmBot] [{time:HH:mm:ss}] [{ModuleName}] [{level}] {message}"
 
-    # End of configuration
-    # ---------------------------------------------#
-    return log
+        logger.add(
+            logFile,
+            level=LOG_LEVEL,
+            format=log_file_format,
+            rotation=max_log_size * 1024 * 1024,
+            retention=backup_count,
+            encoding="utf-8",
+            colorize=True,
+        )
+
+    logger_final = logger.opt(colors=True)
+    return logger_final
 
 
 # # Regular Text Colors

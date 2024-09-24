@@ -13,7 +13,6 @@ import requests
 import flask.cli
 
 from utils.database import Database
-import utils.logColors as lc
 import utils.variables as vr
 import logging
 import utils.utils as utils
@@ -63,7 +62,7 @@ class WebServer:
             else:
                 return self.GetPublicIP(retry - 1)
         except Exception as e:
-            # self.logger.error(f"{lc.r}Error: {e}{lc.rs}")
+            # self.logger.error(f"<red>Error: {e}</red>")
             return self.GetPublicIP(retry - 1)
 
     async def start(self):
@@ -78,31 +77,33 @@ class WebServer:
             self.SystemOS = "Termux"
 
         self.logger.info(
-            f"{lc.g}🖥️ You are running on {lc.rs + lc.y}{self.SystemOS}{lc.rs} {lc.g}OS{lc.rs}"
+            f"<green>🖥️ You are running on </green><yellow>{self.SystemOS}</yellow> <green>OS</green>"
         )
 
         db = Database("database.db", self.logger)
-        self.logger.info(f"{lc.g}🗺️ Getting public IP ...{lc.rs}")
+        self.logger.info(f"<green>🗺️ Getting public IP ...</green>")
         self.public_ip = self.GetPublicIP()
         self.logger.info(
-            f"{lc.g}🗺️ Public IP: {lc.rs + lc.y}{utils.HideIP(self.public_ip)}{lc.rs}"
+            f"<green>🗺️ Public IP: </green><yellow>{utils.HideIP(self.public_ip)}</yellow>"
         )
 
-        self.logger.info(f"{lc.g}🌐 Starting web server ...{lc.rs}")
+        self.logger.info(f"<green>🌐 Starting web server ...</green>")
         os.environ["FLASK_ENV"] = "production"
         flask.cli.show_server_banner = lambda *args: None
 
         self.app = Flask(__name__, template_folder=self.GetPublicHTMLPath(""))
         SecretKey = db.getSettings("flask_secret_key", None)
         if SecretKey is None:
-            self.logger.info(f"{lc.y}🔐 Generating new secret key for flask ...{lc.rs}")
+            self.logger.info(
+                f"<yellow>🔐 Generating new secret key for flask ...</yellow>"
+            )
             SecretKey = "".join(
                 random.choices(string.ascii_letters + string.digits, k=32)
             )
             db.queryScript(
                 f"INSERT OR REPLACE INTO settings (name, value) VALUES ('flask_secret_key', '{SecretKey}');"
             )
-            self.logger.info(f"{lc.g}🔐 Secret key generated successfully{lc.rs}")
+            self.logger.info(f"<green>🔐 Secret key generated successfully</green>")
         self.app.secret_key = SecretKey
 
         @self.app.route("/")
@@ -154,7 +155,7 @@ class WebServer:
                 else:
                     return "404 Not Found"
             except Exception as e:
-                self.logger.error(f"{lc.r}Error: {e}{lc.rs}")
+                self.logger.error(f"<red>Error: {e}</red>")
                 return "500 Internal Server Error"
 
         @self.app.route("/<path:path>")
@@ -183,17 +184,17 @@ class WebServer:
                     except FileNotFoundError:
                         return "404 Not Found"
                     except Exception as e:
-                        self.logger.error(f"{lc.r}Error: {e}{lc.rs}")
+                        self.logger.error(f"<red>Error: {e}</red>")
                         return "500 Internal Server Error"
             return self.LoadFile(file_dir), 200
 
         log = logging.getLogger("werkzeug")
         log.setLevel(logging.ERROR)
         self.logger.info(
-            f"{lc.g}🌐 Web server started on 🔗 {lc.rs + lc.y}http://{self.host}:{self.port}{lc.rs} 🔗"
+            f"<green>🌐 Web server started on 🔗 </green><yellow>http://{self.host}:{self.port}</yellow> 🔗"
         )
         self.logger.info(
-            f"{lc.g}🔐 Panel Password: {lc.rs + lc.r + db.getSettings('admin_password', 'admin') + lc.rs}"
+            f"<green>🔐 Panel Password: </green><red>{db.getSettings('admin_password', 'admin')}</red>"
         )
 
         self.server = self.app.run(host=self.host, port=self.port, threaded=True)
@@ -221,7 +222,7 @@ class WebServer:
         return content_types.get(extension)
 
     def stop(self):
-        self.logger.info(f"{lc.r}🌐 Stopping web server ...{lc.rs}")
+        self.logger.info(f"<red>🌐 Stopping web server ...</red>")
         try:
             os.kill(os.getpid(), signal.SIGINT)
         except Exception as e:

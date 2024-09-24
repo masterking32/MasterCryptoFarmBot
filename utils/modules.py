@@ -26,11 +26,11 @@ class Module:
 
     def load_modules(self, noLog=False):
         if not noLog:
-            self.logger.info(f"{lc.g}🔍 Loading modules ...{lc.rs}")
+            self.logger.info(f"<green>🔍 Loading modules ...</green>")
 
         if not os.path.exists("modules"):
             if not noLog:
-                self.logger.info(f"{lc.y}📁 Creating modules directory ...{lc.rs}")
+                self.logger.info(f"<yellow>📁 Creating modules directory ...</yellow>")
             os.makedirs("modules")
 
         modules = os.listdir("modules")
@@ -51,7 +51,7 @@ class Module:
                 if not os.path.exists(f"modules/{module}/bot.py"):
                     if not noLog:
                         self.logger.warning(
-                            f"{lc.y}└─ ⚠️ {module} bot.py not found!{lc.rs}"
+                            f"<yellow>└─ ⚠️ {module} bot.py not found!</yellow>"
                         )
                     continue
 
@@ -62,7 +62,7 @@ class Module:
                         if not l_module["enabled"]:
                             if not noLog:
                                 self.logger.warning(
-                                    f"{lc.y}└─ ⚠️ {module} is disabled in license!{lc.rs}"
+                                    f"<yellow>└─ ⚠️ {module} is disabled in license!</yellow>"
                                 )
                             continue
                         commit_hash = l_module["commit_hash"]
@@ -79,22 +79,22 @@ class Module:
                     else:
                         if not noLog:
                             self.logger.info(
-                                f"{lc.g}└─ ✅ {lc.rs + lc.c}{module}{lc.rs + lc.g} is up to date!{lc.rs}"
+                                f"<green>└─ ✅ <cyan>{module}</cyan> is up to date!</green>"
                             )
                 if not module_found and not noLog:
                     self.logger.warning(
-                        f"{lc.y}└─ ⚠️ {lc.rs + lc.c}{module}{lc.rs + lc.y} is unverified!{lc.rs}"
+                        f"<yellow>└─ ⚠️ <cyan>{module}</cyan> is unverified!</yellow>"
                     )
 
                 self.module_list.append(module)
                 if not noLog:
                     self.logger.info(
-                        f"{lc.g}└─ ✅ {lc.rs + lc.c}{module}{lc.rs + lc.g} loaded!{lc.rs}"
+                        f"<green>└─ ✅ <cyan>{module}</cyan> loaded!</green>"
                     )
 
         if not noLog:
             self.logger.info(
-                f"✅ {lc.c}{len(self.module_list)}{lc.rs + lc.g} modules loaded!{lc.rs}"
+                f"✅ <cyan>{len(self.module_list)}</cyan> <green>modules loaded!</green>"
             )
 
     def UpdateRequired(self, module, new_commit_hash):

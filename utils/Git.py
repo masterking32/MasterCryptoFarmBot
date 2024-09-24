@@ -26,7 +26,7 @@ class Git:
             )
             return result.stdout.strip()
         except Exception as e:
-            self.logger.error(f"{lc.r} ❌ Error running git command: {e}{lc.rs}")
+            self.logger.error(f"<red> ❌ Error running git command: {e}</red>")
             return None
 
     def GetRecentLocalCommit(self, directory=None):
@@ -46,58 +46,56 @@ class Git:
         response = self._run_git_command("git --version", None)
         if response:
             return True
-        self.logger.error(f"{lc.r} ❌ Git is not installed, Please install git{lc.rs}")
+        self.logger.error(f"<red> ❌ Git is not installed, Please install git</red>")
         return False
 
     def UpdateProject(self, directory=None, RestartAfterUpdate=True):
         directory_path = directory or os.getcwd()
         project_name = "Project" if directory is None else directory.split("/")[-1]
-        self.logger.info(
-            f"{lc.g}🔄 Updating {lc.rs + lc.c}{project_name}{lc.rs + lc.g} ...{lc.rs}"
-        )
+        self.logger.info(f"<green>🔄 Updating <cyan>{project_name}</cyan> ...</green>")
 
         response = self._run_git_command("git pull", directory_path)
         if response is not None:
             self.logger.info(
-                f"{lc.g}└─ ✅ {lc.rs + lc.c}{project_name}{lc.rs + lc.g} updated successfully{lc.rs}"
+                f"<green>└─ ✅ <cyan>{project_name}</cyan> updated successfully</green>"
             )
             if RestartAfterUpdate:
-                self.logger.info(f"{lc.g}└─ 🛑 Stopping project ...{lc.rs}")
+                self.logger.info(f"<green>└─ 🛑 Stopping project ...</green>")
                 os.kill(os.getpid(), signal.SIGINT)
             return True
         self.logger.error(
-            f"{lc.r} ❌ Error while updating project, Please update manually{lc.rs}"
+            f"<red> ❌ Error while updating project, Please update manually</red>"
         )
         return False
 
     def gitClone(self, url, directory):
-        self.logger.info(f"{lc.g}🔄 Cloning project ...{lc.rs}")
+        self.logger.info(f"<green>🔄 Cloning project ...</green>")
         response = self._run_git_command(f"git clone {url} {directory}", None)
         if response is not None:
-            self.logger.info(f"{lc.g}🔄 Project cloned successfully{lc.rs}")
+            self.logger.info(f"<green>🔄 Project cloned successfully</green>")
             return True
         self.logger.error(
-            f"{lc.r} ❌ Error while cloning project, Please clone manually{lc.rs}"
+            f"<red> ❌ Error while cloning project, Please clone manually</red>"
         )
         return False
 
     def _log_git_error(self):
         self.logger.error(
-            f"{lc.r} ❌ Project is not a git repository, Please initialize git{lc.rs}"
+            f"<red> ❌ Project is not a git repository, Please initialize git</red>"
         )
         self.logger.error(
-            f"{lc.r} ❌ You need to install the project as a git repository{lc.rs}"
+            f"<red> ❌ You need to install the project as a git repository</red>"
         )
         self.logger.error(
-            f"{lc.r} ❌ Please remove the project and clone it again{lc.rs}"
+            f"<red> ❌ Please remove the project and clone it again</red>"
         )
         self.logger.error(
-            f"{lc.r} ❌ If you have any changes, Please backup them before removing{lc.rs}"
+            f"<red> ❌ If you have any changes, Please backup them before removing</red>"
         )
         self.logger.error(
-            f"{lc.r} ❌ To clone the project, Please run the following command:{lc.rs}"
+            f"<red> ❌ To clone the project, Please run the following command:</red>"
         )
         self.logger.error(
-            f"{lc.g} ❯ git clone https://github.com/masterking32/MasterCryptoFarmBot{lc.rs}"
+            f"<green> ❯ git clone https://github.com/masterking32/MasterCryptoFarmBot</green>"
         )
         os.kill(os.getpid(), signal.SIGINT)

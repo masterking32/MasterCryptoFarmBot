@@ -28,7 +28,9 @@ class auth:
                     return redirect("/admin/dashboard.py")
                 else:
                     return render_template(
-                        "auth/login.html", error="Invalid password", theme=self.theme
+                        "auth/login.html",
+                        error="Invalid password",
+                        theme=self.theme,
                     )
 
         return render_template("auth/login.html", theme=self.theme)

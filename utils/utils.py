@@ -62,19 +62,53 @@ def RemoveConsoleColor(text):
 
 
 def ansi_to_html(text):
-    text = text.replace("\x1b[0m", "</span>")
-    text = text.replace("\x1b[1m", '<span style="font-weight: bold;">')
-    text = text.replace("\x1b[3m", '<span style="font-style: italic;">')
-    text = text.replace("\x1b[4m", '<span style="text-decoration: underline;">')
-    text = text.replace("\x1b[31m", '<span style="color: red;">')
-    text = text.replace("\x1b[32m", '<span style="color: green;">')
-    text = text.replace("\x1b[33m", '<span style="color: yellow;">')
-    text = text.replace("\x1b[34m", '<span style="color: blue;">')
-    text = text.replace("\x1b[35m", '<span style="color: magenta;">')
-    text = text.replace("\x1b[36m", '<span style="color: cyan;">')
-    text = text.replace("\x1b[37m", '<span style="color: white;">')
-    text = text.replace("\n", "<br>")
-    text = text.replace("\r", "")
+    ansi_to_html_map = {
+        "\x1b[0m": "</span>",
+        "\x1b[1m": '<span style="font-weight: bold;">',
+        "\x1b[3m": '<span style="font-style: italic;">',
+        "\x1b[4m": '<span style="text-decoration: underline;">',
+        "\x1b[31m": '<span style="color: red;">',
+        "\x1b[32m": '<span style="color: green;">',
+        "\x1b[33m": '<span style="color: yellow;">',
+        "\x1b[34m": '<span style="color: blue;">',
+        "\x1b[35m": '<span style="color: magenta;">',
+        "\x1b[36m": '<span style="color: cyan;">',
+        "\x1b[37m": '<span style="color: white;">',
+        "\n": "<br>",
+        "\r": "",
+        "<red>": '<span style="color: red;">',
+        "<green>": '<span style="color: green;">',
+        "<yellow>": '<span style="color: yellow;">',
+        "<blue>": '<span style="color: blue;">',
+        "<magenta>": '<span style="color: magenta;">',
+        "<cyan>": '<span style="color: cyan;">',
+        "<white>": '<span style="color: white;">',
+        "</red>": "</span>",
+        "</green>": "</span>",
+        "</yellow>": "</span>",
+        "</blue>": "</span>",
+        "</magenta>": "</span>",
+        "</cyan>": "</span>",
+        "</white>": "</span>",
+        "<r>": '<span style="color: red;">',
+        "<g>": '<span style="color: green;">',
+        "<y>": '<span style="color: yellow;">',
+        "<b>": '<span style="color: blue;">',
+        "<m>": '<span style="color: magenta;">',
+        "<c>": '<span style="color: cyan;">',
+        "<w>": '<span style="color: white;">',
+        "</r>": "</span>",
+        "</g>": "</span>",
+        "</y>": "</span>",
+        "</b>": "</span>",
+        "</m>": "</span>",
+        "</c>": "</span>",
+        "</w>": "</span>",
+    }
+
+    for ansi_code, html_code in ansi_to_html_map.items():
+        text = text.replace(ansi_code, html_code)
+
     return text + "</span>"
 
 
