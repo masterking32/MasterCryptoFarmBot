@@ -13,7 +13,6 @@ class auth:
         self.theme = "night"
         db = Database("database.db", self.logger)
         self.theme = db.getSettings("theme", "night")
-        db.Close()
 
     def login(self, request, webServer):
         db = Database("database.db", webServer.logger)
@@ -24,7 +23,6 @@ class auth:
             if "password" in request.form:
                 password = request.form["password"]
                 adminPassword = db.getSettings("admin_password", "admin")
-                db.Close()
                 if password == adminPassword:
                     session["admin"] = True
                     return redirect("/admin/dashboard.py")

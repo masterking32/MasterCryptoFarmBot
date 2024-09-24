@@ -141,8 +141,6 @@ async def start_bot():
     modules.load_modules()
     db.migration_modules(modules.module_list)
 
-    db.Close()
-
     modulesThread = Module_Thread(log)
     module_update_thread = None
 

@@ -85,7 +85,6 @@ class Module_Thread:
 
             modules_output.append(new_module)
 
-        db.Close()
         return modules_output
 
     def CheckMainProjectUpdate(self):

@@ -38,7 +38,6 @@ class Module:
 
         db = database.Database("database.db", self.logger)
         license = db.getSettings("license", "Free License")
-        db.Close()
 
         license_modules = apiObj.get_user_modules(license)
         if not license_modules or "error" in license_modules:

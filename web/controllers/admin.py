@@ -24,7 +24,6 @@ class admin:
         self.theme = "night"
         db = Database("database.db", self.logger)
         self.theme = db.getSettings("theme", "night")
-        db.Close()
 
     def dashboard(self, request, webServer):
         if "admin" not in session:
@@ -32,7 +31,6 @@ class admin:
 
         db = Database("database.db", webServer.logger)
         license = db.getSettings("license", "Free License")
-        db.Close()
         git = Git.Git(webServer.logger, webServer.config)
         apiObj = api.API(webServer.logger)
         mcf_version = apiObj.get_mcf_version()
@@ -106,7 +104,6 @@ class admin:
                     f"{lc.g}🔄 Settings updated, Theme: {lc.rs + lc.c + request.form['theme'] + lc.rs}"
                 )
 
-        db.Close()
         themeList = [
             "night",
             "light",
@@ -270,7 +267,6 @@ class admin:
                 credit = response["credit"]
                 ton_wallet = response["ton_wallet"]
                 user_id = response["user_id"]
-        db.Close()
         return render_template(
             "admin/change_license.html",
             error=error,
@@ -589,7 +585,6 @@ class admin:
                             )
 
         if requests.method != "POST":
-            db.Close()
             return render_template(
                 "admin/bots.html",
                 error=error,
@@ -774,7 +769,6 @@ class admin:
                             )
                             break
 
-        db.Close()
         return render_template(
             "admin/bots.html",
             error=error,
@@ -793,7 +787,6 @@ class admin:
         apiObj = api.API(webServer.logger)
         db = Database("database.db", webServer.logger)
         license = db.getSettings("license", "Free License")
-        db.Close()
 
         if license == "Free License":
             error = "Please change your license to add bot."
@@ -888,7 +881,6 @@ class admin:
                     ] = True
                     db = Database("database.db", webServer.logger)
                     db.updateSettings(f"{module['name']}_disabled", True)
-                    db.Close()
                     break
 
         return render_template(

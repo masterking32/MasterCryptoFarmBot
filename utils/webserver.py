@@ -111,7 +111,6 @@ class WebServer:
             template_path = self.GetPublicHTMLPath(fileName)
             db = Database("database.db", self.logger)
             theme = db.getSettings("theme", "dark")
-            db.Close()
             if os.path.isfile(template_path):
                 return render_template(
                     fileName, App_Version=vr.APP_VERSION, theme=theme
@@ -197,7 +196,6 @@ class WebServer:
             f"{lc.g}🔐 Panel Password: {lc.rs + lc.r + db.getSettings('admin_password', 'admin') + lc.rs}"
         )
 
-        db.Close()
         self.server = self.app.run(host=self.host, port=self.port, threaded=True)
 
     def get_content_type(self, path):
