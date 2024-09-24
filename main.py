@@ -73,10 +73,10 @@ async def start_bot():
 
     apiObj = api.API(log)
     log.info(f"{lc.g}🌐 Checking MCF version ...{lc.rs}")
-    mcf_version = apiObj.GetMCFVersion()
+    mcf_version = apiObj.get_mcf_version()
     commit_hash = None
     commit_date = None
-    if mcf_version is not None:
+    if mcf_version is not None and "commit_hash" in mcf_version:
         commit_hash = mcf_version["commit_hash"]
         commit_date = mcf_version["commit_date"]
         log.info(
@@ -122,15 +122,19 @@ async def start_bot():
     log.info(f"{lc.g}🔑 Bot License: {lc.rs + licenseTypeMessage}")
     if "free" not in licenseType.lower():
         log.info(f"{lc.g}🔑 Checking license ...{lc.rs}")
-        response = apiObj.ValidateLicense(licenseType)
-        if response is not None:
-            log.info(
-                f"{lc.g}└─ ✅ License validated, Credit: {lc.rs + lc.c + str(response['credit']) + '$' + lc.rs + lc.g}, IP: {lc.rs + lc.c + utils.HideIP(response['ip']) + lc.rs}"
-            )
-        else:
-            log.info(f"{lc.r}└─ ❌ Invalid license key ...{lc.rs}")
+        response = apiObj.validate_license(licenseType)
+        if (
+            response is None
+            or "error" in response
+            and response.get("status") != "success"
+        ):
+            log.info(f"{lc.r}└─ ❌ Unable to validate license key ...{lc.rs}")
             log.info(f"{lc.r}🛑 Bot is stopping ... {lc.rs}")
             return
+
+        log.info(
+            f"{lc.g}└─ ✅ License validated, Credit: {lc.rs + lc.c + str(response['credit']) + '$' + lc.rs + lc.g}, IP: {lc.rs + lc.c + utils.HideIP(response['ip']) + lc.rs}"
+        )
 
     # loading modules
     modules = Module(log)

@@ -35,9 +35,17 @@ class admin:
         db.Close()
         git = Git.Git(webServer.logger, webServer.config)
         apiObj = api.API(webServer.logger)
-        mcf_version = apiObj.GetMCFVersion()
-        commit_hash = None if mcf_version is None else mcf_version["commit_hash"]
-        commit_date = None if mcf_version is None else mcf_version["commit_date"]
+        mcf_version = apiObj.get_mcf_version()
+        commit_hash = (
+            None
+            if mcf_version is None or "commit_hash" not in mcf_version
+            else mcf_version["commit_hash"]
+        )
+        commit_date = (
+            None
+            if mcf_version is None or "commit_date" not in mcf_version
+            else mcf_version["commit_date"]
+        )
 
         Update_Available = False
         if commit_hash is not None and not git.GitHasCommit(commit_hash):
@@ -240,8 +248,8 @@ class admin:
 
         if request.method == "POST" and "license" in request.form:
             license_key = request.form["license"]
-            response = apiObj.ValidateLicense(license_key)
-            if response != None:
+            response = apiObj.validate_license(license_key)
+            if response != None and "error" not in response and "credit" in response:
                 db.updateSettings("license", license_key)
                 success = "License updated successfully."
                 webServer.logger.info(
@@ -257,8 +265,8 @@ class admin:
             else:
                 error = "Invalid license key."
         else:
-            response = apiObj.ValidateLicense(license)
-            if response != None:
+            response = apiObj.validate_license(license)
+            if response != None and "error" not in response and "credit" in response:
                 credit = response["credit"]
                 ton_wallet = response["ton_wallet"]
                 user_id = response["user_id"]
@@ -796,8 +804,8 @@ class admin:
                 modules=[],
                 theme=self.theme,
             )
-        server_modules = apiObj.GetModules(license)
-        if server_modules is None:
+        server_modules = apiObj.get_modules(license)
+        if server_modules is None or "error" in server_modules:
             error = "Unable to get modules, please try again later."
             return render_template(
                 "admin/add_bot.html",
@@ -843,8 +851,8 @@ class admin:
             moduleID = int(request.form["install_module"])
             for module in server_modules["modules"]:
                 if int(module["id"]) == moduleID:
-                    response = apiObj.InstallModule(license, moduleID)
-                    if "error" in response:
+                    response = apiObj.install_module(license, moduleID)
+                    if response is None or "error" in response:
                         error = response["error"]
                         break
 

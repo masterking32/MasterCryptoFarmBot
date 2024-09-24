@@ -11,120 +11,91 @@ class API:
     def __init__(self, logger):
         self.logger = logger
 
-    def ValidateLicense(self, license, retries=5):
-        if retries == 0:
-            return None
-
-        try:
-            retries -= 1
-            response = requests.post(
-                "https://api.masterking32.com/mcf_bot/api.php",
-                data={"license_key": license, "action": "get_license"},
-            )
-            if response.status_code == 200:
-                response = json.loads(response.text)
-                if response["status"] == "success":
-                    return response
+    def _post_request(self, url, data, retries=5):
+        for _ in range(retries):
+            try:
+                response = requests.post(url, data=data)
+                if response.status_code == 200:
+                    return json.loads(response.text)
+                elif response.status_code == 403:
+                    return {"error": "License is not valid, please check your license"}
                 else:
-                    return None
-            else:
-                return None
-        except Exception as e:
-            # self.logger.error(f"API Error: {e}")
-            return self.ValidateLicense(license, retries)
+                    return {"error": "API Error: Please try again later"}
+            except Exception as e:
+                # self.logger.error(f"API Error: {e}")
+                pass
+        return None
 
-    def GetModules(self, license, retires=5):
-        if retires == 0:
-            return {"error": "Unable to get modules, please try again later!"}
+    def __get_request(self, url, retries=5):
+        for _ in range(retries):
+            try:
+                response = requests.get(url)
+                if response.status_code == 200:
+                    return json.loads(response.text)
+            except Exception as e:
+                # self.logger.error(f"API Error: {e}")
+                pass
+        return None
 
-        try:
-            retires -= 1
-            response = requests.post(
-                "https://api.masterking32.com/mcf_bot/api.php",
-                data={"license_key": license, "action": "get_modules"},
-            )
-            if response.status_code == 200:
-                response = json.loads(response.text)
-                if response["status"] == "success":
-                    return response
-                else:
-                    return {"error": response["message"]}
-            elif response.status_code == 403:
-                return {"error": "License is not valid, please check your license"}
-            else:
-                return {"error": "Unable to get modules, please try again later"}
-        except Exception as e:
-            # self.logger.error(f"API Error: {e}")
-            return self.GetModules(license, retires)
+    def validate_license(self, license):
+        data = {"license_key": license, "action": "get_license"}
+        response = self._post_request(
+            "https://api.masterking32.com/mcf_bot/api.php", data
+        )
+        if response and response.get("status") == "success":
+            return response
+        return None
 
-    def InstallModule(self, license, moduleID, retries=5):
-        if retries == 0:
-            return {"error": "Unable to install module, please try again later!"}
+    def get_modules(self, license):
+        data = {"license_key": license, "action": "get_modules"}
+        response = self._post_request(
+            "https://api.masterking32.com/mcf_bot/api.php", data
+        )
+        if response:
+            if response.get("status") == "success":
+                return response
+            return {
+                "error": response.get(
+                    "message", "Unable to get modules, please try again later"
+                )
+            }
+        return {"error": "Unable to get modules, please try again later"}
 
-        try:
-            retries -= 1
-            response = requests.post(
-                "https://api.masterking32.com/mcf_bot/api.php",
-                data={
-                    "license_key": license,
-                    "action": "install_module",
-                    "module_id": moduleID,
-                },
-            )
-            if response.status_code == 200:
-                response = json.loads(response.text)
-                if response["status"] == "success":
-                    return response
-                else:
-                    return {"error": response["message"]}
-            elif response.status_code == 403:
-                return {"error": "License is not valid, please check your license"}
-            elif response.status_code == 400 and "error" in response:
-                return {"error": response["error"]}
-            else:
-                return {"error": "Unable to install module, please try again later"}
-        except Exception as e:
-            # self.logger.error(f"API Error: {e}")
-            return self.InstallModule(license, moduleID, retries)
+    def install_module(self, license, module_id):
+        data = {
+            "license_key": license,
+            "action": "install_module",
+            "module_id": module_id,
+        }
+        response = self._post_request(
+            "https://api.masterking32.com/mcf_bot/api.php", data
+        )
+        if response:
+            if response.get("status") == "success":
+                return response
+            return {
+                "error": response.get(
+                    "message", "Unable to install module, please try again later"
+                )
+            }
+        return {"error": "Unable to install module, please try again later"}
 
-    def GetMCFVersion(self, retries=5):
-        if retries == 0:
-            return None
+    def get_mcf_version(self):
+        response = self.__get_request(
+            "https://api.masterking32.com/mcf_bot/mcf_version.php"
+        )
+        if response and "commit_hash" in response and "commit_date" in response:
+            return response
+        return None
 
-        retries -= 1
-        try:
-            response = requests.get(
-                "https://api.masterking32.com/mcf_bot/mcf_version.php"
-            )
-            if response.status_code == 200:
-                return json.loads(response.text)
-            else:
-                return self.GetMCFVersion(retries)
-        except Exception as e:
-            # self.logger.error(f"API Error: {e}")
-            return self.GetMCFVersion(retries)
-
-    def GetUserModules(self, license, retries=5):
-        if retries == 0:
-            return None
-
+    def get_user_modules(self, license):
         if license == "Free License":
             return None
 
-        try:
-            retries -= 1
-            response = requests.post(
-                "https://api.masterking32.com/mcf_bot/api.php",
-                data={"license_key": license, "action": "get_user_modules"},
-            )
-            if response.status_code == 200:
-                response = json.loads(response.text)
-                if response["status"] == "success" and "modules" in response:
-                    return response["modules"]
-                else:
-                    return None
-            else:
-                return None
-        except Exception as e:
-            # self.logger.error(f"API Error: {e}")
-            return self.GetUserModules(license, retries)
+        data = {"license_key": license, "action": "get_user_modules"}
+        response = self._post_request(
+            "https://api.masterking32.com/mcf_bot/api.php", data
+        )
+        if response and response.get("status") == "success" and "modules" in response:
+            return response["modules"]
+        return None

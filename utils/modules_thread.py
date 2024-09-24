@@ -34,9 +34,9 @@ class Module_Thread:
 
         license_modules = None
         if license != "Free License" and Update:
-            license_modules = self.api.GetUserModules(license)
+            license_modules = self.api.get_user_modules(license)
 
-        if license_modules is None:
+        if license_modules is None or "error" in license_modules:
             license_modules = []
 
         modules_output = []
@@ -98,8 +98,8 @@ class Module_Thread:
             if localGitCommit is None:
                 return
 
-            mcf_version = self.api.GetMCFVersion()
-            if mcf_version is None:
+            mcf_version = self.api.get_mcf_version()
+            if mcf_version is None or "commit_hash" not in mcf_version:
                 return
 
             commit_hash = mcf_version["commit_hash"]
