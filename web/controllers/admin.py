@@ -826,7 +826,7 @@ class admin:
 
         for module in server_modules["modules"]:
             if "commit_date" in module and module["commit_date"] is not None:
-                module["commit_date"] = utils.TimeAgo(module["commit_date"])
+                module["commit_date"] = module["commit_date"]
             else:
                 module["commit_date"] = "Unknown"
 

@@ -57,6 +57,7 @@ class Module:
                     continue
 
                 commit_hash = None
+                module_found = False
                 for l_module in license_modules:
                     if l_module["name"] == module:
                         if not l_module["enabled"]:
@@ -66,6 +67,7 @@ class Module:
                                 )
                             continue
                         commit_hash = l_module["commit_hash"]
+                        module_found = True
 
                 if (
                     utils.getConfig(config.config, "auto_update_modules", True)
@@ -89,6 +91,10 @@ class Module:
                             self.logger.info(
                                 f"{lc.g}└─ ✅ {lc.rs + lc.c}{module}{lc.rs + lc.g} is up to date!{lc.rs}"
                             )
+                if not module_found:
+                    self.logger.warning(
+                        f"{lc.y}└─ ⚠️ {lc.rs + lc.c}{module}{lc.rs + lc.y} is unverified!{lc.rs}"
+                    )
 
                 self.module_list.append(module)
                 if not noLog:
