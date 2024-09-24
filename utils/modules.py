@@ -91,7 +91,7 @@ class Module:
                             self.logger.info(
                                 f"{lc.g}└─ ✅ {lc.rs + lc.c}{module}{lc.rs + lc.g} is up to date!{lc.rs}"
                             )
-                if not module_found:
+                if not module_found and not noLog:
                     self.logger.warning(
                         f"{lc.y}└─ ⚠️ {lc.rs + lc.c}{module}{lc.rs + lc.y} is unverified!{lc.rs}"
                     )
