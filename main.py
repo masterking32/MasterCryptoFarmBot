@@ -203,12 +203,14 @@ async def start_bot():
         if update_interval < 600:
             update_interval = 600
         log.info(
-            f"{lc.g}🔄 Auto module update checker is running. Checking every {update_interval} seconds.{lc.rs}"
+            f"{lc.g}🔄 Auto module update checker is running. Checking every {lc.rs + lc.c}{update_interval}{lc.rs + lc.g} seconds.{lc.rs}"
         )
         module_update_thread = threading.Thread(
             target=modulesThread.UpdateCheckThread, args=()
         )
         module_update_thread.start()
+
+    modulesThread.RunAllModules()
 
     while True:
         try:
