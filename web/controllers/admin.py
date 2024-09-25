@@ -631,7 +631,7 @@ class admin:
             if str(bot["id"]) == str(BotID):
                 webServer.module_threads.stop_module(bot["name"])
                 webServer.logger.info(
-                    f"<red>🛑 Bot stopped, Bot Name: <cyan>{bot['name']}</cyan></red>"
+                    f"<red>🛑 Bot module stopped, Bot Module Name: <cyan>{bot['name']}</cyan></red>"
                 )
                 return f"Bot {bot['name']} stopped successfully."
         return None
@@ -642,7 +642,7 @@ class admin:
             if str(bot["id"]) == str(BotID):
                 webServer.module_threads.run_module(bot["name"])
                 webServer.logger.info(
-                    f"<green>▶ Bot started, Bot Name: <cyan>{bot['name']}</cyan></green>"
+                    f"<green>▶ Bot module started, Bot Module Name: <cyan>{bot['name']}</cyan></green>"
                 )
                 return f"Bot {bot['name']} started successfully."
         return None
@@ -653,7 +653,7 @@ class admin:
             if str(bot["id"]) == str(BotID):
                 webServer.module_threads.restart_module(bot["name"])
                 webServer.logger.info(
-                    f"<green>🔄 Bot restarted, Bot Name: <cyan>{bot['name']}</cyan></green>"
+                    f"<green>🔄 Bot module restarted, Bot Module Name: <cyan>{bot['name']}</cyan></green>"
                 )
                 return f"Bot {bot['name']} restarted successfully."
         return None
