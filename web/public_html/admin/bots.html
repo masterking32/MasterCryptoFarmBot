@@ -418,6 +418,37 @@
                   {% endif %}
                 </p>
               </div>
+              {% if bot.disabled == false %}
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <div class="text-center">
+                <p class="text-center">
+                  Bot Status: {% if bot.is_running %}
+                  <span class="badge badge-success">Running</span> {% else %}
+                  <span class="badge badge-error">Stopped</span>
+                  {% endif %}
+                </p>
+                {% if bot.is_running %}
+                <a
+                  href="./bots.py?stop_bot={{ bot.id }}"
+                  class="btn btn-error mt-2"
+                >
+                  <i class="fa-solid fa-stop"></i> Stop Bot Module</a
+                >
+                <a
+                  href="./bots.py?restart_bot={{ bot.id }}"
+                  class="btn btn-warning mt-2"
+                  ><i class="fa-solid fa-redo"></i> Restart Bot Module</a
+                >
+                {% else %}
+                <a
+                  href="./bots.py?start_bot={{ bot.id }}"
+                  class="btn btn-success mt-2"
+                  ><i class="fa-solid fa-play"></i> Start Bot Module</a
+                >
+                {% endif %}
+              </div>
+
+              {% endif %}
               <hr class="h-px my-4 border-0 bg-gray-700" />
               {% if bot.settings_inputs is not none %}
               <form action="./bots.py" method="POST">

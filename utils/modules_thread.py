@@ -237,15 +237,21 @@ class Module_Thread:
                 ),
                 None,
             )
-            if module_data is None:
-                self.logger.error(f"<red>❌ {module} module not running!</red>")
-                return
 
             self.logger.info(f"<green>🚀 Stopping {module} module ...</green>")
-            process = psutil.Process(module_data["process"].pid)
-            for child in process.children(recursive=True):
-                child.kill()
-            process.kill()
+            if module_data is None:
+                # self.logger.info(f"<red>❌ {module} module not running!</red>")
+                return
+
+            try:
+                process = psutil.Process(module_data["process"].pid)
+                for child in process.children(recursive=True):
+                    child.kill()
+                process.kill()
+            except psutil.NoSuchProcess:
+                self.logger.warning(
+                    f"<yellow>⚠️ Process with PID {module_data['process'].pid} not found, it is already stopped!</yellow>"
+                )
 
             module_data["is_running"] = False
             self.logger.info(f"<green>🚀 {module} module stopped!</green>")
@@ -256,17 +262,26 @@ class Module_Thread:
         try:
             module_path = os.path.join(self.MODULES_DIR, module, self.BOT_FILE)
             if not os.path.exists(module_path):
-                self.logger.error(f"<red>❌ {module} module not found!</red>")
+                self.logger.info(f"<red>❌ {module} module not found!</red>")
+                return
+
+            db = database.Database("database.db", self.logger)
+            if db.getSettings(f"{module}_disabled", "0") == "1":
                 return
 
             self.logger.info(f"<green>🚀 Restarting {module} module ...</green>")
-            self.stop_module(module)
 
-            db = database.Database("database.db", self.logger)
-            if not db.getSettings(f"{module}_disabled", "0") == "1":
-                self.run_module(module)
+            if self.is_module_running(module):
+                self.stop_module(module)
+
+            self.run_module(module)
         except Exception as e:
             self.logger.error(f"RestartModule: {e}")
+
+    def is_module_running(self, module):
+        return any(
+            rm["module"] == module and rm["is_running"] for rm in self.running_modules
+        )
 
     def run_all_modules(self):
         run_delay = utils.getConfig(config.config, "run_delay", 60)

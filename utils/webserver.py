@@ -17,7 +17,7 @@ import utils.api as api
 
 
 class WebServer:
-    def __init__(self, logger, config):
+    def __init__(self, logger, config, module_threads):
         self.logger = logger
         self.config = config
         self.host = self.config["web_server"]["host"]
@@ -25,6 +25,7 @@ class WebServer:
         self.server = None
         self.public_ip = "127.0.0.1"
         self.system_os = None
+        self.module_threads = module_threads
 
     def load_file(self, file):
         try:

@@ -382,7 +382,6 @@ class admin:
         success = None
 
         bots = self._bots_load_all(webServer)
-
         if "disable" in requests.args:
             success = self._bots_disable(requests, bots, webServer)
         elif "enable" in requests.args:
@@ -393,6 +392,15 @@ class admin:
             success = self._bots_disable_account(requests, bots, webServer)
         elif "enable_account" in requests.args and "bot_id" in requests.args:
             success = self._bots_enable_account(requests, bots, webServer)
+        elif "stop_bot" in requests.args:
+            success = self._bots_stop_bot(requests, bots, webServer)
+        elif "start_bot" in requests.args:
+            success = self._bots_start_bot(requests, bots, webServer)
+        elif "restart_bot" in requests.args:
+            success = self._bots_restart_bot(requests, bots, webServer)
+
+        if requests.args:
+            bots = self._bots_load_all(webServer)
 
         if requests.method != "POST":
             return render_template(
@@ -430,11 +438,11 @@ class admin:
             if os.path.isdir(f"modules/{module}") and os.path.exists(
                 f"modules/{module}/bot.py"
             ):
-                bot = self._bots_load_single(module, db)
+                bot = self._bots_load_single(module, db, webServer)
                 bots.append(bot)
         return bots
 
-    def _bots_load_single(self, module, db):
+    def _bots_load_single(self, module, db, webServer):
         bot = {"name": module, "id": hashlib.md5(module.encode()).hexdigest()}
         bot["logo"] = self._bots_load_logo(module)
         bot["disabled"] = db.getSettings(f"{module}_disabled", False)
@@ -447,6 +455,7 @@ class admin:
         )
         bot["accounts"] = self._bots_load_json(f"modules/{module}/accounts.json", [])
         bot["settings_inputs"] = self._bots_prepare_settings_inputs(bot)
+        bot["is_running"] = webServer.module_threads.is_module_running(module)
         return bot
 
     def _bots_load_logo(self, module):
@@ -522,6 +531,7 @@ class admin:
                 webServer.logger.info(
                     f"<red>🔒 Bot disabled, Bot Name: <cyan>{bot['name']}</cyan></red>"
                 )
+                webServer.module_threads.stop_module(bot["name"])
                 return f"Bot {bot['name']} disabled successfully."
         return None
 
@@ -535,6 +545,8 @@ class admin:
                 webServer.logger.info(
                     f"<green>🔓 Bot enabled, Bot Name: <cyan>{bot['name']}</cyan></green>"
                 )
+
+                webServer.module_threads.run_module(bot["name"])
                 return f"Bot {bot['name']} enabled successfully."
         return None
 
@@ -595,6 +607,39 @@ class admin:
                         )
         return None
 
+    def _bots_stop_bot(self, requests, bots, webServer):
+        BotID = requests.args.get("stop_bot", 0)
+        for bot in bots:
+            if str(bot["id"]) == str(BotID):
+                webServer.module_threads.stop_module(bot["name"])
+                webServer.logger.info(
+                    f"<red>🛑 Bot stopped, Bot Name: <cyan>{bot['name']}</cyan></red>"
+                )
+                return f"Bot {bot['name']} stopped successfully."
+        return None
+
+    def _bots_start_bot(self, requests, bots, webServer):
+        BotID = requests.args.get("start_bot", 0)
+        for bot in bots:
+            if str(bot["id"]) == str(BotID):
+                webServer.module_threads.run_module(bot["name"])
+                webServer.logger.info(
+                    f"<green>▶ Bot started, Bot Name: <cyan>{bot['name']}</cyan></green>"
+                )
+                return f"Bot {bot['name']} started successfully."
+        return None
+
+    def _bots_restart_bot(self, requests, bots, webServer):
+        BotID = requests.args.get("restart_bot", 0)
+        for bot in bots:
+            if str(bot["id"]) == str(BotID):
+                webServer.module_threads.restart_module(bot["name"])
+                webServer.logger.info(
+                    f"<green>🔄 Bot restarted, Bot Name: <cyan>{bot['name']}</cyan></green>"
+                )
+                return f"Bot {bot['name']} restarted successfully."
+        return None
+
     def _bots_save_accounts(self, bot_name, accounts):
         with open(f"modules/{bot_name}/accounts.json", "w") as f:
             json.dump(accounts, f, indent=4)
@@ -619,6 +664,8 @@ class admin:
                 webServer.logger.info(
                     f"<green>🔄 Bot settings updated, Bot Name: <cyan>{bot['name']}</cyan></green>"
                 )
+
+                webServer.module_threads.restart_module(bot["name"])
                 return f"Settings updated successfully.", None
         return None, "Bot not found."
 

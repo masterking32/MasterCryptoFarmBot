@@ -172,7 +172,7 @@ async def start_bot():
     else:
         log.error("<red>❌ No accounts found ...</red>")
 
-    web_server = WebServer(log, config.config)
+    web_server = WebServer(log, config.config, modulesThread)
     threading.Thread(target=asyncio.run, args=(web_server.start(),)).start()
 
     await asyncio.sleep(1)
