@@ -56,15 +56,14 @@ async def start_bot():
     log.info(f"<green>🚀 Starting MCF ...</green>")
 
     git = Git.Git(log, config.config)
-    git_installed = git.CheckGitInstalled()
-    if not git_installed:
-        log.info("<red>🛑 Bot is stopping ... </red>")
+    if not git.CheckGitInstalled():
+        log.error("<red>🛑 Git is not installed. Bot is stopping ... </red>")
         exit()
 
     log.info("<green>🔍 Checking git repository ...</green>")
     localGitCommit = git.GetRecentLocalCommit()
     if localGitCommit is None:
-        log.error("<red>🛑 Bot is stopping ... </red>")
+        log.error("<red>🛑 Unable to get local git commit. Bot is stopping ... </red>")
         return
 
     log.info(
@@ -74,9 +73,7 @@ async def start_bot():
     apiObj = api.API(log)
     log.info("<green>🌐 Checking MCF version ...</green>")
     mcf_version = apiObj.get_mcf_version()
-    commit_hash = None
-    commit_date = None
-    if mcf_version is not None and "commit_hash" in mcf_version:
+    if mcf_version and "commit_hash" in mcf_version:
         commit_hash = mcf_version["commit_hash"]
         commit_date = mcf_version["commit_date"]
         log.info(
@@ -91,25 +88,19 @@ async def start_bot():
                 log.error("<red>🛑 Please restart the bot ... </red>")
                 return
             else:
-                log.warning("<red>❌ Please update the project...</red>")
-                log.info("<red>🛑 Bot is stopping ... </red>")
+                log.error(
+                    "<red>❌ Please update the project manually. Bot is stopping ... </red>"
+                )
                 return
         else:
             log.info("<green>✅ Project is up to date ...</green>")
     else:
-        log.info("<red>└─ ❌ Unable to get MCF version ...</red>")
-        log.info("<red>🛑 Bot is stopping ... </red>")
+        log.error("<red>❌ Unable to get MCF version. Bot is stopping ... </red>")
         return
 
-    if not os.path.exists("temp"):
-        log.info("<yellow>📁 Creating temp directory ...</yellow>")
-        os.makedirs("temp")
+    os.makedirs("temp", exist_ok=True)
+    os.makedirs("telegram_accounts", exist_ok=True)
 
-    if not os.path.exists("telegram_accounts"):
-        log.info("<yellow>📁 Creating telegram_accounts directory ...</yellow>")
-        os.makedirs("telegram_accounts")
-
-    # Database connection
     db = Database("database.db", log)
     db.migration()
 
@@ -123,37 +114,30 @@ async def start_bot():
     if "free" not in licenseType.lower():
         log.info("<green>🔑 Checking license ...</green>")
         response = apiObj.validate_license(licenseType)
-        if (
-            response is None
-            or "error" in response
-            and response.get("status") != "success"
-        ):
-            log.info("<red>└─ ❌ Unable to validate license key ...</red>")
-            log.info("<red>🛑 Bot is stopping ... </red>")
+        if not response or response.get("status") != "success":
+            log.error(
+                "<red>❌ Unable to validate license key. Bot is stopping ... </red>"
+            )
             return
 
         log.info(
-            f"<green>└─ ✅ License validated, Credit: </green><cyan>{str(response['credit'])}$</cyan><green>, IP: </green><cyan>{utils.HideIP(response['ip'])}</cyan>"
+            f"<green>└─ ✅ License validated, Credit: </green><cyan>{response['credit']}$</cyan><green>, IP: </green><cyan>{utils.HideIP(response['ip'])}</cyan>"
         )
 
-    # loading modules
     modules = Module(log)
     modules.load_modules()
     db.migration_modules(modules.module_list)
 
     modulesThread = Module_Thread(log)
-    module_update_thread = None
 
     if os.path.exists("./telegram_accounts/accounts.json"):
         log.info("<green>👤 Reading accounts.json file (Pyrogram Accounts) ...</green>")
         with open("./telegram_accounts/accounts.json", "r") as f:
             accounts = json.load(f)
-            f.close()
             if accounts:
                 log.info(
-                    f"<green>└─ ✅ Found </green><cyan>{str(len(accounts))}</cyan><green> Pyrogram accounts ...</green>"
+                    f"<green>└─ ✅ Found </green><cyan>{len(accounts)}</cyan><green> Pyrogram accounts ...</green>"
                 )
-
                 log.info(
                     "<green>🔍 Checking Pyrogram session and account files ...</green>"
                 )
@@ -171,30 +155,25 @@ async def start_bot():
                         )
                         os.remove(f"./telegram_accounts/{session}")
 
-                for account in accounts:
-                    if not os.path.exists(
+                accounts = [
+                    account
+                    for account in accounts
+                    if os.path.exists(
                         f"./telegram_accounts/{account['session_name']}.session"
-                    ):
-                        log.info(
-                            f"<red>└─ ❌ {account['session_name']}.session file not found ...</red>"
-                        )
-                        accounts.remove(account)
+                    )
+                ]
 
                 with open("./telegram_accounts/accounts.json", "w") as f:
                     json.dump(accounts, f, indent=2)
-                    f.close()
 
                 log.info("<green>└─ ✅ Session files are up to date ...</green>")
             else:
-                log.info("<red>└─ ❌ No Pyrogram accounts found ...</red>")
-        f.close()
+                log.error("<red>❌ No Pyrogram accounts found ...</red>")
     else:
-        log.info("<red>└─ ❌ No accounts found ...</red>")
+        log.error("<red>❌ No accounts found ...</red>")
 
-    # Web server
     web_server = WebServer(log, config.config)
-    thread = threading.Thread(target=asyncio.run, args=(web_server.start(),))
-    thread.start()
+    threading.Thread(target=asyncio.run, args=(web_server.start(),)).start()
 
     await asyncio.sleep(1)
     log.info("<green>🟢 MCF is ready to use! Check your Web Control Panel.</green>")
@@ -207,10 +186,7 @@ async def start_bot():
         log.info(
             f"<green>🔄 Auto module update checker is running. Checking every </green><cyan>{update_interval}</cyan><green> seconds.</green>"
         )
-        module_update_thread = threading.Thread(
-            target=modulesThread.update_check_thread, args=()
-        )
-        module_update_thread.start()
+        threading.Thread(target=modulesThread.update_check_thread).start()
 
     modulesThread.run_all_modules()
 
@@ -220,7 +196,6 @@ async def start_bot():
         except KeyboardInterrupt:
             log.info("<red>🛑 Bot is stopping ... </red>")
             os.kill(os.getpid(), signal.SIGINT)
-            # web_server.stop()
             break
 
 
