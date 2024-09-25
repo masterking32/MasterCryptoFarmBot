@@ -133,8 +133,15 @@ async def import_sessions() -> None:
         )
         async with session:
             user_data = await session.get_me()
+
+        clean_session_name = "".join(e for e in session_name if e.isalnum())
+        os.rename(
+            f"telegram_accounts/{session_file}",
+            f"telegram_accounts/{clean_session_name}.session",
+        )
+
         account = {
-            "session_name": session_name,
+            "session_name": clean_session_name,
             "phone_number": user_data.phone_number,
             "id": user_data.id,
             "first_name": user_data.first_name,
