@@ -694,6 +694,9 @@ class admin:
                     )
                     proxyTestResponse = utils.testProxy(account["proxy"])
                     if not proxyTestResponse:
+                        webServer.logger.info(
+                            "<red>└─ ❌ Proxy is not working. It is either invalid or too slow.</red>"
+                        )
                         return None, "Proxy is not working."
                     webServer.logger.info(
                         f"<green>└─ ✅ Proxy tested successfully, IP: </green><cyan>{utils.HideIP(proxyTestResponse)}</cyan>"
@@ -723,6 +726,9 @@ class admin:
                             )
                             proxyTestResponse = utils.testProxy(account["proxy"])
                             if not proxyTestResponse:
+                                webServer.logger.info(
+                                    "<red>└─ ❌ Proxy is not working. It is either invalid or too slow.</red>"
+                                )
                                 return None, "Proxy is not working."
                             webServer.logger.info(
                                 f"<green>└─ ✅ Proxy tested successfully, IP: </green><cyan>{utils.HideIP(proxyTestResponse)}</cyan>"
