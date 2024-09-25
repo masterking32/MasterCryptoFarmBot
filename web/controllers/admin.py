@@ -814,103 +814,60 @@ class admin:
 
         if license == "Free License":
             error = "Please change your license to add bot."
-            return render_template(
-                "admin/add_bot.html",
-                error=error,
-                success=success,
-                modules=[],
-                theme=self.theme,
-            )
-        server_modules = apiObj.get_modules(license)
-        if server_modules is None or "error" in server_modules:
-            error = "Unable to get modules, please try again later."
-            return render_template(
-                "admin/add_bot.html",
-                error=error,
-                success=success,
-                modules=[],
-                theme=self.theme,
-            )
-        elif "error" in server_modules:
-            error = server_modules["error"]
-            return render_template(
-                "admin/add_bot.html",
-                error=error,
-                success=success,
-                modules=[],
-                theme=self.theme,
-            )
-
-        installed_ModulesDir = os.listdir("modules")
-        installed_Modules = []
-        for module in installed_ModulesDir:
-            if os.path.isdir(f"modules/{module}") and os.path.exists(
-                f"modules/{module}/bot.py"
-            ):
-                installed_Modules.append(module)
-
-        for module in server_modules["modules"]:
-            if "commit_date" in module and module["commit_date"] is not None:
-                module["commit_date"] = module["commit_date"]
+        else:
+            server_modules = apiObj.get_modules(license)
+            if server_modules is None or "error" in server_modules:
+                error = "Unable to get modules, please try again later."
             else:
-                module["commit_date"] = "Unknown"
+                installed_ModulesDir = os.listdir("modules")
+                installed_Modules = [
+                    module
+                    for module in installed_ModulesDir
+                    if os.path.isdir(f"modules/{module}")
+                    and os.path.exists(f"modules/{module}/bot.py")
+                ]
 
-            if module["name"] in installed_Modules:
-                server_modules["modules"][server_modules["modules"].index(module)][
-                    "installed"
-                ] = True
-            else:
-                server_modules["modules"][server_modules["modules"].index(module)][
-                    "installed"
-                ] = False
+                for module in server_modules.get("modules", []):
+                    module["commit_date"] = module.get("commit_date", "Unknown")
+                    module["installed"] = module["name"] in installed_Modules
 
-        if request.method == "POST" and "install_module" in request.form:
-            moduleID = int(request.form["install_module"])
-            for module in server_modules["modules"]:
-                if int(module["id"]) == moduleID:
-                    response = apiObj.install_module(license, moduleID)
-                    if response is None or "error" in response:
-                        error = response["error"]
-                        break
-
-                    if (
-                        response["status"] != "success"
-                        or "name" not in response
-                        or "download_link" not in response
-                    ):
-                        error = "Unable to install module, please try again later."
-                        break
-
-                    webServer.logger.info(
-                        f"<green>➕ Installing module, Module Name: <cyan>{module['name']}</cyan></green>"
-                    )
-
-                    # Clone the module inside modules directory
-                    git = Git.Git(webServer.logger, webServer.config)
-                    response = git.gitClone(
-                        response["download_link"], f"modules/{response['name']}"
-                    )
-
-                    success = "Module installed successfully. Please configure the module and enable it."
-
-                    webServer.logger.info(
-                        f"<green>➕ Module installed, Module Name: <cyan>{module['name']}</cyan></green>"
-                    )
-
-                    server_modules["modules"][server_modules["modules"].index(module)][
-                        "installed"
-                    ] = True
-                    server_modules["modules"][server_modules["modules"].index(module)][
-                        "owned"
-                    ] = True
-                    db = Database("database.db", webServer.logger)
-                    db.updateSettings(f"{module['name']}_disabled", True)
-                    break
+                if request.method == "POST" and "install_module" in request.form:
+                    moduleID = int(request.form["install_module"])
+                    for module in server_modules["modules"]:
+                        if int(module["id"]) == moduleID:
+                            response = apiObj.install_module(license, moduleID)
+                            if (
+                                response
+                                and response.get("status") == "success"
+                                and "name" in response
+                                and "download_link" in response
+                            ):
+                                webServer.logger.info(
+                                    f"<green>➕ Installing module, Module Name: <cyan>{module['name']}</cyan></green>"
+                                )
+                                git = Git.Git(webServer.logger, webServer.config)
+                                git.gitClone(
+                                    response["download_link"],
+                                    f"modules/{response['name']}",
+                                )
+                                success = "Module installed successfully. Please configure the module and enable it."
+                                webServer.logger.info(
+                                    f"<green>➕ Module installed, Module Name: <cyan>{module['name']}</cyan></green>"
+                                )
+                                module["installed"] = True
+                                module["owned"] = True
+                                db.updateSettings(f"{module['name']}_disabled", True)
+                            else:
+                                error = response.get(
+                                    "error",
+                                    "Unable to install module, please try again later.",
+                                )
+                            break
 
         return render_template(
             "admin/add_bot.html",
             error=error,
             success=success,
-            modules=server_modules["modules"],
+            modules=server_modules.get("modules", []) if not error else [],
             theme=self.theme,
         )
