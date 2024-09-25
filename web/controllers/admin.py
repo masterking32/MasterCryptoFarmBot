@@ -250,7 +250,14 @@ class admin:
         license = db.getSettings("license", "Free License")
         apiObj = api.API(webServer.logger)
 
-        error, success, credit, ton_wallet, user_id = None, None, None, None, None
+        error, success, credit, ton_wallet, user_id, devices = (
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        )
 
         if request.method == "POST" and "license" in request.form:
             license_key = request.form["license"]
@@ -264,21 +271,23 @@ class admin:
                 webServer.logger.info(
                     f"<green>📖 License Credit: </green><cyan>{str(response['credit'])}$</cyan><green>, IP: </green><cyan>{utils.HideIP(response['ip'])}</cyan>"
                 )
-                license, credit, ton_wallet, user_id = (
+                license, credit, ton_wallet, user_id, devices = (
                     license_key,
                     response["credit"],
                     response["ton_wallet"],
                     response["user_id"],
+                    response["devices"],
                 )
             else:
                 error = "Invalid license key."
         else:
             response = apiObj.validate_license(license)
             if response and "error" not in response and "credit" in response:
-                credit, ton_wallet, user_id = (
+                credit, ton_wallet, user_id, devices = (
                     response["credit"],
                     response["ton_wallet"],
                     response["user_id"],
+                    response["devices"],
                 )
 
         return render_template(
@@ -290,6 +299,7 @@ class admin:
             credit=credit,
             ton_wallet=ton_wallet,
             user_id=user_id,
+            devices=devices,
             theme=self.theme,
         )
 

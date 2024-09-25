@@ -48,11 +48,18 @@
             </span>
           </li>
           <li class="text-center">
-            <span class="text-xs text-error blur hover:blur-0"
-              >{{ license }}</span
-            >
+            <span class="text-xs text-error blur hover:blur-0">
+              {% if license and "free" in license.lower() %} No License {% else
+              %} {{ license }} {% endif %}
+            </span>
           </li>
-          {% if credit is not none %}
+          {% if devices is not none %}
+          <li class="flex items-center mb-2">
+            <i class="fa-solid fa-computer mr-2 text-accent"></i>
+            <span class="font-semibold">Devices:</span>
+            <span class="ml-auto text-info">{{ devices }}</span>
+          </li>
+          {% endif %} {% if credit is not none %}
           <li class="flex items-center mb-2">
             <i class="fa-solid fa-coins mr-2 text-accent"></i>
             <span class="font-semibold">Credit:</span>
