@@ -688,6 +688,17 @@ class admin:
                     "disabled": False,
                 }
 
+                if account["proxy"] != "":
+                    webServer.logger.info(
+                        f"<g>🔗 Testing account proxy, Proxy: </g><cyan>{account['proxy']}</cyan>"
+                    )
+                    proxyTestResponse = utils.testProxy(account["proxy"])
+                    if not proxyTestResponse:
+                        return None, "Proxy is not working."
+                    webServer.logger.info(
+                        f"<green>└─ ✅ Proxy tested successfully, IP: </green><cyan>{utils.HideIP(proxyTestResponse)}</cyan>"
+                    )
+
                 bot["accounts"].append(account)
                 self._bots_save_accounts(bot["name"], bot["accounts"])
                 webServer.logger.info(
@@ -705,6 +716,18 @@ class admin:
                         account["web_app_data"] = requests.form.get("web_app_url", "")
                         account["proxy"] = requests.form.get("proxy", "")
                         account["user_agent"] = requests.form.get("user_agent", "")
+
+                        if account["proxy"] != "":
+                            webServer.logger.info(
+                                f"<g>🔗 Testing account proxy, Proxy: </g><cyan>{account['proxy']}</cyan>"
+                            )
+                            proxyTestResponse = utils.testProxy(account["proxy"])
+                            if not proxyTestResponse:
+                                return None, "Proxy is not working."
+                            webServer.logger.info(
+                                f"<green>└─ ✅ Proxy tested successfully, IP: </green><cyan>{utils.HideIP(proxyTestResponse)}</cyan>"
+                            )
+
                         self._bots_save_accounts(bot["name"], bot["accounts"])
                         webServer.logger.info(
                             f"<green>🔄 Account updated, Bot Name: <cyan>{bot['name']}</cyan>, Session Name: <cyan>{account['display_name']}</cyan></green>"
