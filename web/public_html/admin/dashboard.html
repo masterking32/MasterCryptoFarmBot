@@ -114,6 +114,19 @@
             <span class="font-semibold">GitHub Last Update:</span>
             <span class="ml-2 text-info"> {{last_update}} </span>
           </li>
+          {% if change_logs %}
+          <li class="flex items-center mt-2">
+            <span class="fa-solid fa-file-alt mr-2 text-primary"></span>
+            <span class="font-semibold">Change Logs:</span>
+            <button
+              class="btn btn-sm btn-warning ml-2"
+              onclick="change_logs_modal.showModal()"
+            >
+              <span class="fa-solid fa-eye mr-2"></span>
+              View Change Logs
+            </button>
+          </li>
+          {% endif %}
           <li class="flex items-center mt-2 text-center">
             {% if update_available %}
             <a
@@ -129,6 +142,55 @@
             {% endif %}
           </li>
         </ul>
+        {% if change_logs %}
+        <dialog id="change_logs_modal" class="modal">
+          <div class="modal-box">
+            <h1 class="text-lg text-center text-primary font-semibold">
+              Change Logs
+            </h1>
+            <hr class="h-px my-4 border-0 bg-gray-700" />
+            <h1 class="">Change Logs</h1>
+            <hr class="h-px my-4 border-0 bg-gray-700" />
+            <div class="bg-base-300 p-6 rounded-lg shadow-lg max-w-md mx-auto">
+              <div class="text-content space-y-4">
+                <ul class="leading-loose">
+                  {% for log in change_logs %}
+                  <li
+                    class="rounded-lg p-2 bg-base-200 my-2 text-justify text-sm"
+                  >
+                    <span
+                      class="fa-solid fa-arrow-right mr-2 text-primary"
+                    ></span>
+                    <span>{{ log.commit_message }}</span>
+                    <span class="ml-2 text-xs text-info">
+                      <i class="fa-solid fa-calendar-day mr-1"></i>
+                      {{ log.commit_date }}
+                    </span>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+            <p class="text-center">
+              <a
+                href="https://github.com/masterking32/MasterCryptoFarmBot/commits/main/"
+                target="_blank"
+                class="btn btn-success btn-sm m-2"
+              >
+                <span class="fa-brands fa-github mr-2"></span> Change Logs on
+                GitHub
+              </a>
+            </p>
+
+            <hr class="h-px my-4 border-0 bg-gray-700" />
+            <div class="text-center">
+              <button class="btn btn-error" onclick="change_logs_modal.close()">
+                Close
+              </button>
+            </div>
+          </div>
+        </dialog>
+        {% endif %}
       </div>
 
       <hr class="h-px my-4 border-0 bg-gray-700" />

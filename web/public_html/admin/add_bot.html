@@ -232,8 +232,8 @@
                   </p>
                   <p class="ml-2">{{ module.description }}</p>
                 </div>
-                {% if "link" in module %}
                 <div class="text-center mt-4">
+                  {% if "link" in module %}
                   <a
                     href="{{ module.link }}"
                     target="_blank"
@@ -243,6 +243,7 @@
                     Project Link
                   </a>
 
+                  {% endif %} {% if "bot_link" in module %}
                   <a
                     href="{{ module.bot_link }}"
                     target="_blank"
@@ -251,8 +252,54 @@
                     <i class="fa-solid fa-robot mr-2"></i>
                     Bot Link
                   </a>
+                  {% endif %} {% if "change_logs" in module %}
+                  <button
+                    type="button"
+                    class="btn btn-warning btn-sm"
+                    onClick="change_logs_{{ module.id }}.showModal()"
+                  >
+                    <i class="fa-solid fa-file-alt mr-2"></i>
+                    Change Logs
+                  </button>
+                  <dialog id="change_logs_{{ module.id }}" class="modal">
+                    <div class="modal-box">
+                      <h1 class="">Change Logs</h1>
+                      <hr class="h-px my-4 border-0 bg-gray-700" />
+                      <div
+                        class="bg-base-300 p-6 rounded-lg shadow-lg max-w-md mx-auto"
+                      >
+                        <div class="text-content space-y-4">
+                          <ul class="leading-loose">
+                            {% for log in module.change_logs %}
+                            <li
+                              class="rounded-lg p-2 bg-base-200 my-2 text-justify text-sm"
+                            >
+                              <span
+                                class="fa-solid fa-arrow-right mr-2 text-primary"
+                              ></span>
+                              <span>{{ log.commit_message }}</span>
+                              <span class="ml-2 text-xs text-info">
+                                <i class="fa-solid fa-calendar-day mr-1"></i>
+                                {{ log.commit_date }}
+                              </span>
+                            </li>
+                            {% endfor %}
+                          </ul>
+                        </div>
+                      </div>
+                      <hr class="h-px my-4 border-0 bg-gray-700" />
+                      <div class="text-center">
+                        <button
+                          class="btn btn-secondary btn-sm"
+                          onclick="change_logs_{{ module.id }}.close()"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </dialog>
+                  {% endif %}
                 </div>
-                {% endif %}
               </div>
               <hr class="h-px my-4 border-0 bg-gray-700" />
               <div class="text-center">

@@ -37,6 +37,7 @@ class admin:
 
         commit_hash = mcf_version.get("commit_hash") if mcf_version else None
         commit_date = mcf_version.get("commit_date") if mcf_version else None
+        change_logs = mcf_version.get("change_logs") if mcf_version else None
 
         update_available = commit_hash and not git.GitHasCommit(commit_hash)
 
@@ -60,6 +61,7 @@ class admin:
             last_update=commit_date,
             update_available=update_available,
             license=license,
+            change_logs=change_logs,
             theme=self.theme,
         )
 
