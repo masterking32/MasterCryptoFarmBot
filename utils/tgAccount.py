@@ -25,11 +25,11 @@ from utils.utils import testProxy, parseProxy
 class tgAccount:
     def __init__(
         self,
-        bot_globals,
-        log,
-        accountName,
-        proxy,
-        BotID,
+        bot_globals=None,
+        log=None,
+        accountName=None,
+        proxy=None,
+        BotID=None,
         ReferralToken=None,
         ShortAppName=None,
         AppURL=None,
@@ -171,12 +171,7 @@ class tgAccount:
                     )
                 )
 
-            auth_url = web_view.url
-            web_data = unquote(
-                string=auth_url.split("tgWebAppData=", maxsplit=1)[1].split(
-                    "&tgWebAppVersion", maxsplit=1
-                )[0]
-            )
+            web_data = web_view.url
 
             self.log.info(
                 f"<green>└─ 🔑 {self.accountName} session is authorized!</green>"
@@ -313,3 +308,18 @@ class tgAccount:
                 f"<green>└─── ❌ {self.accountName} session has been disconnected successfully!</green>"
             )
         return True
+
+    def getTGWebQuery(self, url):
+        if not url or "first_name" not in url:
+            return None
+
+        if "tgWebAppData=" not in url:
+            return url
+
+        web_data = unquote(
+            string=url.split("tgWebAppData=", maxsplit=1)[1].split(
+                "&tgWebAppVersion", maxsplit=1
+            )[0]
+        )
+
+        return web_data
