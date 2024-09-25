@@ -246,20 +246,16 @@ class admin:
         if "admin" not in session:
             return redirect("/auth/login.py")
 
-        error = None
-        success = None
-
         db = Database("database.db", webServer.logger)
         license = db.getSettings("license", "Free License")
-        credit = None
-        ton_wallet = None
-        user_id = None
         apiObj = api.API(webServer.logger)
+
+        error, success, credit, ton_wallet, user_id = None, None, None, None, None
 
         if request.method == "POST" and "license" in request.form:
             license_key = request.form["license"]
             response = apiObj.validate_license(license_key)
-            if response != None and "error" not in response and "credit" in response:
+            if response and "error" not in response and "credit" in response:
                 db.updateSettings("license", license_key)
                 success = "License updated successfully."
                 webServer.logger.info(
@@ -268,18 +264,23 @@ class admin:
                 webServer.logger.info(
                     f"<green>📖 License Credit: </green><cyan>{str(response['credit'])}$</cyan><green>, IP: </green><cyan>{utils.HideIP(response['ip'])}</cyan>"
                 )
-                license = license_key
-                credit = response["credit"]
-                ton_wallet = response["ton_wallet"]
-                user_id = response["user_id"]
+                license, credit, ton_wallet, user_id = (
+                    license_key,
+                    response["credit"],
+                    response["ton_wallet"],
+                    response["user_id"],
+                )
             else:
                 error = "Invalid license key."
         else:
             response = apiObj.validate_license(license)
-            if response != None and "error" not in response and "credit" in response:
-                credit = response["credit"]
-                ton_wallet = response["ton_wallet"]
-                user_id = response["user_id"]
+            if response and "error" not in response and "credit" in response:
+                credit, ton_wallet, user_id = (
+                    response["credit"],
+                    response["ton_wallet"],
+                    response["user_id"],
+                )
+
         return render_template(
             "admin/change_license.html",
             error=error,
