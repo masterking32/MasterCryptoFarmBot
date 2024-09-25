@@ -29,22 +29,26 @@ def getConfig(config, key, default=None):
     return default
 
 
-def testProxy(proxy_url):
+def testProxy(proxy_url, retries=3):
     if not proxy_url:
         return True
     proxy_dict = {
         "http": proxy_url,
         "https": proxy_url,
     }
-    try:
-        resp = requests.get(
-            "https://api.masterking32.com/ip.php", proxies=proxy_dict, timeout=15
-        )
-        if resp.status_code == 200:
-            return True
-        return False
-    except Exception as e:
-        return False
+    for attempt in range(retries):
+        try:
+            resp = requests.get(
+                "https://api.masterking32.com/ip.php?json=true",
+                proxies=proxy_dict,
+                timeout=10,
+            )
+            if resp.status_code == 200:
+                return resp.json().get("ipAddress", False)
+            return False
+        except Exception as e:
+            if attempt == retries - 1:
+                return False
 
 
 def HideIP(ip):

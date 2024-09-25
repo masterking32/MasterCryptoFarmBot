@@ -154,72 +154,85 @@ class admin:
             return redirect("/auth/login.py")
 
         accounts = []
-        success = ""
-        error = ""
+        success = None
+        error = None
+
+        accounts_file = "telegram_accounts/accounts.json"
+
         try:
-            if os.path.exists("telegram_accounts/accounts.json"):
-                with open("telegram_accounts/accounts.json", "r") as f:
+            if os.path.exists(accounts_file):
+                with open(accounts_file, "r") as f:
                     accounts = json.load(f)
-                    f.close()
+
+                if not accounts:
+                    error = "No accounts found."
             else:
                 error = "No accounts found."
-        except:
-            pass
+        except Exception as e:
+            error = "Error loading accounts..."
 
+        file_updated = False
         if "disable" in request.args:
-            AccountID = request.args.get("disable", 0)
+            AccountID = request.args.get("disable")
             for account in accounts:
                 if str(account["id"]) == str(AccountID):
+                    account["disabled"] = True
                     success = (
                         f"Account {account['session_name']} disabled successfully."
                     )
-                    account["disabled"] = True
                     webServer.logger.info(
                         f"<red>🔒 Account disabled, Account ID: </red><cyan>{AccountID}</cyan>"
                     )
+                    file_updated = True
                     break
-
-            with open("telegram_accounts/accounts.json", "w") as f:
-                json.dump(accounts, f, indent=4)
-                f.close()
-
-        if "enable" in request.args:
-            AccountID = request.args.get("enable", 0)
+        elif "enable" in request.args:
+            AccountID = request.args.get("enable")
             for account in accounts:
                 if str(account["id"]) == str(AccountID):
+                    account["disabled"] = False
                     success = f"Account {account['session_name']} enabled successfully."
                     webServer.logger.info(
                         f"<green>🔓 Account enabled, Account ID: </green><cyan>{AccountID}</cyan>"
                     )
-                    account["disabled"] = False
+                    file_updated = True
                     break
-
-            with open("telegram_accounts/accounts.json", "w") as f:
-                json.dump(accounts, f, indent=4)
-                f.close()
 
         if request.method == "POST" and "account_id" in request.form:
             AccountID = request.form["account_id"]
             for account in accounts:
                 if str(account["id"]) == str(AccountID):
-                    account["user_agent"] = (
-                        ""
-                        if "user_agent" not in request.form
-                        else request.form["user_agent"]
-                    )
-                    account["proxy"] = (
-                        "" if "proxy" not in request.form else request.form["proxy"]
-                    )
 
+                    account["proxy"] = request.form.get("proxy", "")
+                    if account["proxy"] != "":
+                        self.logger.info(
+                            f"<g>🔗 Testing account proxy, Proxy: </g><cyan>{account['proxy']}</cyan>"
+                        )
+                        proxyTestResponse = utils.testProxy(account["proxy"])
+                        if not proxyTestResponse:
+                            error = "Proxy is not working."
+                            self.logger.info(
+                                "<red>└─ ❌ Proxy is not working. It is either invalid or too slow.</red>"
+                            )
+                            break
+
+                        self.logger.info(
+                            f"<green>└─ ✅ Proxy tested successfully, IP: </green><cyan>{utils.HideIP(proxyTestResponse)}</cyan>"
+                        )
+
+                    account["user_agent"] = request.form.get("user_agent", "")
                     success = f"Account {account['session_name']} updated successfully."
                     webServer.logger.info(
                         f"<green>🔄 Account updated, Account ID: </green><cyan>{AccountID}</cyan>"
                     )
+                    file_updated = True
                     break
 
-            with open("telegram_accounts/accounts.json", "w") as f:
-                json.dump(accounts, f, indent=4)
-                f.close()
+        if file_updated:
+            try:
+                with open(accounts_file, "w") as f:
+                    json.dump(accounts, f, indent=4)
+            except Exception as e:
+                error = f"Error saving accounts..."
 
         return render_template(
             "admin/accounts.html",
