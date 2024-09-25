@@ -18,7 +18,7 @@ class Module:
         self.logger = logger
         self.module_list = []
 
-    def get_ModuleName(self):
+    def get_module_name(self):
         return os.path.basename(os.getcwd())
 
     def is_module_disabled(self, db, module_name):

@@ -7,24 +7,25 @@ from loguru import logger
 import sys
 
 
-def getLogger(logFile=None, ModuleName=None, max_log_size=1, backup_count=3):
+def getLogger(logFile=None, module_name=None, max_log_size=1, backup_count=3):
     # ---------------------------------------------#
     # Logging configuration
     LOG_LEVEL = "DEBUG"
-    LOGFORMAT = f"<cyan>[MasterCryptoFarmBot]</cyan> <green>[{{time:HH:mm:ss}}]</green> <level>[{{level}}]</level> <white><b>{{message}}</b></white>"
+    log_format = f"<cyan>[MasterCryptoFarmBot]</cyan> <green>[{{time:HH:mm:ss}}]</green> <level>[{{level}}]</level> <white><b>{{message}}</b></white>"
+
+    if module_name:
+        log_format = f"<cyan>[MasterCryptoFarmBot]</cyan> <green>[{{time:HH:mm:ss}}]</green> <cyan>[{module_name}]</cyan> <level>[{{level}}]</level> <white><b>{{message}}</b></white>"
 
     logger.remove()
     logger.add(
         sink=sys.stdout,
         level=LOG_LEVEL,
-        format=LOGFORMAT,
+        format=log_format,
         colorize=True,
     )
 
     if logFile:
         log_file_format = "[MasterCryptoFarmBot] [{time:HH:mm:ss}] [{level}] {message}"
-        if ModuleName:
-            log_file_format = "[MasterCryptoFarmBot] [{time:HH:mm:ss}] [{ModuleName}] [{level}] {message}"
 
         logger.add(
             logFile,

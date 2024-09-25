@@ -307,7 +307,7 @@ class tgAccount:
 
     async def DisconnectClient(self):
         if self.tgClient is not None and self.tgClient.is_connected:
-            self.log.info(f"└─ 💻 Disconnecting {self.accountName} session ...")
+            self.log.info(f"<g>└─ 💻 Disconnecting {self.accountName} session ...</g>")
             await self.tgClient.disconnect()
             self.log.info(
                 f"<green>└─── ❌ {self.accountName} session has been disconnected successfully!</green>"
