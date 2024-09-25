@@ -5,17 +5,23 @@
 
 config = {
     "web_server": {
-        "host": "127.0.0.1",  # Host to listen on (Default: 127.0.0.1)
-        "port": 3232,  # Port to listen on (Default: 3232)
+        # Host to listen on. For local, use "127.0.0.1".
+        # For public access over the internet, use "0.0.0.0" or your public IP address.
+        # Ensure the port is open in your firewall and router settings.
+        "host": "127.0.0.1",  # Default: 127.0.0.1
+        # Port to listen on. Choose a port number between 1 and 65535.
+        # Ensure the chosen port is not already in use by another application.
+        "port": 3232,  # Default: 3232
     },
     "telegram_api": {
-        # Telegram API - Get your API ID and API Hash from https://my.telegram.org/apps
-        "api_id": 1234,  # Telegram API ID
-        "api_hash": "",  # Telegram API Hash
+        # Telegram API credentials. Obtain your API ID and API Hash from https://my.telegram.org/apps.
+        "api_id": 1234,  # Your unique Telegram API ID
+        # Your unique Telegram API Hash. Keep this value secure and do not share it publicly.
+        "api_hash": "",  # Your unique Telegram API Hash
     },
-    "auto_update": True,  # Auto update Main Bot
-    "auto_update_modules": True,  # Auto update Modules
-    "update_check_interval": 3600,  # Update check interval in seconds (Default: 3600)
-    "run_delay": 60,  # Delay before starting the bot modules in seconds (Default: 60)
-    "display_module_logs_in_console": False,  # Display module logs in console
+    "auto_update": True,  # Automatically update the main bot. If set to True, the bot will restart after an update. Ensure you run the bot with start_linux.sh or start_windows.cmd.
+    "auto_update_modules": True,  # Automatically update bot modules.
+    "update_check_interval": 3600,  # Interval in seconds to check for updates. Default: 3600 seconds (1 hour).
+    "run_delay": 60,  # Delay in seconds before starting the bot modules. Default: 1 second.
+    "display_module_logs_in_console": False,  # If set to True, module logs will be displayed in the mcf console.
 }
