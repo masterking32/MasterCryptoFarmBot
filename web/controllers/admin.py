@@ -374,6 +374,24 @@ class admin:
             theme=self.theme,
         )
 
+    def bot_logs(self, requests, webServer):
+        if "admin" not in session:
+            return redirect("/auth/login.py")
+
+        logs = ""
+        if requests.method != "POST" or "bot_id" not in requests.args:
+            return redirect("/admin/bots.py")
+
+        bot = requests.args.get("bot_id")
+
+        bots = self._bots_load_all(webServer)
+        for b in bots:
+            if b["id"] == bot:
+                logs = b["logs"]
+                break
+
+        return {"status": "success", "logs": logs}
+
     def bots(self, requests, webServer):
         if "admin" not in session:
             return redirect("/auth/login.py")
@@ -473,7 +491,7 @@ class admin:
                 lines = f.readlines()
             logs = "".join(lines[-100:])
             logs = utils.ansi_to_html(logs)
-            logs = re.sub(r"\[MasterCryptoFarmBot\] \[(.*?)\] \[(.*?)\]", "", logs)
+            logs = re.sub(r"\[MasterCryptoFarmBot\] ", "", logs)
             return logs
         return "No logs available."
 

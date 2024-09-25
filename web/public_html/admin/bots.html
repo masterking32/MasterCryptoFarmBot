@@ -76,9 +76,21 @@
               <div
                 class="mx-5 p-3 rounded text-sm overflow-scroll text-left bg-base-200 text-base-content"
                 style="max-height: 300px"
+                id="bot_log_div_{{bot.id}}"
               >
-                <pre>{{ bot.logs | safe }}</pre>
+                <pre id="bot_log_pre_{{bot.id}}">{{ bot.logs | safe }}</pre>
               </div>
+
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <p class="text-center">
+                <button
+                  class="btn btn-accent"
+                  onclick="refresh_logs('{{bot.id}}')"
+                >
+                  <i class="fa-solid fa-redo"></i> Refresh Logs
+                </button>
+              </p>
+
               <hr class="h-px my-4 border-0 bg-gray-700" />
               <div class="modal-action">
                 <form method="dialog">
@@ -665,5 +677,22 @@
       </div>
     </div>
     <script src="../js/multiselect-dropdown.js"></script>
+    <script>
+      function scrollToEnd(element) {
+        element.scrollTop = element.scrollHeight;
+      }
+      function refresh_logs(bot_id) {
+        fetch(`../admin/bot_logs.py?bot_id=${bot_id}`, {
+          method: "POST",
+          body: "bot_id=" + bot_id,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById(`bot_log_pre_${bot_id}`).innerHTML =
+              data.logs;
+            scrollToEnd(document.getElementById(`bot_log_div_${bot_id}`));
+          });
+      }
+    </script>
   </body>
 </html>
