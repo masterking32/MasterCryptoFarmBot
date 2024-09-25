@@ -168,9 +168,9 @@ async def start_bot():
 
                 log.info("<green>└─ ✅ Session files are up to date ...</green>")
             else:
-                log.error("<red>❌ No Pyrogram accounts found ...</red>")
+                log.info("<yellow>❌ No Pyrogram accounts found ...</yellow>")
     else:
-        log.error("<red>❌ No accounts found ...</red>")
+        log.info("<yellow>❌ No Pyrogram accounts found ...</yellow>")
 
     web_server = WebServer(log, config.config, modulesThread)
     threading.Thread(target=asyncio.run, args=(web_server.start(),)).start()

@@ -105,10 +105,11 @@ class Module_Thread:
             and new_module["commit_hash"] is not None
             and modules_class.UpdateRequired(module, new_module["commit_hash"])
         ):
-            new_module["restart_required"] = True
+            self.stop_module(module)
             directory = os.path.join(os.getcwd(), f"{self.MODULES_DIR}/{module}")
             git.UpdateProject(directory, False)
             db.migration_modules([module])
+            self.run_module(module)
 
     def check_main_project_update(self):
         try:
@@ -146,14 +147,7 @@ class Module_Thread:
             self.logger.info("<green>🔄 Checking for updates ...</green>")
             self.check_main_project_update()
             try:
-                modules = self.get_modules(update=True)
-                for module in modules:
-                    if module["restart_required"]:
-                        self.logger.warning(
-                            f"<yellow>└─ 🔄 Module Restart required for <cyan>{module['name']}</cyan> module ...</yellow>"
-                        )
-                        self.restart_module(module["name"])
-
+                self.get_modules(update=True)
                 self.logger.info("<green>└─ ✅ Update check completed!</green>")
                 time.sleep(update_check_interval)
             except Exception as e:
