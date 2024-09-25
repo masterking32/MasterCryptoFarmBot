@@ -97,6 +97,9 @@ class WebServer:
             ):
                 return "404 Not Found"
 
+            if split_path[1].startswith("_"):
+                return "404 Not Found"
+
             file_path = self.get_controllers_path(f"{split_path[0]}.py")
             base_folder = self.get_controllers_path("")
             if not file_path.startswith(base_folder) or not os.path.isfile(file_path):
