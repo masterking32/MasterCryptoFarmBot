@@ -45,24 +45,26 @@ class tgAccount:
         self.AppURL = AppURL
 
     async def Connect(self):
-        if self.tgClient is not None and self.tgClient.is_connected:
-            return self.tgClient
-
-        if self.proxy and not testProxy(self.proxy):
-            self.log.info(f"<red>└─ ❌ Proxy {self.proxy} is not working!</red>")
-            return None
-
-        self.tgClient = Client(
-            name=self.accountName,
-            api_id=self.bot_globals["telegram_api_id"],
-            api_hash=self.bot_globals["telegram_api_hash"],
-            workdir=self.bot_globals["mcf_dir"] + "/telegram_accounts",
-            plugins=dict(root="bot/plugins"),
-            proxy=parseProxy(self.proxy) if self.proxy else None,
-        )
-
-        self.log.info(f"<green>└─ 🌍 Connecting {self.accountName} session ...</green>")
         try:
+            if self.tgClient is not None and self.tgClient.is_connected:
+                return self.tgClient
+
+            if self.proxy and not testProxy(self.proxy):
+                self.log.info(f"<red>└─ ❌ Proxy {self.proxy} is not working!</red>")
+                return None
+
+            self.tgClient = Client(
+                name=self.accountName,
+                api_id=self.bot_globals["telegram_api_id"],
+                api_hash=self.bot_globals["telegram_api_hash"],
+                workdir=self.bot_globals["mcf_dir"] + "/telegram_accounts",
+                plugins=dict(root="bot/plugins"),
+                proxy=parseProxy(self.proxy) if self.proxy else None,
+            )
+
+            self.log.info(
+                f"<green>└─ 🌍 Connecting {self.accountName} session ...</green>"
+            )
             isConnected = await self.tgClient.connect()
             if isConnected:
                 self.log.info(
@@ -72,7 +74,10 @@ class tgAccount:
             else:
                 return None
         except Exception as e:
-            self.log.error(f"└─ ❌ {e}")
+            # self.log.error(f"└─ ❌ {e}")
+            self.log.info(
+                f"<yellow>└─ ❌ {self.accountName} session failed to connect!</yellow>"
+            )
             return None
 
     async def run(self):
@@ -108,7 +113,7 @@ class tgAccount:
             self.log.info(
                 f"<yellow>└─ ❌ {self.accountName} session failed to authorize!</yellow>"
             )
-            self.log.error(f"<red>└─ ❌ {e}</red>")
+            # self.log.error(f"<red>└─ ❌ {e}</red>")
             return False
 
     async def getWebViewData(self):
@@ -182,7 +187,7 @@ class tgAccount:
             self.log.info(
                 f"<yellow>└─ ❌ {self.accountName} session failed to authorize!</yellow>"
             )
-            self.log.error(f"<red>└─ ❌ {e}</red>")
+            # self.log.error(f"<red>└─ ❌ {e}</red>")
             return None
 
     async def accountSetup(self):
@@ -222,7 +227,7 @@ class tgAccount:
             self.log.info(
                 f"<y>└─ ❌ Account {self.accountName} session is not setup!</y>"
             )
-            self.log.error(f"<red>└─ ❌ {e}</red>")
+            # self.log.error(f"<red>└─ ❌ {e}</red>")
             return None
 
     async def joinChat(self, url, noLog=False, mute=True):
@@ -264,7 +269,7 @@ class tgAccount:
                 return None
 
             self.log.info(f"<y>└─ ❌ </y><cyan>{url}</cyan><y> failed to join!</y>")
-            self.log.error(f"<red>❌ {e}</red>")
+            # self.log.error(f"<red>❌ {e}</red>")
             return False
 
     async def setName(self, firstName, lastName=None):
@@ -287,26 +292,38 @@ class tgAccount:
             self.log.info(
                 f"<yellow>└─ ❌ Failed to set session {self.accountName} name!</yellow>"
             )
-            self.log.error(f"<red>❌ {e}</red>")
+            # self.log.error(f"<red>❌ {e}</red>")
             return False
 
     async def getMe(self):
-        tgClient = await self.Connect()
-        if tgClient is None:
+        try:
+            tgClient = await self.Connect()
+            if tgClient is None:
+                self.log.info(
+                    f"<yellow>└─ ❌ Account {self.accountName} session is not connected!</yellow>"
+                )
+                return None
+            tgMe = await tgClient.get_me()
+            return tgMe
+        except Exception as e:
             self.log.info(
-                f"<yellow>└─ ❌ Account {self.accountName} session is not connected!</yellow>"
+                f"<yellow>└─ ❌ Failed to get session {self.accountName} info!</yellow>"
             )
             return None
-        tgMe = await tgClient.get_me()
-        return tgMe
 
     async def DisconnectClient(self):
-        if self.tgClient is not None and self.tgClient.is_connected:
-            self.log.info(f"<g>└─ 💻 Disconnecting {self.accountName} session ...</g>")
-            await self.tgClient.disconnect()
-            self.log.info(
-                f"<green>└─── ❌ {self.accountName} session has been disconnected successfully!</green>"
-            )
+        try:
+            if self.tgClient is not None and self.tgClient.is_connected:
+                self.log.info(
+                    f"<g>└─ 💻 Disconnecting {self.accountName} session ...</g>"
+                )
+                await self.tgClient.disconnect()
+                self.log.info(
+                    f"<green>└─── ❌ {self.accountName} session has been disconnected successfully!</green>"
+                )
+        except Exception as e:
+            # self.log.error(f"<red>└─ ❌ {e}</red>")
+            pass
         return True
 
     def getTGWebQuery(self, url):
