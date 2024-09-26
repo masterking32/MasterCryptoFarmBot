@@ -37,6 +37,22 @@ Currently, the project is under active development, but we're working hard to br
 
 ---
 
+💵 If you're a fan of our project and want to support us, consider donating crypto. Your support will help us improve and expand, providing even more value to our users. Thank you for your generosity! 💵
+
+TON:
+`UQDdtN_p3WwuGMVXtMasatomVNPJF-Ljscy0srozJZBl15eL`
+
+EVM-compatible blockchains:
+`0x517f07305D6ED781A089322B6cD93d1461bF8652`
+
+TRC20 chain:
+`TLApdY8APWkFHHoxebxGY8JhMeChiETqFH`
+
+RONIN Chain:
+`masterking.ron`
+
+---
+
 ### 👨‍💻 Developed By
 
 Created and maintained with ❤️ by [MasterkinG32](https://github.com/masterking32)
