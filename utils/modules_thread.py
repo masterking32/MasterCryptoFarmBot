@@ -304,6 +304,7 @@ class Module_Thread:
                     for rm in self.running_modules
                 ):
                     self.run_module(module["name"])
+                    time.sleep(5)
 
             self.logger.info(
                 f"<green>✅ <cyan>{len(self.running_modules)}</cyan> modules running!</green>"
