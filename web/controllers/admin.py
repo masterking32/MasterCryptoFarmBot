@@ -401,6 +401,16 @@ class admin:
         error = None
         success = None
 
+        accounts_file = "telegram_accounts/accounts.json"
+
+        pyrogram_accounts = []
+        try:
+            if os.path.exists(accounts_file):
+                with open(accounts_file, "r") as f:
+                    pyrogram_accounts = json.load(f)
+        except Exception as e:
+            pass
+
         bots = self._bots_load_all(webServer)
         if "disable" in requests.args:
             success = self._bots_disable(requests, bots, webServer)
@@ -428,6 +438,7 @@ class admin:
                 error=error,
                 success=success,
                 bots=bots,
+                pyrogram_accounts=pyrogram_accounts,
                 theme=self.theme,
             )
 
@@ -440,6 +451,9 @@ class admin:
         if "edit_account" in requests.form and "account_id" in requests.form:
             success, error = self._bots_edit_account(requests, bots, webServer)
 
+        if "disabled_pyrogram_sessions" in requests.form:
+            success, error = self._bots_disable_sessions(requests, bots, webServer)
+
         bots = self._bots_load_all(webServer)
 
         return render_template(
@@ -447,8 +461,23 @@ class admin:
             error=error,
             success=success,
             bots=bots,
+            pyrogram_accounts=pyrogram_accounts,
             theme=self.theme,
         )
+
+    def _bots_disable_sessions(self, requests, bots, webServer):
+        BotID = requests.form["disabled_pyrogram_sessions"]
+        for bot in bots:
+            if str(bot["id"]) == str(BotID):
+                disabled_sessions = requests.form.getlist("disabled_sessions")
+                bot["disabled_sessions"] = disabled_sessions
+                with open(f"modules/{bot['name']}/disabled_sessions.json", "w") as f:
+                    json.dump(disabled_sessions, f, indent=4)
+                webServer.logger.info(
+                    f"🔒 <yellow>Module disabled sessions updated</yellow>, Bot Name: <cyan>{bot['name']}</cyan>"
+                )
+                return "Module disabled sessions updated.", None
+        return None, "Bot not found."
 
     def _bots_load_all(self, webServer):
         modules = os.listdir("modules")
@@ -473,6 +502,10 @@ class admin:
         bot["settings_types"] = self._bots_load_json(
             f"modules/{module}/bot_settings_types.json", None
         )
+        bot["disabled_sessions"] = self._bots_load_json(
+            f"modules/{module}/disabled_sessions.json", []
+        )
+
         bot["accounts"] = self._bots_load_json(f"modules/{module}/accounts.json", [])
         bot["settings_inputs"] = self._bots_prepare_settings_inputs(bot)
         bot["is_running"] = webServer.module_threads.is_module_running(module)

@@ -462,6 +462,81 @@
 
               {% endif %}
               <hr class="h-px my-4 border-0 bg-gray-700" />
+              <div class="text-center">
+                <button
+                  class="btn btn-warning"
+                  onclick="bot_disabled_accounts{{ bot.id }}.showModal()"
+                >
+                  <i class="fa-solid fa-users-slash"></i> Module Disabled
+                  Pyrogram Sessions
+                </button>
+              </div>
+              <dialog id="bot_disabled_accounts{{ bot.id }}" class="modal">
+                <div class="modal-box">
+                  <h1 class="">Module Disabled Pyrogram Sessions</h1>
+                  <hr class="h-px my-4 border-0 bg-gray-700" />
+                  <p>
+                    You can disable Pyrogram Sessions for this bot module. This
+                    will prevent the bot from using the disabled Pyrogram
+                    Sessions.
+                  </p>
+                  <hr class="h-px my-4 border-0 bg-gray-700" />
+                  <form action="./bots.py" method="POST">
+                    <input
+                      type="hidden"
+                      name="disabled_pyrogram_sessions"
+                      value="{{ bot.id }}"
+                      class="input input-bordered bg-base-100"
+                    />
+                    <div class="form-control">
+                      <label
+                        for="disabled_pyrogram_sessions_{{
+                      bot.id
+                    }}"
+                        class="mb-2"
+                        >Disabled Pyrogram Sessions</label
+                      >
+
+                      <select
+                        name="disabled_sessions"
+                        id="disabled_pyrogram_sessions_{{ bot.id }}"
+                        class="select select-bordered select-info"
+                        multiple
+                      >
+                        {% for account in pyrogram_accounts %}
+                        <option
+                          value="{{ account.session_name }}"
+                          {%
+                          if
+                          account.session_name
+                          in
+                          bot.disabled_sessions
+                          %}
+                          selected
+                          {%
+                          endif
+                          %}
+                        >
+                          {{ account.session_name }}
+                        </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="flex flex-col mt-5">
+                      <button type="submit" class="btn btn-primary">
+                        Save List
+                      </button>
+                    </div>
+                  </form>
+                  <hr class="h-px my-4 border-0 bg-gray-700" />
+                  <div class="modal-action">
+                    <form method="dialog">
+                      <button class="btn btn-secondary">Close</button>
+                    </form>
+                  </div>
+                </div>
+              </dialog>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
               {% if bot.settings_inputs is not none %}
               <form action="./bots.py" method="POST">
                 <input type="hidden" name="bot_id" value="{{ bot.id }}" />

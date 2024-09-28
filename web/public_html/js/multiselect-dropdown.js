@@ -39,7 +39,6 @@ function MultiselectDropdown(options) {
     var div = newEl("div", {
       class: "multiselect-dropdown",
       style: {
-        width: config.style?.width ?? el.clientWidth + "px",
         padding: config.style?.padding ?? "",
       },
     });
