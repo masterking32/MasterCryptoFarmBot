@@ -541,7 +541,7 @@
                   <label for="{{ settings_input.key }}" class="mb-2"
                     >{{ settings_input.name }}
                     <span
-                      id="{{settings_input.key}}_value"
+                      id="{{settings_input.key}}_{{bot.id}}_value"
                       class="mx-2 badge badge-info"
                       >{{settings_input.value}}</span
                     >
@@ -562,7 +562,7 @@
                   <input
                     type="range"
                     name="{{settings_input.key}}"
-                    id="{{settings_input.key}}"
+                    id="{{settings_input.key}}_{{bot.id}}"
                     value="{{settings_input.value}}"
                     min="{{settings_input.min}}"
                     max="{{settings_input.max}}"
@@ -570,12 +570,13 @@
                     class="range range-info range-xs"
                   />
                   <script>
-                    document.getElementById("{{settings_input.key}}").oninput =
-                      function () {
+                    document
+                      .getElementById("{{settings_input.key}}_{{bot.id}}")
+                      .addEventListener("input", function () {
                         document.getElementById(
-                          "{{settings_input.key}}_value"
-                        ).textContent = this.value;
-                      };
+                          "{{settings_input.key}}_{{bot.id}}_value"
+                        ).innerText = this.value;
+                      });
                   </script>
                 </div>
                 {% elif settings_input.type == "select" %}
