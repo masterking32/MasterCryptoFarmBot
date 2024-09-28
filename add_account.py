@@ -42,6 +42,9 @@ async def register_sessions() -> None:
 
     if os.path.exists(f"telegram_accounts/{session_name}.session"):
         print(f"\n{lc.r}Session already exists!{lc.rs}")
+        print(
+            f"\n{lc.r}If you want to re-import, simply delete the session file manually! You can find it inside the telegram_accounts folder!{lc.rs}"
+        )
         return None
 
     phone_number = input(
@@ -55,7 +58,7 @@ async def register_sessions() -> None:
     if not phone_number.startswith("+"):
         print(f"\n{lc.r}Phone number must start with '+'!{lc.rs}")
         return None
-
+    phone_number = phone_number.replace(" ", "")
     if not phone_number.replace("+", "").isdigit():
         print(f"\n{lc.r}Phone number must contain only digits!{lc.rs}")
         return None
