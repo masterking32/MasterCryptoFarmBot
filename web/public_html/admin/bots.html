@@ -109,6 +109,16 @@
             <div class="modal-box">
               <h1 class="">Bot Accounts</h1>
               <hr class="h-px my-4 border-0 bg-gray-700" />
+              {% if bot.disable_accounts_file %}
+
+              <div class="alert alert-error">
+                <p>
+                  <i class="fa-solid fa-exclamation-triangle"></i> This bot
+                  module does not support adding module accounts. You can only
+                  add accounts using the Pyrogram Sessions.
+                </p>
+              </div>
+              {% else %}
               <div
                 class="bg-base-300 p-6 rounded-lg shadow-lg max-w-md mx-auto text-center"
               >
@@ -294,7 +304,7 @@
                   ></a>
                 </div>
               </div>
-              {% endfor %}
+              {% endfor %} {% endif %}
               <hr class="h-px my-4 border-0 bg-gray-700" />
               <div class="modal-action">
                 <form method="dialog">

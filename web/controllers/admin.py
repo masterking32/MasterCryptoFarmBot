@@ -505,6 +505,9 @@ class admin:
         bot["disabled_sessions"] = self._bots_load_json(
             f"modules/{module}/disabled_sessions.json", []
         )
+        bot["disable_accounts_file"] = self._bots_file_exists(
+            f"modules/{module}/.disabled_module_accounts"
+        )
 
         bot["accounts"] = self._bots_load_json(f"modules/{module}/accounts.json", [])
         bot["settings_inputs"] = self._bots_prepare_settings_inputs(bot)
@@ -535,6 +538,11 @@ class admin:
             with open(path, "r") as f:
                 return json.load(f)
         return default
+
+    def _bots_file_exists(self, path):
+        if os.path.exists(path):
+            return True
+        return False
 
     def _bots_prepare_settings_inputs(self, bot):
         settings_inputs = {}
@@ -766,6 +774,9 @@ class admin:
         BotID = requests.form["add_account"]
         for bot in bots:
             if str(bot["id"]) == str(BotID):
+                if bot["disable_accounts_file"]:
+                    return None, "You cannot add more accounts to this bot."
+
                 session_name = requests.form.get("session_name", "")
                 if not session_name:
                     return None, "Please enter session name."
