@@ -22,6 +22,6 @@ config = {
     "auto_update": True,  # Automatically update the main bot. If set to True, the bot will restart after an update. Ensure you run the bot with start_linux.sh or start_windows.cmd.
     "auto_update_modules": True,  # Automatically update bot modules.
     "update_check_interval": 3600,  # Interval in seconds to check for updates. Default: 3600 seconds (1 hour).
-    "run_delay": 60,  # Delay in seconds before starting the bot modules. Default: 1 second.
+    "run_delay": 60,  # Delay in seconds before starting the bot modules. Default: 60 second.
     "display_module_logs_in_console": False,  # If set to True, module logs will be displayed in the mcf console.
 }
