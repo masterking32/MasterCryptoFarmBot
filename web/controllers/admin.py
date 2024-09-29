@@ -8,6 +8,8 @@ import os
 import hashlib
 import base64
 import re
+import datetime
+import signal
 from flask import redirect, render_template, session
 
 from utils.database import Database
@@ -62,8 +64,19 @@ class admin:
             update_available=update_available,
             license=license,
             change_logs=change_logs,
+            uptime=utils.TimeAgo(webServer.startTime),
             theme=self.theme,
         )
+
+    def restart(self, request, webServer):
+        if "admin" not in session:
+            return redirect("/auth/login.py")
+
+        if "restart" in request.args:
+            webServer.logger.info("<yellow>🔄 Restarting the server...</yellow>")
+            os.kill(os.getpid(), signal.SIGINT)
+
+        return render_template("admin/restarting.html", theme=self.theme)
 
     def settings(self, request, webServer):
         if "admin" not in session:

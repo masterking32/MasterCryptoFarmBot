@@ -3,6 +3,7 @@
 # Github: https://github.com/masterking32
 # Telegram: https://t.me/MasterCryptoFarmBot
 
+import datetime
 import os
 import platform
 import random
@@ -26,6 +27,7 @@ class WebServer:
         self.public_ip = "127.0.0.1"
         self.system_os = None
         self.module_threads = module_threads
+        self.startTime = datetime.datetime.now().replace(microsecond=0)
 
     def load_file(self, file):
         try:

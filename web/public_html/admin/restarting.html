@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html data-theme="{{ theme }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../css/main.css" rel="stylesheet" />
+    <link
+      href="../css/fontawesome-free-6.6.0-web/css/all.min.css"
+      rel="stylesheet"
+    />
+    <title>MasterCryptoFarmBot</title>
+    <meta name="generator" content="MasterkinG CMS" />
+  </head>
+  <body class="flex min-h-screen bg-base-100 py-5">
+    <div class="w-full max-w-md m-auto bg-base-300 rounded p-5 text-content">
+      <h1 class="text-2xl pb-5 text-center">MasterCryptoFarmBot</h1>
+      <div class="breadcrumbs text-sm">
+        <ul>
+          <li><span class="fa-solid fa-gauge mr-2"></span> Dashboard</li>
+
+          <li><span class="fa-solid fa-refresh mr-2"></span> Restarting</li>
+        </ul>
+      </div>
+      <hr class="h-px my-2 border-0 bg-gray-700" />
+
+      <div class="text-center py-5 leading-loose">
+        <p class="text-lg font-semibold">The bot is currently restarting.</p>
+        <div class="flex justify-center mt-4">
+          <div
+            class="w-16 h-16 border-t-4 border-primary rounded-full animate-spin"
+          ></div>
+        </div>
+        <p class="text-lg font-semibold mt-5">
+          Please wait for
+          <span id="timer" class="text-primary">60</span> seconds.
+        </p>
+        <p class="text-xs text-info mt-2">
+          You will be redirected to the dashboard after the restart is complete.
+        </p>
+        <p class="text-warning text-xs mt-2">
+          If you are not running the project with
+          <span class="font-semibold text-accent">start_linux.sh</span> or
+          <span class="font-semibold text-accent">start_windows.cmd</span>, you
+          need to manually start the bot after the restart.
+        </p>
+      </div>
+
+      <script>
+        try {
+          fetch("./restart.py?restart=true");
+        } catch (error) {}
+        let timer = 30;
+        setInterval(() => {
+          timer--;
+          document.getElementById("timer").innerText = timer;
+          if (timer === 0) {
+            window.location.href = "./dashboard.py";
+          }
+        }, 1000);
+      </script>
+
+      <hr class="h-px my-4 border-0 bg-gray-700" />
+      <div class="text-center">
+        <a
+          href="https://github.com/masterking32/MasterCryptoFarmBot"
+          target="_blank"
+          class="btn btn-info btn-sm m-2"
+        >
+          <span class="fa-brands fa-github mr-2"></span>
+          GitHub
+        </a>
+        <a
+          href="https://t.me/MasterCryptoFarmBot"
+          target="_blank"
+          class="btn btn-info btn-sm m-2"
+        >
+          <span class="fa-brands fa-telegram mr-2"></span>
+          Channel
+        </a>
+        <a
+          href="https://t.me/MasterCryptoFarmBotGroup"
+          target="_blank"
+          class="btn btn-info btn-sm m-2"
+        >
+          <span class="fa-brands fa-telegram mr-2"></span>
+          Group
+        </a>
+      </div>
+    </div>
+  </body>
+</html>
