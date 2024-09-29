@@ -548,8 +548,11 @@ class admin:
 
     def _bots_load_json(self, path, default):
         if os.path.exists(path):
-            with open(path, "r") as f:
-                return json.load(f)
+            try:
+                with open(path, "r") as f:
+                    return json.load(f)
+            except Exception as e:
+                pass
         return default
 
     def _bots_file_exists(self, path):
