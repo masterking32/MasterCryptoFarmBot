@@ -2,6 +2,8 @@
 
 **MasterCryptoFarmBot** is a cutting-edge Telegram Air-Drop farming bot that serves as a central platform for managing multiple Telegram bots. This project is designed to be the ultimate solution for Air-Drop farming, allowing you to install various Bot Modules to support and automate interactions with a wide range of Telegram bots—all in one comprehensive project.
 
+⚠️ We do our best to avoid detection of bots in your crypto farms, but using bots is forbidden in all crypto air-drops. We cannot guarantee that you will not be detected as a bot. Use at your own risk. We are not responsible for any consequences of using this software.
+
 ---
 
 #### ⭐ If you find this project useful, please consider giving it a star! ⭐
@@ -26,14 +28,18 @@
 
 ## 🛠️ How to Install?
 
-Currently, the project is under active development, but we're working hard to bring it to you as soon as possible!
+To install and run the [MasterCryptoFarmBot](https://github.com/masterking32/MasterCryptoFarmBot) project, Please check the [GitHub Wiki](https://github.com/masterking32/MasterCryptoFarmBot/wiki) for detailed instructions on how to set up and run the project.
 
-🎉 We expect to release the first version within a week. Until then, feel free to stay updated and engage with us through our channels:
+---
+
+## 🔌 Available Modules:
+
+- **[MCF_HamsterKombat](https://github.com/masterking32/MCF_HamsterKombat)**: Module for the Hamster Kombat bot.
+
+---
 
 - 📢 **Telegram Channel**: [MasterCryptoFarmBot Channel](https://t.me/MasterCryptoFarmBot)
 - 💬 **Telegram Group**: [MasterCryptoFarmBot Group](https://t.me/MasterCryptoFarmBotGroup)
-
-> **Note:** The detailed installation guide will be available once the project is officially released.
 
 ---
 
