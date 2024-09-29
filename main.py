@@ -204,10 +204,14 @@ def main():
         asyncio.run(start_bot())
     except KeyboardInterrupt:
         log.info("<red>🛑 Bot interrupted by user ... </red>")
-        os.kill(os.getpid(), signal.SIGINT)
     except Exception as e:
         log.error(f"<red>🛑 Bot stopped with an error: {e} ... </red>")
-        os.kill(os.getpid(), signal.SIGINT)
+
+    try:
+        os._exit(0)
+    except Exception as e:
+        log.error(f"<red>🛑 Error while stopping the bot: {e} ... </red>")
+        exit()
 
 
 if __name__ == "__main__":
