@@ -148,6 +148,7 @@ while true; do
             echo "Failed to update project. Retrying in 5 seconds..."
             sleep 5
             continue
+        fi
     fi
     echo "Project updated successfully"
     sleep 2
