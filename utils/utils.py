@@ -113,6 +113,14 @@ def ansi_to_html(text):
     for ansi_code, html_code in ansi_to_html_map.items():
         text = text.replace(ansi_code, html_code)
 
+    lines = text.split("<br>")
+    for i, line in enumerate(lines):
+        open_tags = line.count("<span") - line.count("</span")
+        if open_tags > 0:
+            lines[i] += "</span>" * open_tags
+
+    text = "<br>".join(lines)
+
     return text + "</span>"
 
 
@@ -133,3 +141,13 @@ def TimeAgo(time):
     if diff < 86400:
         return f"{int(diff // 3600)} hours"
     return f"{int(diff // 86400)} days"
+
+
+def hide_text(text, length=4):
+    if not text:
+        return None
+
+    if len(text) <= length:
+        return "*" * len(text)
+
+    return text[:length] + "*" * (len(text) - length * 2) + text[-length:]
