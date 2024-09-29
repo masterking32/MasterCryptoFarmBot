@@ -138,8 +138,10 @@ while true; do
     echo "=========================================="
     echo "Updating bot..."
     echo "=========================================="
-    git config pull.rebase true
+    git config pull.rebase false
+    git stash
     git pull origin main
+    git stash pop
     if [ $? -ne 0 ]; then
         echo "Failed to update the bot. Retrying in 5 seconds..."
         sleep 5
