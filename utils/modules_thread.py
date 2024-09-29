@@ -35,6 +35,7 @@ class Module_Thread:
         self.logger = logger
         self.api = api.API(self.logger)
         self.running_modules = []
+        self.stopped_by_user = []
 
     def get_modules(self, update=False):
         if not os.path.exists(self.MODULES_DIR):
@@ -185,12 +186,15 @@ class Module_Thread:
         except Exception as e:
             pass
 
-    def run_module(self, module):
+    def run_module(self, module, user_run=False):
         try:
             module_path = os.path.join(self.MODULES_DIR, module, self.BOT_FILE)
             if not os.path.exists(module_path):
                 self.logger.error(f"<red>❌ {module} module not found!</red>")
                 return
+
+            if user_run and module in self.stopped_by_user:
+                self.stopped_by_user.remove(module)
 
             if self.is_module_running(module):
                 self.logger.warning(
@@ -239,7 +243,7 @@ class Module_Thread:
         except Exception as e:
             self.logger.error(f"RunModule: {e}")
 
-    def stop_module(self, module):
+    def stop_module(self, module, user_stop=False):
         try:
             module_data = next(
                 (
@@ -249,6 +253,9 @@ class Module_Thread:
                 ),
                 None,
             )
+
+            if user_stop and module not in self.stopped_by_user:
+                self.stopped_by_user.append(module)
 
             self.logger.info(f"<green>🚀 Stopping {module} module ...</green>")
             if module_data is None:
@@ -342,6 +349,9 @@ class Module_Thread:
             try:
                 modules = self.get_modules()
                 for module in modules:
+                    if module["name"] in self.stopped_by_user:
+                        continue
+
                     if module["disabled"]:
                         if self.is_module_running(module["name"]):
                             self.logger.warning(
@@ -358,6 +368,6 @@ class Module_Thread:
                         )
                         time.sleep(5)
 
-                time.sleep(60)
+                time.sleep(300)
             except Exception as e:
                 self.logger.error(f"RunAllModules: {e}")

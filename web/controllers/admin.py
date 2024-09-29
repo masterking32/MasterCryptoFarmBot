@@ -688,7 +688,7 @@ class admin:
         BotID = requests.args.get("stop_bot", 0)
         for bot in bots:
             if str(bot["id"]) == str(BotID):
-                webServer.module_threads.stop_module(bot["name"])
+                webServer.module_threads.stop_module(bot["name"], True)
                 webServer.logger.info(
                     f"<red>🛑 Bot module stopped, Bot Module Name: <cyan>{bot['name']}</cyan></red>"
                 )
@@ -699,7 +699,7 @@ class admin:
         BotID = requests.args.get("start_bot", 0)
         for bot in bots:
             if str(bot["id"]) == str(BotID):
-                webServer.module_threads.run_module(bot["name"])
+                webServer.module_threads.run_module(bot["name"], True)
                 webServer.logger.info(
                     f"<green>▶ Bot module started, Bot Module Name: <cyan>{bot['name']}</cyan></green>"
                 )
