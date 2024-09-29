@@ -171,6 +171,20 @@ class Module_Thread:
             self.logger.error(f"GetPythonExecutable: {e}")
             return "python3"
 
+    def kill_process_tree(self, process=True):
+        try:
+            if process is None:
+                return
+            parent = psutil.Process(process.pid)
+            for child in parent.children(recursive=True):
+                child.kill()
+
+            parent.kill()
+        except psutil.NoSuchProcess:
+            pass
+        except Exception as e:
+            pass
+
     def run_module(self, module):
         try:
             module_path = os.path.join(self.MODULES_DIR, module, self.BOT_FILE)
@@ -178,14 +192,18 @@ class Module_Thread:
                 self.logger.error(f"<red>❌ {module} module not found!</red>")
                 return
 
-            if any(
-                rm["module"] == module and rm["is_running"]
-                for rm in self.running_modules
-            ):
+            if self.is_module_running(module):
                 self.logger.warning(
                     f"<yellow>🚀 {module} module is already running!</yellow>"
                 )
                 return
+
+            for rm in self.running_modules:
+                if rm["module"] == module:
+                    if "process" in rm:
+                        self.kill_process_tree(rm["process"])
+
+                    self.running_modules.remove(rm)
 
             db = database.Database("database.db", self.logger)
             if db.getSettings(f"{module}_disabled", "0") == "1":
@@ -247,7 +265,12 @@ class Module_Thread:
                     f"<yellow>⚠️ Process with PID {module_data['process'].pid} not found, it is already stopped!</yellow>"
                 )
 
-            module_data["is_running"] = False
+            for rm in self.running_modules:
+                if rm["module"] == module:
+                    if "process" in rm:
+                        self.kill_process_tree(rm["process"])
+
+                    self.running_modules.remove(rm)
             self.logger.info(f"<green>🚀 {module} module stopped!</green>")
         except Exception as e:
             self.logger.error(f"StopModule: {e}")
@@ -273,9 +296,39 @@ class Module_Thread:
             self.logger.error(f"RestartModule: {e}")
 
     def is_module_running(self, module):
-        return any(
-            rm["module"] == module and rm["is_running"] for rm in self.running_modules
-        )
+        try:
+            for rm in self.running_modules:
+                if rm["module"] == module:
+                    process_data = rm
+                    if process_data is None or "process" not in process_data:
+                        return False
+
+                    isProcessRunning = False
+                    try:
+                        process = psutil.Process(process_data["process"].pid)
+                        if process.is_running():
+                            isProcessRunning = True
+                        else:
+                            isProcessRunning = False
+                    except psutil.NoSuchProcess:
+                        isProcessRunning = False
+                    except Exception as e:
+                        isProcessRunning = False
+
+                    process_data["is_running"] = isProcessRunning
+                    self.running_modules[self.running_modules.index(rm)] = process_data
+
+                    if not isProcessRunning:
+                        if "process" in rm:
+                            self.kill_process_tree(rm["process"])
+
+                        self.running_modules.remove(rm)
+
+                    return isProcessRunning
+        except Exception as e:
+            pass
+
+        return False
 
     def run_all_modules(self):
         run_delay = utils.getConfig(config.config, "run_delay", 60)
@@ -283,32 +336,28 @@ class Module_Thread:
             f"<green>🚀 Launching all modules in <cyan>{run_delay}</cyan> seconds...</green>"
         )
         time.sleep(run_delay)
-        try:
-            self.logger.info(f"<green>🚀 Running all modules ...</green>")
-            modules = self.get_modules()
-            for module in modules:
-                if module["disabled"]:
-                    if any(
-                        rm["module"] == module["name"] and rm["is_running"]
-                        for rm in self.running_modules
-                    ):
-                        self.stop_module(module["name"])
+        self.logger.info(f"<green>🚀 Running all modules ...</green>")
 
-                    self.logger.warning(
-                        f"<yellow>└─ ⚠️ <cyan>{module['name']}</cyan> is disabled!</yellow>"
-                    )
-                    continue
+        while True:
+            try:
+                modules = self.get_modules()
+                for module in modules:
+                    if module["disabled"]:
+                        if self.is_module_running(module["name"]):
+                            self.logger.warning(
+                                f"<yellow>└─ ⚠️ <cyan>{module['name']}</cyan> is disabled!</yellow>"
+                            )
+                            self.stop_module(module["name"])
 
-                if not any(
-                    rm["module"] == module["name"] and rm["is_running"]
-                    for rm in self.running_modules
-                ):
-                    self.run_module(module["name"])
-                    time.sleep(5)
+                        continue
 
-            self.logger.info(
-                f"<green>✅ <cyan>{len(self.running_modules)}</cyan> modules running!</green>"
-            )
-        except Exception as e:
-            self.logger.error(f"RunAllModules: {e}")
-            self.logger.info("<red>🛑 Bot is stopping ... </red>")
+                    if not self.is_module_running(module["name"]):
+                        self.run_module(module["name"])
+                        self.logger.info(
+                            f"<green>✅ <cyan>{len(self.running_modules)}</cyan> modules running!</green>"
+                        )
+                        time.sleep(5)
+
+                time.sleep(60)
+            except Exception as e:
+                self.logger.error(f"RunAllModules: {e}")
