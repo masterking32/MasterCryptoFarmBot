@@ -61,27 +61,28 @@ class Git:
                 f"<red> ❌ Error while updating project, Please update manually</red>"
             )
 
-        if "Already up to date." in response:
-            self.logger.info(
-                f"<green>└─ ✅ <cyan>{project_name}</cyan> updated successfully</green>"
-            )
-            if RestartAfterUpdate:
-                self.logger.info(f"<green>└─ 🛑 Stopping project ...</green>")
-                os.kill(os.getpid(), signal.SIGINT)
-            return True
-
-        if (
-            "stash" in response
-            or "deletions" in response
-            or "insertions" in response
-            or "file changed" in response
-        ):
-            self.logger.info(
-                f"<green>└─ ✅ <cyan>{project_name}</cyan> updated successfully</green>"
-            )
-            if RestartAfterUpdate:
-                self.logger.info(f"<green>└─ 🛑 Stopping project ...</green>")
-                os.kill(os.getpid(), signal.SIGINT)
+        if response:
+            if "Already up to date." in response:
+                self.logger.info(
+                    f"<green>└─ ✅ <cyan>{project_name}</cyan> is already up to date</green>"
+                )
+                return True
+            elif any(
+                keyword in response
+                for keyword in [
+                    "deletions",
+                    "additions",
+                    "insertions",
+                    "file changed",
+                    "files changed",
+                ]
+            ):
+                self.logger.info(
+                    f"<green>└─ ✅ <cyan>{project_name}</cyan> updated successfully</green>"
+                )
+                if RestartAfterUpdate:
+                    self.logger.info(f"<green>└─ 🛑 Stopping project ...</green>")
+                    os.kill(os.getpid(), signal.SIGINT)
             return True
 
         self.logger.error(
