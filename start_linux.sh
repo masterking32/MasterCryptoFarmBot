@@ -148,9 +148,9 @@ while true; do
     echo "=========================================="
     # if pip3 dont use --break-system-packages
     if [ "$PIP" == "pip3" ]; then
-        $PIP install -U -r requirements.txt
+        $PIP install -U -r requirements.txt > /dev/null 2>&1
     else
-        $PIP install -U --break-system-packages -r requirements.txt
+        $PIP install -U --break-system-packages -r requirements.txt  > /dev/null 2>&1
     fi
     if [ $? -ne 0 ]; then
         echo "Failed to update dependencies. Retrying in 5 seconds..."
