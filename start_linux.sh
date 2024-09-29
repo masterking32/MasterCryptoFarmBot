@@ -138,6 +138,7 @@ while true; do
     echo "=========================================="
     echo "Updating bot..."
     echo "=========================================="
+    git config pull.rebase true
     git pull origin main
     if [ $? -ne 0 ]; then
         echo "Failed to update the bot. Retrying in 5 seconds..."
@@ -150,7 +151,12 @@ while true; do
     echo "=========================================="
     echo "Updating dependencies..."
     echo "=========================================="
-    $PIP install -U --break-system-packages -r requirements.txt > /dev/null 2>&1
+    # if pip3 dont use --break-system-packages
+    if [ "$PIP" == "pip3" ]; then
+        $PIP install -U -r requirements.txt
+    else
+        $PIP install -U --break-system-packages -r requirements.txt
+    fi
     if [ $? -ne 0 ]; then
         echo "Failed to update dependencies. Retrying in 5 seconds..."
         sleep 5
