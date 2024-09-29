@@ -55,7 +55,13 @@ class Git:
         self.logger.info(f"<green>🔄 Updating <cyan>{project_name}</cyan> ...</green>")
 
         response = self._run_git_command("git pull", directory_path)
-        if response is not None:
+
+        if response is None:
+            self.logger.error(
+                f"<red> ❌ Error while updating project, Please update manually</red>"
+            )
+
+        if "Already up to date." in response:
             self.logger.info(
                 f"<green>└─ ✅ <cyan>{project_name}</cyan> updated successfully</green>"
             )
@@ -63,9 +69,28 @@ class Git:
                 self.logger.info(f"<green>└─ 🛑 Stopping project ...</green>")
                 os.kill(os.getpid(), signal.SIGINT)
             return True
+
+        if (
+            "stash" in response
+            or "deletions" in response
+            or "insertions" in response
+            or "file changed" in response
+        ):
+            self.logger.info(
+                f"<green>└─ ✅ <cyan>{project_name}</cyan> updated successfully</green>"
+            )
+            if RestartAfterUpdate:
+                self.logger.info(f"<green>└─ 🛑 Stopping project ...</green>")
+                os.kill(os.getpid(), signal.SIGINT)
+            return True
+
         self.logger.error(
             f"<red> ❌ Error while updating project, Please update manually</red>"
         )
+
+        if RestartAfterUpdate:
+            self.logger.info(f"<green>└─ 🛑 Stopping project ...</green>")
+            os.kill(os.getpid(), signal.SIGINT)
         return False
 
     def gitClone(self, url, directory):
