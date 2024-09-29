@@ -16,6 +16,14 @@ if %errorlevel% neq 0 (
     echo To install Python, visit https://www.python.org/downloads/
     exit /b 1
 )
+:: check if py.exe exists
+where py >nul 2>nul
+if %errorlevel% neq 0 (
+    :: set python.exe as executer
+    set python_alias=python
+)
+:: set py.exe as executor 
+set python_alias=py
 
 where pip >nul 2>nul
 if %errorlevel% neq 0 (
@@ -46,7 +54,7 @@ timeout /t 2
 echo ==========================================
 echo Updating dependencies...
 echo ==========================================
-py -m pip install -r requirements.txt >nul 2>nul
+%python_alias% -m pip install -r requirements.txt >nul 2>nul
 if %errorlevel% neq 0 (
     echo Failed to update dependencies. Retrying in 5 seconds...
     timeout /t 5
