@@ -155,6 +155,7 @@ while true; do
             echo "Failed to update dependencies. Retrying in 5 seconds..."
             sleep 3
             continue
+        fi
     fi
     echo "Dependencies updated successfully"
     sleep 2
