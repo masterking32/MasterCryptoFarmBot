@@ -9,7 +9,7 @@ import threading
 import time
 import os
 
-from flask import json
+import json
 
 import utils.logColors as lc
 from utils.database import Database
