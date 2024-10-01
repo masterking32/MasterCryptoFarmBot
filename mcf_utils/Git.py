@@ -48,7 +48,9 @@ class Git:
         self.logger.error(f"<red> ❌ Git is not installed, Please install git</red>")
         return False
 
-    def UpdateProject(self, directory=None, RestartAfterUpdate=True):
+    def UpdateProject(
+        self, directory=None, RestartAfterUpdate=True, module_threads=None
+    ):
         directory_path = directory or os.getcwd()
         project_name = "Project" if directory is None else directory.split("/")[-1]
         self.logger.info(f"<green>🔄 Updating <cyan>{project_name}</cyan> ...</green>")
@@ -81,6 +83,8 @@ class Git:
                 )
                 if RestartAfterUpdate:
                     self.logger.info(f"<green>└─ 🛑 Stopping project ...</green>")
+                    if module_threads is not None:
+                        module_threads.stop_all_modules()
                     os.kill(os.getpid(), signal.SIGINT)
             return True
 
@@ -90,6 +94,8 @@ class Git:
 
         if RestartAfterUpdate:
             self.logger.info(f"<green>└─ 🛑 Stopping project ...</green>")
+            if module_threads is not None:
+                module_threads.stop_all_modules()
             os.kill(os.getpid(), signal.SIGINT)
         return False
 

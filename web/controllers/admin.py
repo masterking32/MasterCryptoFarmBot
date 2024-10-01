@@ -43,7 +43,7 @@ class admin:
         update_available = commit_hash and not git.GitHasCommit(commit_hash)
 
         if update_available and "update" in request.args:
-            git.UpdateProject()
+            git.UpdateProject(module_threads=webServer.module_threads)
             return "Updating..."
 
         if update_available and "start_update" in request.args:
@@ -73,6 +73,7 @@ class admin:
 
         if "restart" in request.args:
             webServer.logger.info("<yellow>🔄 Restarting the server...</yellow>")
+            webServer.module_threads.stop_all_modules()
             os.kill(os.getpid(), signal.SIGINT)
 
         return render_template("admin/restarting.html", theme=self.theme)

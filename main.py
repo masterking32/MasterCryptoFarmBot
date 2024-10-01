@@ -59,8 +59,11 @@ banner = f"""
 """
 print(banner)
 
+modulesThread = None
+
 
 async def start_bot():
+    global modulesThread
     log.info(f"<green>🚀 Starting MCF ...</green>")
 
     git = Git.Git(log, config.config)
@@ -229,12 +232,16 @@ async def start_bot():
 
 
 def main():
+    global modulesThread
     try:
         asyncio.run(start_bot())
     except KeyboardInterrupt:
         log.info("<red>🛑 Bot interrupted by user ... </red>")
     except Exception as e:
         log.error(f"<red>🛑 Bot stopped with an error: {e} ... </red>")
+    finally:
+        if modulesThread is not None:
+            modulesThread.stop_all_modules()
 
     try:
         os._exit(0)

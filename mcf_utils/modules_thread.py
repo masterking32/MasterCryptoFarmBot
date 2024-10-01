@@ -30,6 +30,7 @@ class Module_Thread:
         "/usr/bin/python",
         "/bin/python",
     ]
+    running_modules = []
 
     def __init__(self, logger):
         self.logger = logger
@@ -130,7 +131,7 @@ class Module_Thread:
 
             if not git.GitHasCommit(commit_hash):
                 self.logger.error("<red>🔄 Main Project is not updated ... </red>")
-                git.UpdateProject()
+                git.UpdateProject(module_threads=self)
                 self.logger.error("<red>🔄 Please restart the bot ... </red>")
         except Exception as e:
             self.logger.error(f"CheckMainProjectUpdate: {e}")
@@ -239,9 +240,8 @@ class Module_Thread:
                 else (" >nul 2>nul" if os.name == "nt" else " >/dev/null 2>&1")
             )
 
-            exec_command = (
-                f'{python_executable} "{module_path}"{display_module_log_cmd}'
-            )
+            main_pid = os.getpid()
+            exec_command = f'{python_executable} "{module_path}" {main_pid}{display_module_log_cmd}'
             process = subprocess.Popen(exec_command, shell=True)
             self.running_modules.append(
                 {
@@ -386,3 +386,16 @@ class Module_Thread:
                 time.sleep(300)
             except Exception as e:
                 self.logger.error(f"RunAllModules: {e}")
+
+    def stop_all_modules(self):
+        self.logger.info("<green>🚀 Stopping all modules ...</green>")
+        for rm in self.running_modules:
+            if "module" in rm:
+                try:
+                    self.stop_module(rm["module"])
+                except Exception as e:
+                    pass
+
+    def __del__(self):
+        self.stop_all_modules()
+        self.logger.info("<green>🚀 All modules stopped!</green>")
