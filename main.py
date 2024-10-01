@@ -5,6 +5,7 @@
 
 import asyncio
 import signal
+import sys
 import threading
 import time
 import os
@@ -30,6 +31,12 @@ except ImportError:
     raise ImportError(
         "Please create a config.py file with the required variables, check the example file (config.py.sample)"
     )
+
+try:
+    if sys.stdout.encoding.lower() != "utf-8":
+        sys.stdout.reconfigure(encoding="utf-8")
+except Exception as e:
+    pass
 
 log = lc.getLogger()
 
