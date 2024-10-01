@@ -218,7 +218,11 @@ class admin:
                 if str(account["id"]) == str(AccountID):
 
                     account["proxy"] = request.form.get("proxy", "")
+
                     if account["proxy"] != "":
+                        if account["proxy"] and account["proxy"][-1] == "/":
+                            account["proxy"] = account["proxy"][:-1]
+
                         self.logger.info(
                             f"<g>🔗 Testing account proxy, Proxy: </g><cyan>{account['proxy']}</cyan>"
                         )
@@ -816,9 +820,13 @@ class admin:
                 }
 
                 if account["proxy"] != "":
+                    if account["proxy"][-1] == "/":
+                        account["proxy"] = account["proxy"][:-1]
+
                     webServer.logger.info(
                         f"<g>🔗 Testing account proxy, Proxy: </g><cyan>{account['proxy']}</cyan>"
                     )
+
                     proxyTestResponse = utils.testProxy(account["proxy"])
                     if not proxyTestResponse:
                         webServer.logger.info(
@@ -848,9 +856,13 @@ class admin:
                         account["user_agent"] = requests.form.get("user_agent", "")
 
                         if account["proxy"] != "":
+                            if account["proxy"][-1] == "/":
+                                account["proxy"] = account["proxy"][:-1]
+
                             webServer.logger.info(
                                 f"<g>🔗 Testing account proxy, Proxy: </g><cyan>{account['proxy']}</cyan>"
                             )
+
                             proxyTestResponse = utils.testProxy(account["proxy"])
                             if not proxyTestResponse:
                                 webServer.logger.info(

@@ -10,16 +10,27 @@ import re
 
 
 def parseProxy(proxy_url):
-    if not proxy_url:
+    if not proxy_url or proxy_url is None or proxy_url == "":
         return None
+
     parsed = urlparse(proxy_url)
+
+    if not parsed.hostname or not parsed.port:
+        return None
+
     proxy_dict = {
-        "scheme": parsed.scheme,
+        "scheme": "http",
         "hostname": parsed.hostname,
         "port": parsed.port,
-        "username": parsed.username,
-        "password": parsed.password,
     }
+
+    if parsed.scheme:
+        proxy_dict["scheme"] = parsed.scheme
+    if parsed.username:
+        proxy_dict["username"] = parsed.username
+    if parsed.password:
+        proxy_dict["password"] = parsed.password
+
     return proxy_dict
 
 
