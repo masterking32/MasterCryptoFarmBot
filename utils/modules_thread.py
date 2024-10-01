@@ -158,7 +158,7 @@ class Module_Thread:
 
     def get_python_executable(self):
         try:
-            python_executable = sys.executable()
+            python_executable = sys.executable
             if (
                 python_executable is not None
                 and os.path.exists(python_executable)
