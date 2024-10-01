@@ -240,6 +240,9 @@ class Module_Thread:
                 else (" >nul 2>nul" if os.name == "nt" else " >/dev/null 2>&1")
             )
 
+            if " " in python_executable:
+                python_executable = f'"{python_executable}"'
+
             main_pid = os.getpid()
             exec_command = f'{python_executable} "{module_path}" {main_pid}{display_module_log_cmd}'
             process = subprocess.Popen(exec_command, shell=True)
