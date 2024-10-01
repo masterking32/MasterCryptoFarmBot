@@ -32,6 +32,14 @@ To install and run the [MasterCryptoFarmBot](https://github.com/masterking32/Mas
 
 ---
 
+## 📽️ Tutorial Video
+
+For a step-by-step guide on installing and running the MasterCryptoFarmBot project, please watch the following tutorial video:
+
+[![MasterCryptoFarmBot Tutorial](https://raw.githubusercontent.com/masterking32/MasterCryptoFarmBot/refs/heads/main/web/public_html/images/video_thumb.jpg)](https://www.youtube.com/watch?v=XvVcuQfUNog)
+
+---
+
 ## 🔌 Available Modules:
 
 - **[MCF_HamsterKombat](https://github.com/masterking32/MCF_HamsterKombat)**: Module for the Hamster Kombat bot.
