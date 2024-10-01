@@ -4,7 +4,7 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 
 import json
-import utils.logColors as lc
+import mcf_utils.logColors as lc
 from pyrogram import Client
 import os
 import asyncio
