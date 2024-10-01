@@ -4,6 +4,7 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 
 import os
+import sys
 import time
 import subprocess
 import psutil
@@ -156,6 +157,17 @@ class Module_Thread:
                 time.sleep(update_check_interval)
 
     def get_python_executable(self):
+        try:
+            python_executable = sys.executable()
+            if (
+                python_executable is not None
+                and os.path.exists(python_executable)
+                and python_executable != ""
+            ):
+                return python_executable
+        except Exception as e:
+            pass
+
         try:
             if os.name == "nt":
                 return "python"
@@ -344,6 +356,10 @@ class Module_Thread:
         )
         time.sleep(run_delay)
         self.logger.info(f"<green>🚀 Running all modules ...</green>")
+        python_executable = self.get_python_executable()
+        self.logger.info(
+            f"<green>🚀 Python Executable for running modules: <y>{python_executable}</y></green>"
+        )
 
         while True:
             try:
