@@ -167,10 +167,31 @@ async def start_bot():
                     json.dump(accounts, f, indent=2)
 
                 log.info("<green>└─ ✅ Session files are up to date ...</green>")
+
+                if len(accounts) > 0:
+                    log.info(
+                        "<green>🔭 Checking whether the server has access to Telegram...</green>"
+                    )
+                    access_to_telegram_website = apiObj.check_telegram_access()
+                    if access_to_telegram_website:
+                        log.info(f"<green>└─ ✅ Server has access to Telegram.</green>")
+                    else:
+                        log.error(
+                            "<red>❌ Device does not have access to Telegram. ❌</red>\n"
+                            "<yellow>1. Restart the bot if you believe the device has access to Telegram.</yellow>\n"
+                            "<yellow>2. Ensure Telegram is not blocked in your country.</yellow>\n"
+                            "<yellow>3. If using a VPN, verify that it is properly routing all requests through the VPN.</yellow>\n"
+                            "<yellow>4. Check VPN settings to ensure all traffic is routed through the VPN.</yellow>"
+                        )
+                        log.error("<red>└─ ⛔ Telegram access check has failed.</red>")
             else:
-                log.info("<yellow>❌ No Pyrogram accounts found ...</yellow>")
+                log.info(
+                    "<yellow>🟨 No Pyrogram accounts found. You can add them or use module accounts ...</yellow>"
+                )
     else:
-        log.info("<yellow>❌ No Pyrogram accounts found ...</yellow>")
+        log.info(
+            "<yellow>🟨 No Pyrogram accounts found. You can add them or use module accounts ...</yellow>"
+        )
 
     web_server = WebServer(log, config.config, modulesThread)
     threading.Thread(target=asyncio.run, args=(web_server.start(),)).start()

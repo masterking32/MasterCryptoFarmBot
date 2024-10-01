@@ -113,3 +113,25 @@ class API:
                 return self.get_public_ip(retry - 1)
         except Exception:
             return self.get_public_ip(retry - 1)
+
+    def check_telegram_access(self, retries=3):
+        telegram_api_url = "https://api.telegram.org/connection-test"
+
+        try:
+            response = requests.get(telegram_api_url, timeout=5)
+            # This request should return 404
+            # cause it's not a valid endpoint
+            # but it's used to check if the bot has access to the telegram API
+            if response.status_code == 404:
+                json_response = response.json()
+                if "ok" in json_response:
+                    return True
+
+            return False
+        except Exception:
+            pass
+
+        if retries > 0:
+            return self.check_telegram_access(retries - 1)
+
+        return False
