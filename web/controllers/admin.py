@@ -8,16 +8,15 @@ import os
 import hashlib
 import base64
 import re
-import datetime
 import signal
 from flask import redirect, render_template, session
 
-from utils.database import Database
-import utils.variables as vr
-import utils.Git as Git
-import utils.logColors as lc
-import utils.api as api
-import utils.utils as utils
+from mcf_utils.database import Database
+import mcf_utils.variables as vr
+import mcf_utils.Git as Git
+import mcf_utils.logColors as lc
+import mcf_utils.api as api
+import mcf_utils.utils as utils
 
 
 class admin:

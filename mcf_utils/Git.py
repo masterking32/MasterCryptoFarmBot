@@ -6,7 +6,6 @@
 import subprocess
 import signal
 import os
-import utils.logColors as lc
 
 
 class Git:

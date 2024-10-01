@@ -5,11 +5,10 @@
 
 import os
 
-import utils.logColors as lc
-import utils.Git as Git
-import utils.utils as utils
-import utils.api as api
-import utils.database as database
+import mcf_utils.Git as Git
+import mcf_utils.utils as utils
+import mcf_utils.api as api
+import mcf_utils.database as database
 import config
 
 

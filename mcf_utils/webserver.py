@@ -11,10 +11,10 @@ import string
 import logging
 from flask import Flask, render_template, request, send_from_directory
 import flask.cli
-from utils.database import Database
-import utils.variables as vr
-import utils.utils as utils
-import utils.api as api
+from mcf_utils.database import Database
+import mcf_utils.variables as vr
+import mcf_utils.utils as utils
+import mcf_utils.api as api
 
 
 class WebServer:

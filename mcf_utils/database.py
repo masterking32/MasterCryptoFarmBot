@@ -7,8 +7,6 @@ import os
 import sqlite3
 from contextlib import contextmanager
 
-import utils.logColors as lc
-
 
 @contextmanager
 def get_db_connection(db_name, logger):

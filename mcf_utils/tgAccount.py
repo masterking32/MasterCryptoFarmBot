@@ -20,7 +20,7 @@ from pyrogram.raw import functions
 from pyrogram.raw.functions.messages import RequestWebView, RequestAppWebView
 from pyrogram.raw.functions.account import UpdateNotifySettings
 from urllib.parse import unquote
-from utils.utils import testProxy, parseProxy
+from mcf_utils.utils import testProxy, parseProxy
 from contextlib import asynccontextmanager
 
 

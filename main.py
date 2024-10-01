@@ -11,15 +11,15 @@ import os
 
 import json
 
-import utils.logColors as lc
-from utils.database import Database
-from utils.modules import Module
-from utils.webserver import WebServer
-import utils.variables as var
-import utils.api as api
-import utils.utils as utils
-import utils.Git as Git
-from utils.modules_thread import Module_Thread
+import mcf_utils.logColors as lc
+from mcf_utils.database import Database
+from mcf_utils.modules import Module
+from mcf_utils.webserver import WebServer
+import mcf_utils.variables as var
+import mcf_utils.api as api
+import mcf_utils.utils as utils
+import mcf_utils.Git as Git
+from mcf_utils.modules_thread import Module_Thread
 
 try:
     import config
