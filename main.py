@@ -23,6 +23,12 @@ import mcf_utils.Git as Git
 from mcf_utils.modules_thread import Module_Thread
 
 try:
+    if sys.stdout.encoding.lower() != "utf-8":
+        sys.stdout.reconfigure(encoding="utf-8")
+except Exception as e:
+    pass
+
+try:
     import config
 except ImportError:
     print(
@@ -32,11 +38,6 @@ except ImportError:
         "Please create a config.py file with the required variables, check the example file (config.py.sample)"
     )
 
-try:
-    if sys.stdout.encoding.lower() != "utf-8":
-        sys.stdout.reconfigure(encoding="utf-8")
-except Exception as e:
-    pass
 
 log = lc.getLogger()
 
