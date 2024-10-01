@@ -81,8 +81,9 @@ class API:
         return {"error": "Unable to install module, please try again later"}
 
     def get_mcf_version(self):
-        response = self.__get_request(
-            "https://api.masterking32.com/mcf_bot/mcf_version.php"
+        response = self._post_request(
+            "https://api.masterking32.com/mcf_bot/mcf_version.php",
+            data={"action": "get_mcf_version"},
         )
         if response and "commit_hash" in response and "commit_date" in response:
             return response
