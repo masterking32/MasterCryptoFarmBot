@@ -4,7 +4,7 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 
 import sqlite3
-import utils.logColors as lc
+import mcf_utils.logColors as lc
 
 
 def change_license(license: str) -> None:
