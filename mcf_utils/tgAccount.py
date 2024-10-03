@@ -141,30 +141,92 @@ class tgAccount:
                 return None
             return await self._get_web_view_data(tgClient)
 
-    async def _get_web_view_data(self, tgClient=None):
-        referral = self.ReferralToken
-        BotID = self.BotID
-
-        bot_started = False
+    async def _get_bot_app_link(self, tgClient):
         try:
+            BotID = self.BotID
             chatHistory = await tgClient.get_chat_history_count(BotID)
-            if chatHistory > 0:
-                bot_started = True
+            if chatHistory < 1:
+                await self.send_start_bot(tgClient)
+                await asyncio.sleep(5)
+
+            if self.AppURL:
+                return self.AppURL
+
+            if self.ShortAppName:
+                return None
+
+            async for message in tgClient.get_chat_history(BotID):
+                if message is None:
+                    continue
+
+                isBot = message.from_user and message.from_user.is_bot
+                if not isBot:
+                    continue
+
+                if not message.reply_markup:
+                    continue
+
+                webAppURL = None
+                if message.reply_markup.__class__.__name__ == "InlineKeyboardMarkup":
+                    for row in message.reply_markup.inline_keyboard:
+                        for button in row:
+                            if button.web_app is None or button.web_app.url is None:
+                                continue
+
+                            webAppURL = button.web_app.url
+                elif message.reply_markup.__class__.__name__ == "ReplyKeyboardMarkup":
+                    for row in message.reply_markup.keyboard:
+                        for button in row:
+                            if button.url is None:
+                                continue
+
+                            webAppURL = button.url
+
+                if webAppURL is None:
+                    continue
+
+                message_date = int(message.date.timestamp())
+                time_now = int(time.time())
+                a_week = 60 * 60 * 24 * 7
+                if time_now - message_date > a_week:
+                    await asyncio.sleep(5)
+                    await self.send_start_bot(tgClient)
+                    return await self.get_app_web_link(tgClient)
+
+                return webAppURL
         except Exception as e:
-            pass
+            self.log.error(f"<red>└─ ❌ {e}</red>")
 
+        return None
+
+    async def send_start_bot(self, tgClient):
+        self.log.info(
+            f"<green>└─ 🤖 Sending start bot for {self.accountName} ...</green>"
+        )
+
+        peer = await tgClient.resolve_peer(self.BotID)
+        await tgClient.invoke(
+            functions.messages.StartBot(
+                bot=peer,
+                peer=peer,
+                random_id=random.randint(100000, 999999),
+                start_param=self.ReferralToken,
+            )
+        )
+
+        return True
+
+    async def _get_web_view_data(self, tgClient=None):
         try:
-            if not bot_started:
-                peer = await tgClient.resolve_peer(BotID)
-                await tgClient.invoke(
-                    functions.messages.StartBot(
-                        bot=peer,
-                        peer=peer,
-                        random_id=random.randint(100000, 999999),
-                        start_param=referral,
-                    )
-                )
+            BotID = self.BotID
 
+            app_url = await self._get_bot_app_link(tgClient)
+
+            if not app_url and not self.ShortAppName:
+                self.log.info(
+                    f"<yellow>└─ ❌ {self.accountName} session failed to get app url!</yellow>"
+                )
+                return None
             peer = await tgClient.resolve_peer(BotID)
             bot_app = (
                 InputBotAppShortName(bot_id=peer, short_name=self.ShortAppName)
@@ -178,7 +240,7 @@ class tgAccount:
                     app=bot_app,
                     platform="android",
                     write_allowed=True,
-                    start_param=referral,
+                    start_param=self.ReferralToken,
                 )
                 if bot_app
                 else RequestWebView(
@@ -186,7 +248,7 @@ class tgAccount:
                     bot=peer,
                     platform="android",
                     from_bot_menu=False,
-                    url=self.AppURL,
+                    url=app_url,
                 )
             )
 
@@ -196,15 +258,12 @@ class tgAccount:
                 )
                 return None
 
-            self.log.info(
-                f"<green>└─ 🔑 {self.accountName} session is authorized!</green>"
-            )
             return web_view.url
         except Exception as e:
             self.log.info(
-                f"<yellow>└─ ❌ {self.accountName} session failed to authorize!</yellow>"
+                f"<yellow>└─ ❌ {self.accountName} session failed to get web view data!</yellow>"
             )
-            # self.log.error(f"<red>└─ ❌ {e}</red>")
+            self.log.error(f"<red>❌ {e}</red>")
             return None
 
     async def accountSetup(self):
@@ -252,12 +311,19 @@ class tgAccount:
             await asyncio.sleep(5)
 
     async def joinChat(self, url, noLog=False, mute=True):
-        async with connect_pyrogram(
-            self.log, self.bot_globals, self.accountName, self.proxy
-        ) as tgClient:
-            if tgClient is None:
-                return None
-            return await self._join_chat(tgClient, url, noLog, mute)
+        try:
+            async with connect_pyrogram(
+                self.log, self.bot_globals, self.accountName, self.proxy
+            ) as tgClient:
+                if tgClient is None:
+                    return None
+                return await self._join_chat(tgClient, url, noLog, mute)
+        except Exception as e:
+            self.log.info(
+                f"<y>└─ ❌ Account {self.accountName} session is not connected!</y>"
+            )
+            self.log.error(f"<red>❌ {e}</red>")
+            return None
 
     async def _join_chat(self, tgClient, url, noLog=False, mute=True):
         if not noLog:
