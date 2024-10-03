@@ -167,20 +167,31 @@ class tgAccount:
                     continue
 
                 webAppURL = None
-                if message.reply_markup.__class__.__name__ == "InlineKeyboardMarkup":
-                    for row in message.reply_markup.inline_keyboard:
-                        for button in row:
-                            if button.web_app is None or button.web_app.url is None:
-                                continue
+                try:
+                    if (
+                        message.reply_markup.__class__.__name__
+                        == "InlineKeyboardMarkup"
+                    ):
+                        for row in message.reply_markup.inline_keyboard:
+                            for button in row:
+                                if button.web_app is None or button.web_app.url is None:
+                                    continue
 
-                            webAppURL = button.web_app.url
-                elif message.reply_markup.__class__.__name__ == "ReplyKeyboardMarkup":
-                    for row in message.reply_markup.keyboard:
-                        for button in row:
-                            if button.url is None:
-                                continue
+                                webAppURL = button.web_app.url
+                                break
+                    elif (
+                        message.reply_markup.__class__.__name__ == "ReplyKeyboardMarkup"
+                    ):
+                        for row in message.reply_markup.keyboard:
+                            for button in row:
+                                if button.url is None:
+                                    continue
 
-                            webAppURL = button.url
+                                webAppURL = button.url
+                                break
+                except Exception as e:
+                    self.log.error(f"<red>└─ ❌ {e}</red>")
+                    continue
 
                 if webAppURL is None:
                     continue

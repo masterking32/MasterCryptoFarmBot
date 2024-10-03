@@ -16,9 +16,11 @@ class API:
             try:
                 response = requests.post(url, data=data)
                 if response.status_code == 200:
-                    return json.loads(response.text)
+                    return response.json()
                 elif response.status_code == 403:
                     return {"error": "License is not valid, please check your license"}
+                elif "error" in response.text:
+                    return response.json()
                 else:
                     return {"error": "API Error: Please try again later"}
             except Exception as e:
@@ -31,7 +33,7 @@ class API:
             try:
                 response = requests.get(url)
                 if response.status_code == 200:
-                    return json.loads(response.text)
+                    return response.json()
             except Exception as e:
                 # self.logger.error(f"API Error: {e}")
                 pass
@@ -135,3 +137,21 @@ class API:
             return self.check_telegram_access(retries - 1)
 
         return False
+
+    def get_task_answer(self, license_key, data):
+        if license_key is None:
+            return None
+
+        try:
+            data["license_key"] = license_key
+            response = self._post_request(
+                "https://api.masterking32.com/mcf_bot/api.php", data
+            )
+
+            if response is None:
+                return None
+
+            return response
+        except Exception as e:
+            self.log.error(f"<r>⭕ {e} failed to get data!</r>")
+            return None
