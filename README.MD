@@ -43,6 +43,7 @@ For a step-by-step guide on installing and running the MasterCryptoFarmBot proje
 ## 🔌 Available Modules:
 
 - **[MCF_HamsterKombat](https://github.com/masterking32/MCF_HamsterKombat)**: Module for the Hamster Kombat bot.
+- **[MCF_Blum](https://github.com/masterking32/MCF_Blum)**: Module for the Blum bot.
 
 ---
 
