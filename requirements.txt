@@ -7,3 +7,4 @@ loguru
 websocket-client
 websockets
 psutil
+tgcrypto
