@@ -103,6 +103,7 @@ class tgAccount:
         ReferralToken=None,
         ShortAppName=None,
         AppURL=None,
+        MuteBot=False,
     ):
         self.bot_globals = bot_globals
         self.log = log
@@ -112,6 +113,7 @@ class tgAccount:
         self.ShortAppName = ShortAppName
         self.ReferralToken = ReferralToken
         self.AppURL = AppURL
+        self.MuteBot = MuteBot
 
     async def run(self):
         try:
@@ -239,6 +241,20 @@ class tgAccount:
                 )
                 return None
             peer = await tgClient.resolve_peer(BotID)
+
+            if self.MuteBot:
+                try:
+                    peerMute = InputNotifyPeer(peer=peer)
+                    settings = InputPeerNotifySettings(
+                        silent=True,
+                        mute_until=int(time.time() + 10 * 365 * 24 * 60 * 60),
+                    )
+                    await tgClient.invoke(
+                        UpdateNotifySettings(peer=peerMute, settings=settings)
+                    )
+                except Exception as e:
+                    pass
+
             bot_app = (
                 InputBotAppShortName(bot_id=peer, short_name=self.ShortAppName)
                 if self.ShortAppName
