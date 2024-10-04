@@ -186,6 +186,14 @@ class admin:
         except Exception as e:
             error = "Error loading accounts..."
 
+        if error:
+            return render_template(
+                "admin/accounts.html",
+                accounts=accounts,
+                error=error,
+                theme=self.theme,
+            )
+
         file_updated = False
         if "disable" in request.args:
             AccountID = request.args.get("disable")
@@ -210,6 +218,21 @@ class admin:
                         f"<green>🔓 Account enabled, Account ID: </green><cyan>{AccountID}</cyan>"
                     )
                     file_updated = True
+                    break
+        elif "delete" in request.args:
+            session_name = request.args.get("delete")
+            for account in accounts:
+                if account["session_name"] == session_name:
+                    accounts.remove(account)
+                    success = f"Account {account['session_name']} deleted successfully."
+                    webServer.logger.info(
+                        f"<red>🗑 Account deleted, Session Name: </red><cyan>{session_name}</cyan>"
+                    )
+                    file_updated = True
+                    try:
+                        os.remove(f"telegram_accounts/{session_name}.session")
+                    except Exception as e:
+                        pass
                     break
 
         if request.method == "POST" and "account_id" in request.form:

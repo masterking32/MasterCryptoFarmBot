@@ -63,12 +63,63 @@
             </p>
           </div>
         </div>
-        <button
-          class="btn btn-info btn-sm"
-          onclick="account_model_{{ account.id }}.showModal()"
-        >
-          <i class="fa-solid fa-cog"></i>
-        </button>
+        <div>
+          <button
+            class="btn btn-info btn-sm"
+            onclick="account_model_{{ account.id }}.showModal()"
+          >
+            <i class="fa-solid fa-cog"></i>
+          </button>
+          <button
+            class="btn btn-error btn-sm"
+            onclick="delete_account_{{ account.id }}.showModal()"
+          >
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+        <dialog id="delete_account_{{ account.id }}" class="modal">
+          <div class="modal-box">
+            <h1 class="">Delete Account</h1>
+            <hr class="h-px my-4 border-0 bg-gray-700" />
+            <div class="bg-base-100 rounded-lg shadow-lg max-w-md mx-auto">
+              <div class="text-center">
+                <p class="text-lg">
+                  Are you sure you want to delete this account?
+                </p>
+                <p class="">
+                  If you delete this account, you will lose all related data. To
+                  add it again, you will need to run the add_account.py script
+                  and log in to the account again.
+                </p>
+
+                <hr class="h-px my-4 border-0 bg-gray-700" />
+                <p class="text-lg">
+                  <span class="font-semibold">Session Name:</span>
+                  <span class="text-info">{{ account.session_name }}</span>
+                </p>
+                <p class="text-lg">
+                  <span class="font-semibold">Username:</span>
+                  <span class="text-info">{{ account.username }}</span>
+                </p>
+              </div>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              <div class="text-center">
+                <a
+                  href="./accounts.py?delete={{ account.session_name }}"
+                  class="btn btn-error"
+                  >Delete Account</a
+                >
+                <hr class="h-px my-4 border-0 bg-gray-700" />
+                <div class="modal-action">
+                  <form method="dialog">
+                    <button class="btn btn-secondary">Close</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </dialog>
+
         <dialog id="account_model_{{ account.id }}" class="modal">
           <div class="modal-box">
             <h1 class="">Account Settings</h1>
