@@ -167,6 +167,9 @@ def hide_text(text, length=4):
     if not text:
         return None
 
+    if length < 1:
+        return text
+
     if len(text) <= length:
         return "*" * len(text)
 
