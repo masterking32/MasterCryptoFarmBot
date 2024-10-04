@@ -3,6 +3,7 @@
 # Github: https://github.com/masterking32
 # Telegram: https://t.me/MasterCryptoFarmBot
 
+import datetime
 import os
 import sys
 import time
@@ -252,10 +253,20 @@ class Module_Thread:
                     "process": process,
                     "command": exec_command,
                     "is_running": True,
+                    "start_time": datetime.datetime.now().replace(microsecond=0),
                 }
             )
         except Exception as e:
             self.logger.error(f"RunModule: {e}")
+
+    def get_module_start_time(self, module):
+        try:
+            for rm in self.running_modules:
+                if rm["module"] == module:
+                    return rm["start_time"]
+        except Exception as e:
+            self.logger.error(f"GetModuleStartTime: {e}")
+        return datetime.datetime.now().replace(microsecond=0)
 
     def stop_module(self, module, user_stop=False):
         try:

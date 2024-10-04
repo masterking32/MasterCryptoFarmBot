@@ -552,6 +552,9 @@ class admin:
         bot["accounts"] = self._bots_load_json(f"modules/{module}/accounts.json", [])
         bot["settings_inputs"] = self._bots_prepare_settings_inputs(bot)
         bot["is_running"] = webServer.module_threads.is_module_running(module)
+        bot["uptime"] = utils.TimeAgo(
+            webServer.module_threads.get_module_start_time(module)
+        )
         return bot
 
     def _bots_load_logo(self, module):

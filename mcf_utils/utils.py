@@ -145,13 +145,22 @@ def TimeAgo(time):
     now = datetime.now()
     diff = (now - time).total_seconds()
 
-    if diff < 60:
-        return f"{int(diff)} seconds"
-    if diff < 3600:
-        return f"{int(diff // 60)} minutes"
-    if diff < 86400:
-        return f"{int(diff // 3600)} hours"
-    return f"{int(diff // 86400)} days"
+    intervals = (
+        ("year", 31536000),
+        ("month", 2592000),
+        ("week", 604800),
+        ("day", 86400),
+        ("hour", 3600),
+        ("minute", 60),
+        ("second", 1),
+    )
+
+    for name, count in intervals:
+        value = diff // count
+        if value:
+            name = name if value == 1 else name + "s"
+            return f"{int(value)} {name} ago"
+    return "just now"
 
 
 def hide_text(text, length=4):

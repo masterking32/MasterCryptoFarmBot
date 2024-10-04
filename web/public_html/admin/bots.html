@@ -445,11 +445,20 @@
               <div class="text-center">
                 <p class="text-center">
                   Bot Status: {% if bot.is_running %}
-                  <span class="badge badge-success">Running</span> {% else %}
+                  <span class="badge badge-success">Running</span>
+                  {% else %}
                   <span class="badge badge-error">Stopped</span>
                   {% endif %}
                 </p>
-                {% if bot.is_running %}
+                {% if bot.is_running %} {% if bot.uptime %}
+                <p class="text-center">
+                  Uptime:
+                  <span class="badge badge-info">
+                    <i class="fa-solid fa-clock mr-2"></i>
+                    {{ bot.uptime }}</span
+                  >
+                </p>
+                {% endif %}
                 <a
                   href="./bots.py?stop_bot={{ bot.id }}"
                   class="btn btn-error mt-2"
