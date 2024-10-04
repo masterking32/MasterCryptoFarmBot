@@ -26,6 +26,41 @@ except ImportError:
     )
 
 
+def add_account_to_json(account):
+    accounts = []
+    try:
+        if os.path.exists("telegram_accounts/accounts.json"):
+            with open("telegram_accounts/accounts.json", "r") as f:
+                accounts = json.load(f)
+                f.close()
+    except Exception as e:
+        accounts = []
+
+    for acc in accounts:
+        if acc["id"] == account["id"]:
+            print(f"\n{lc.r}Account ID already exists!{lc.rs}")
+            return None
+        if acc["phone_number"] == account["phone_number"]:
+            print(f"\n{lc.r}Phone number already exists!{lc.rs}")
+            return None
+        if acc["session_name"] == account["session_name"]:
+            print(f"\n{lc.r}Session name already exists!{lc.rs}")
+            return None
+
+    accounts.append(account)
+
+    try:
+        with open("telegram_accounts/accounts.json", "w") as f:
+            json.dump(accounts, f, indent=2)
+            f.close()
+    except Exception as e:
+        print(f"\n{lc.r}Error while writing to accounts.json file!{lc.rs}")
+        return None
+
+    print(f"\n{lc.g}Session created successfully!{lc.rs}")
+    return account["session_name"]
+
+
 async def register_sessions() -> None:
     session_name = input(
         f"\n{lc.g}Enter a Name for account (press Enter to exit): {lc.rs}"
@@ -85,17 +120,7 @@ async def register_sessions() -> None:
         "proxy": "",
     }
 
-    accounts = []
-    if os.path.exists("telegram_accounts/accounts.json"):
-        with open("telegram_accounts/accounts.json", "r") as f:
-            accounts = json.load(f)
-            f.close()
-
-    accounts.append(account)
-
-    with open("telegram_accounts/accounts.json", "w") as f:
-        json.dump(accounts, f, indent=2)
-        f.close()
+    add_account_to_json(account)
 
     print(f"\n{lc.y}User Information:{lc.rs}")
     print(f"{lc.y}ID: {lc.rs}{user_data.id}")
@@ -153,15 +178,7 @@ async def import_sessions() -> None:
             "user_agent": "",
             "proxy": "",
         }
-        accounts = []
-        if os.path.exists("telegram_accounts/accounts.json"):
-            with open("telegram_accounts/accounts.json", "r") as f:
-                accounts = json.load(f)
-                f.close()
-        accounts.append(account)
-        with open("telegram_accounts/accounts.json", "w") as f:
-            json.dump(accounts, f, indent=2)
-            f.close()
+        add_account_to_json(account)
         print(f"{lc.g}Session {session_name} imported successfully!{lc.rs}")
 
 
