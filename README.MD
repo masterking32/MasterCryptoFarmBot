@@ -44,6 +44,7 @@ For a step-by-step guide on installing and running the MasterCryptoFarmBot proje
 
 - **[MCF_HamsterKombat](https://github.com/masterking32/MCF_HamsterKombat)**: Module for the Hamster Kombat bot.
 - **[MCF_Blum](https://github.com/masterking32/MCF_Blum)**: Module for the Blum bot.
+- **[MCF_PocketFi](https://t.me/pocketfi_bot/Mining?startapp=95736407)**: Module for the PocketFi bot.
 
 ---
 
