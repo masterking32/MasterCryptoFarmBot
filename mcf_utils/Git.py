@@ -28,6 +28,16 @@ class Git:
             self.logger.error(f"<red> ❌ Error running git command: {e}</red>")
             return None
 
+    def git_revert_all(self, directory=None):
+        try:
+            directory = directory or os.getcwd()
+            self._run_git_command("git reset --hard", directory)
+            self._run_git_command("git clean -df", directory)
+            return True
+        except Exception as e:
+            self.logger.error(f"<red> ❌ Error reverting git: {e}</red>")
+            return False
+
     def GetRecentLocalCommit(self, directory=None):
         directory = directory or os.getcwd()
         response = self._run_git_command("git log -1 --pretty=format:%H", directory)
@@ -54,6 +64,8 @@ class Git:
         directory_path = directory or os.getcwd()
         project_name = "Project" if directory is None else directory.split("/")[-1]
         self.logger.info(f"<green>🔄 Updating <cyan>{project_name}</cyan> ...</green>")
+
+        self.git_revert_all(directory_path)
 
         response = self._run_git_command("git pull", directory_path)
 
