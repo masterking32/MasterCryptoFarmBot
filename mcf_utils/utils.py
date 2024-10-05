@@ -4,9 +4,13 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 
 from datetime import datetime
+import random
 from urllib.parse import urlparse
+from faker import Faker
 import requests
 import re
+
+import unidecode
 
 
 def parseProxy(proxy_url):
@@ -174,3 +178,191 @@ def hide_text(text, length=4):
         return "*" * len(text)
 
     return text[:length] + "*" * (len(text) - length * 2) + text[-length:]
+
+
+def text_to_username(text):
+    if not text:
+        return None
+
+    text = re.sub(r"[^a-zA-Z0-9_]", "", text.replace(" ", "_").lower())
+
+    # Replace multiple underscores with a single one and trim leading digits/underscores
+    text = re.sub(r"_+", "_", text).lstrip("0123456789_").rstrip("_")
+
+    if not text:
+        return None
+
+    random_number = random.randint(3, 999999)
+    username = f"{text}_{random_number}"
+
+    return username[:32]
+
+
+def get_random_emoji():
+    emojis = [
+        "😀",
+        "😃",
+        "😄",
+        "😁",
+        "😆",
+        "😅",
+        "😂",
+        "🤣",
+        "😊",
+        "😇",
+        "🙂",
+        "🙃",
+        "😉",
+        "😌",
+        "😍",
+        "🥰",
+        "😘",
+        "😗",
+        "😙",
+        "😚",
+        "😋",
+        "😛",
+        "😝",
+        "😜",
+        "🤪",
+        "🤨",
+        "🧐",
+        "🤓",
+        "😎",
+        "🤩",
+        "🥳",
+        "😏",
+        "😒",
+        "😞",
+        "😔",
+        "😟",
+        "😕",
+        "🙁",
+        "☹️",
+        "😣",
+        "😖",
+        "😫",
+        "😩",
+        "🥺",
+        "😢",
+        "😭",
+        "😤",
+        "😠",
+        "😡",
+        "🤬",
+        "🤯",
+        "😳",
+        "🥵",
+        "🥶",
+        "😱",
+        "😨",
+        "😰",
+        "😥",
+        "😓",
+        "🤗",
+        "🤔",
+        "🤭",
+        "🤫",
+        "🤥",
+        "😶",
+        "😐",
+        "😑",
+        "😬",
+        "🙄",
+        "😯",
+        "😦",
+        "😧",
+        "😮",
+        "😲",
+        "🥱",
+        "😴",
+        "🤤",
+        "😪",
+        "😵",
+        "🤐",
+        "🥴",
+        "🤢",
+        "🤮",
+        "🤧",
+        "😷",
+        "🤒",
+        "🤕",
+        "🤑",
+        "🤠",
+        "😈",
+        "👿",
+        "👹",
+        "👺",
+        "🤡",
+        "👻",
+        "💀",
+        "☠️",
+        "👽",
+        "👾",
+        "🎃",
+        "😺",
+        "😸",
+        "😹",
+        "😻",
+        "😼",
+        "😽",
+        "🙀",
+    ]
+    return random.choice(emojis)
+
+
+def get_avatar_url():
+
+    url = "https://api.dicebear.com/9.x/"
+    styles = [
+        "adventurer",
+        "adventurer-neutral",
+        "avataaars",
+        "avataaars-neutral",
+        "big-ears",
+        "big-smile",
+        "bottts-neutral",
+        "croodles",
+        "dylan",
+        "fun-emoji",
+        "glass",
+        "lorelei",
+        "lorelei-neutral",
+        "micah",
+        "miniavs",
+        "notionists",
+        "notionists-neutral",
+        "open-peeps",
+        "personas",
+        "pixel-art",
+        "pixel-art-neutral",
+        "shapes",
+        "thumbs",
+    ]
+
+    style = random.choice(styles)
+    name = "".join(random.choices("abcdefghijklmnopqrstuvwxyz1234567890", k=32))
+    url += f"{style}/png?seed={name}&size=512&backgroundColor=000000"
+    return url
+
+
+def get_random_name():
+    fake = Faker(
+        [
+            "en",
+            "pl_PL",
+            "ga_IE",
+            "en_US",
+            "en_IE",
+            "es_CL",
+            "nl_BE",
+            "fr_BE",
+            "de_DE",
+            "sk_SK",
+            "de_CH",
+            "en_NZ",
+            "es_ES",
+        ]
+    )
+    fake_name = fake.name()
+    return unidecode.unidecode(fake_name)

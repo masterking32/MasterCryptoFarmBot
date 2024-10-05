@@ -32,15 +32,15 @@ Overall, the MasterCryptoFarmBot project is designed to be a comprehensive solut
 
 ## 🔌 Available Modules:
 
-### 🤖 [MCF_HamsterCombat](https://github.com/masterking32/MCF_HamsterCombat)
+### 🤖 [Hamster Kombat Farm/Claimer Bot](https://github.com/masterking32/MCF_HamsterCombat)
 
 Module for the Hamster Combat bot. Automatically buys the best cards, completes tasks, plays in the playground, and obtains promo keys.
 
-### 🤖 [MCF_Blum](https://github.com/masterking32/MCF_Blum)
+### 🤖 [Blum Farm/Claimer Bot](https://github.com/masterking32/MCF_Blum)
 
 Module for the Blum bot. Automatically registers new accounts, claims daily rewards, starts, finishes, and completes all tasks (including promotions, YouTube, partners, and more), plays games, joins channels, and launches partner bots for tasks, and much more!
 
-### 🤖 [MCF_PocketFi](https://t.me/pocketfi_bot/Mining?startapp=95736407)
+### 🤖 [PocketFi Farm/Claimer Bot](https://t.me/pocketfi_bot/Mining?startapp=95736407)
 
 Module for the PocketFi bot. Automatically registers new accounts with your referral token, claims daily rewards, starts, finishes, and completes tasks (Twitter, Telegram, alliance), automatically claims mining rewards, and joins an alliance if you don't have one already.
 

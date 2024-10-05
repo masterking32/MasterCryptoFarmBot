@@ -7,3 +7,6 @@ loguru
 websocket-client
 websockets
 psutil
+unidecode
+faker
+pillow

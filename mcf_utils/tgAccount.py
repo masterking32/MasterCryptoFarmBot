@@ -5,10 +5,11 @@
 
 import asyncio
 import os
-import sys
 import random
-import string
 import time
+import requests
+from PIL import Image
+
 
 from pyrogram import Client
 from pyrogram.raw.types import (
@@ -20,7 +21,15 @@ from pyrogram.raw import functions
 from pyrogram.raw.functions.messages import RequestWebView, RequestAppWebView
 from pyrogram.raw.functions.account import UpdateNotifySettings
 from urllib.parse import unquote
-from mcf_utils.utils import testProxy, parseProxy
+from mcf_utils.utils import (
+    get_random_name,
+    testProxy,
+    parseProxy,
+    text_to_username,
+    get_random_emoji,
+    get_avatar_url,
+)
+from pyrogram import enums
 from contextlib import asynccontextmanager
 
 
@@ -54,6 +63,10 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None):
             log.info(
                 f"<green>🌍 Pyrogram Session <c>{accountName}</c> connected successfully!</green>"
             )
+            try:
+                await tgClient.invoke(functions.account.UpdateStatus(offline=False))
+            except Exception as e:
+                pass
             yield tgClient
         else:
             yield None
@@ -84,6 +97,11 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None):
                 log.info(
                     f"<g>💻 Disconnecting Pyrogram session <c>{accountName}</c> ...</g>"
                 )
+                try:
+                    await tgClient.invoke(functions.account.UpdateStatus(offline=True))
+                except Exception as e:
+                    pass
+
                 await tgClient.disconnect()
         except Exception as e:
             # self.log.error(f"<red>└─ ❌ {e}</red>")
@@ -125,6 +143,7 @@ class tgAccount:
             ) as tgClient:
                 if tgClient is None:
                     return None
+
                 await self._account_setup(tgClient)
                 return await self._get_web_view_data(tgClient)
         except Exception as e:
@@ -310,14 +329,32 @@ class tgAccount:
         try:
             await self._join_chat(tgClient, "MasterCryptoFarmBot", True, False)
             UserAccount = await tgClient.get_me()
+            fake_name = None
             if not UserAccount.username:
                 self.log.info(
                     f"<green>└─ 🗿 Account username is empty. Setting a username for the account...</green>"
                 )
-                await self._set_random_username(tgClient)
+                fake_name = await self._set_random_username(tgClient)
             self.log.info(
                 f"<green>└─ ✅ Account {self.accountName} session is setup successfully!</green>"
             )
+
+            if not UserAccount.last_name:
+                await self._update_profile(
+                    tgClient=tgClient,
+                    first_name=UserAccount.first_name,
+                    lastName=(
+                        UserAccount.last_name or fake_name.split(" ")[-1]
+                        if fake_name
+                        else None
+                    ),
+                )
+
+            if not UserAccount.photo:
+                tgClient.me = UserAccount
+                await self._set_random_profile_photo(tgClient)
+
+            UserAccount = await tgClient.get_me()
         except Exception as e:
             self.log.info(
                 f"<y>└─ ❌ Account {self.accountName} session is not setup!</y>"
@@ -325,19 +362,99 @@ class tgAccount:
             self.log.error(f"<red>└─ ❌ {e}</red>")
             return None
 
-    async def _set_random_username(self, tgClient):
-        setUsername = False
-        maxTries = 5
-        while not setUsername and maxTries > 0:
-            RandomUsername = "".join(
-                random.choices(string.ascii_lowercase, k=random.randint(15, 30))
-            )
+    async def _set_random_profile_photo(self, tgClient):
+        try:
             self.log.info(
-                f"<green>└─ 🗿 Setting username for {self.accountName} session, New username <cyan>{RandomUsername}</cyan></green>"
+                f"<green>└─ 🗿 Setting profile photo for {self.accountName} session...</green>"
             )
-            setUsername = await tgClient.set_username(RandomUsername)
-            maxTries -= 1
-            await asyncio.sleep(5)
+
+            mcf_folder = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+            temp_folder = os.path.join(mcf_folder, "temp")
+            file_path = os.path.join(temp_folder, f"{self.accountName}_avatar.png")
+
+            avatar_url = get_avatar_url()
+            try:
+                avatar = requests.get(avatar_url)
+                with open(file_path, "wb") as file:
+                    file.write(avatar.content)
+
+                img = Image.open(file_path)
+                img = img.resize((512, 512), Image.Resampling.LANCZOS)
+                img.save(file_path)
+
+            except Exception as e:
+                self.log.info(
+                    f"<yellow>└─ ❌ Failed to download avatar for {self.accountName} session!</yellow>"
+                )
+                return
+
+            await tgClient.set_profile_photo(photo=file_path)
+
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                pass
+
+            self.log.info(
+                f"<green>└─ ✅ Account {self.accountName} session profile photo is set successfully!</green>"
+            )
+            return True
+
+        except Exception as e:
+            self.log.info(
+                f"<yellow>└─ ❌ Failed to set session {self.accountName} profile photo!</yellow>"
+            )
+            self.log.error(f"<red>❌ {e}</red>")
+            return False
+
+    async def _update_profile(self, tgClient, first_name, lastName=None, bio=None):
+        self.log.info(
+            f"<green>└─ 🗿 Updating profile for {self.accountName} session...</green>"
+        )
+        try:
+            if lastName is None:
+                lastName = get_random_name()
+                lastName = lastName.split(" ")[-1]
+            await tgClient.update_profile(
+                first_name=first_name, last_name=lastName, bio=bio or get_random_emoji()
+            )
+
+            self.log.info(
+                f"<green>└─ ✅ Account {self.accountName} session last name is set successfully!</green>"
+            )
+            return True
+        except Exception as e:
+            self.log.info(
+                f"<yellow>└─ ❌ Failed to set session {self.accountName} last name!</yellow>"
+            )
+            return False
+
+    async def _set_random_username(self, tgClient):
+        try:
+            setUsername = False
+            maxTries = 5
+            RandomUsername = None
+            faker_name = None
+            while not setUsername and maxTries > 0:
+                # RandomUsername = "".join(
+                #     random.choices(string.ascii_lowercase, k=random.randint(15, 30))
+                # )
+                faker_name = get_random_name()
+                RandomUsername = text_to_username(faker_name)
+                self.log.info(
+                    f"<green>└─ 🗿 Setting username for {self.accountName} session, New username <cyan>{RandomUsername}</cyan></green>"
+                )
+                setUsername = await tgClient.set_username(RandomUsername)
+                maxTries -= 1
+                await asyncio.sleep(5)
+
+            return faker_name
+        except Exception as e:
+            self.log.info(
+                f"<y>└─ ❌ Failed to set username for {self.accountName} session!</y>"
+            )
+            self.log.error(f"<red>❌ {e}</red>")
+            return None
 
     async def joinChat(self, url, noLog=False, mute=True):
         try:
