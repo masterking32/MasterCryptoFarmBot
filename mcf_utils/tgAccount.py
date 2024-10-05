@@ -30,7 +30,6 @@ from mcf_utils.utils import (
     get_avatar_url,
     getConfig,
 )
-from pyrogram import enums
 from contextlib import asynccontextmanager
 
 
@@ -125,7 +124,6 @@ class tgAccount:
         ShortAppName=None,
         AppURL=None,
         MuteBot=False,
-        config=None,
     ):
         self.bot_globals = bot_globals
         self.log = log
@@ -136,7 +134,6 @@ class tgAccount:
         self.ReferralToken = ReferralToken
         self.AppURL = AppURL
         self.MuteBot = MuteBot
-        self.config = config
 
     async def run(self):
         try:
@@ -342,8 +339,12 @@ class tgAccount:
                 f"<green>└─ ✅ Account {self.accountName} session is setup successfully!</green>"
             )
 
-            if self.config is None or not getConfig(
-                self.config, "auto_setup_accounts", False
+            if (
+                self.bot_globals is None
+                or "config" not in self.bot_globals
+                or not getConfig(
+                    self.bot_globals["config"], "auto_setup_accounts", False
+                )
             ):
                 return UserAccount
 
