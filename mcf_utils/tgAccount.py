@@ -28,6 +28,7 @@ from mcf_utils.utils import (
     text_to_username,
     get_random_emoji,
     get_avatar_url,
+    getConfig,
 )
 from pyrogram import enums
 from contextlib import asynccontextmanager
@@ -124,6 +125,7 @@ class tgAccount:
         ShortAppName=None,
         AppURL=None,
         MuteBot=False,
+        config=None,
     ):
         self.bot_globals = bot_globals
         self.log = log
@@ -134,6 +136,7 @@ class tgAccount:
         self.ReferralToken = ReferralToken
         self.AppURL = AppURL
         self.MuteBot = MuteBot
+        self.config = config
 
     async def run(self):
         try:
@@ -339,6 +342,11 @@ class tgAccount:
                 f"<green>└─ ✅ Account {self.accountName} session is setup successfully!</green>"
             )
 
+            if self.config is None or not getConfig(
+                self.config, "auto_setup_accounts", False
+            ):
+                return UserAccount
+
             if not UserAccount.last_name:
                 await self._update_profile(
                     tgClient=tgClient,
@@ -355,6 +363,7 @@ class tgAccount:
                 await self._set_random_profile_photo(tgClient)
 
             UserAccount = await tgClient.get_me()
+            return UserAccount
         except Exception as e:
             self.log.info(
                 f"<y>└─ ❌ Account {self.accountName} session is not setup!</y>"
