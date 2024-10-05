@@ -311,41 +311,6 @@ def get_random_emoji():
     return random.choice(emojis)
 
 
-def get_avatar_url():
-
-    url = "https://api.dicebear.com/9.x/"
-    styles = [
-        "adventurer",
-        "adventurer-neutral",
-        "avataaars",
-        "avataaars-neutral",
-        "big-ears",
-        "big-smile",
-        "bottts-neutral",
-        "croodles",
-        "dylan",
-        "fun-emoji",
-        "glass",
-        "lorelei",
-        "lorelei-neutral",
-        "micah",
-        "miniavs",
-        "notionists",
-        "notionists-neutral",
-        "open-peeps",
-        "personas",
-        "pixel-art",
-        "pixel-art-neutral",
-        "shapes",
-        "thumbs",
-    ]
-
-    style = random.choice(styles)
-    name = "".join(random.choices("abcdefghijklmnopqrstuvwxyz1234567890", k=32))
-    url += f"{style}/png?seed={name}&size=512&backgroundColor=000000"
-    return url
-
-
 def get_random_name():
     fake = Faker(
         [

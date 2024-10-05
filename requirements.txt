@@ -9,4 +9,3 @@ websockets
 psutil
 unidecode
 faker
-pillow

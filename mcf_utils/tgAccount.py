@@ -8,7 +8,6 @@ import os
 import random
 import time
 import requests
-from PIL import Image
 
 
 from pyrogram import Client
@@ -382,16 +381,18 @@ class tgAccount:
             temp_folder = os.path.join(mcf_folder, "temp")
             file_path = os.path.join(temp_folder, f"{self.accountName}_avatar.png")
 
-            avatar_url = get_avatar_url()
             try:
-                avatar = requests.get(avatar_url)
+                avatar = requests.get(
+                    "https://api.masterking32.com/mcf_bot/avatar_creator.php"
+                )
+                if avatar.status_code != 200:
+                    self.log.info(
+                        f"<yellow>└─ ❌ Failed to download avatar for {self.accountName} session!</yellow>"
+                    )
+                    return
+
                 with open(file_path, "wb") as file:
                     file.write(avatar.content)
-
-                img = Image.open(file_path)
-                img = img.resize((512, 512), Image.Resampling.LANCZOS)
-                img.save(file_path)
-
             except Exception as e:
                 self.log.info(
                     f"<yellow>└─ ❌ Failed to download avatar for {self.accountName} session!</yellow>"
