@@ -26,7 +26,6 @@ from mcf_utils.utils import (
     parseProxy,
     text_to_username,
     get_random_emoji,
-    get_avatar_url,
     getConfig,
 )
 from contextlib import asynccontextmanager
