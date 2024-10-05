@@ -146,9 +146,20 @@ class WebServer:
 
         log = logging.getLogger("werkzeug")
         log.setLevel(logging.ERROR)
+
+        access_domain = f"http://{self.host}:{self.port}"
+        if self.host == "0.0.0.0":
+            access_domain = (
+                f"http://YOUR_PUBLIC_IP:{self.port}"
+                if ":" in self.public_ip
+                else f"http://{self.public_ip}:{self.port}"
+            )
+            access_domain += f"</yellow> or <yellow>http://localhost:{self.port}"
+
         self.logger.info(
-            f"<green>⚙️ To access the panel, visit: </green>🌐<b><yellow> http://{self.host}:{self.port} </yellow></b>🌐"
+            f"<green>⚙️ To access the panel, visit: </green>🌐<b><yellow> {access_domain} </yellow></b>🌐"
         )
+
         self.logger.info(
             f"<green>🔐 Panel Password: </green><red>{db.getSettings('admin_password', 'admin')}</red>"
         )
