@@ -59,12 +59,14 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None):
             yield None
     except Exception as e:
         try:
-            # If database is locked, retry after 3 seconds That means another instance is using the database
             if "database is locked" in str(e):
-                await asyncio.sleep(3)
-                async for client in connect_pyrogram(
+                log.info(
+                    f"<y>🟡 It looks like the Pyrogram session <c>{accountName}</c> is busy with another module. Waiting for 30 seconds before retrying.</y>"
+                )
+                await asyncio.sleep(30)
+                async with connect_pyrogram(
                     log, bot_globals, accountName, proxy
-                ):
+                ) as client:
                     yield client
                 return
             else:
