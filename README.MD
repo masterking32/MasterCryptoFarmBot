@@ -16,13 +16,33 @@
 
 <a href="https://raw.githubusercontent.com/masterking32/MasterCryptoFarmBot/refs/heads/main/web/public_html/images/Screenshot1.png"><img align="center" src="https://raw.githubusercontent.com/masterking32/MasterCryptoFarmBot/refs/heads/main/web/public_html/images/Screenshot1.png" alt="Screenshot1" /></a>
 
----
-
 ### 🌐 Key Features:
 
-- **Modular Design**: Easily add and manage Bot Modules to support other Telegram bots.
-- **Unified Farming**: Farm Air-Drops from multiple Telegram bots efficiently and effortlessly.
-- **Web-Based GUI**: A user-friendly web interface that lets you manage all your bots in one place, making the process seamless and intuitive.
+- **Modular Design**: Easily add, install, and manage Bot Modules to support various Telegram bots.
+- **Unified Farming**: Efficiently farm Air-Drops from multiple Telegram bots with ease.
+- **Web-Based GUI**: A user-friendly web interface that allows you to manage all your bots in one place, making the process seamless and intuitive.
+- **Auto Updates**: The project automatically updates itself and its modules, ensuring you always have the latest features and improvements without manual intervention.
+- **Multi-Threading**: Run multiple bots simultaneously, enabling you to farm multiple Air-Drops at the same time.
+- **WebQuery or Pyrogram**: Supports both WebQuery and Pyrogram, giving you the flexibility to choose the method that works best for you.
+- **Free and Paid Modules**: The project is free to use, but some modules may require a one-time payment for access.
+
+Overall, the MasterCryptoFarmBot project is designed to be a comprehensive solution for Air-Drop farming. It provides a seamless and efficient way to manage multiple Telegram bots in one place, maximizing your Air-Drop earnings with ease. Avoid the hassle of searching for new bots, installing them manually, and updating them individually. With MasterCryptoFarmBot, you can do it all with just one click.
+
+---
+
+## 🔌 Available Modules:
+
+### 🤖 [MCF_HamsterCombat](https://github.com/masterking32/MCF_HamsterCombat)
+
+Module for the Hamster Combat bot. Automatically buys the best cards, completes tasks, plays in the playground, and obtains promo keys.
+
+### 🤖 [MCF_Blum](https://github.com/masterking32/MCF_Blum)
+
+Module for the Blum bot. Automatically registers new accounts, claims daily rewards, starts, finishes, and completes all tasks (including promotions, YouTube, partners, and more), plays games, joins channels, and launches partner bots for tasks, and much more!
+
+### 🤖 [MCF_PocketFi](https://t.me/pocketfi_bot/Mining?startapp=95736407)
+
+Module for the PocketFi bot. Automatically registers new accounts with your referral token, claims daily rewards, starts, finishes, and completes tasks (Twitter, Telegram, alliance), automatically claims mining rewards, and joins an alliance if you don't have one already.
 
 ---
 
@@ -37,14 +57,6 @@ To install and run the [MasterCryptoFarmBot](https://github.com/masterking32/Mas
 For a step-by-step guide on installing and running the MasterCryptoFarmBot project, please watch the following tutorial video:
 
 [![MasterCryptoFarmBot Tutorial](https://raw.githubusercontent.com/masterking32/MasterCryptoFarmBot/refs/heads/main/web/public_html/images/video_thumb.jpg)](https://www.youtube.com/watch?v=XvVcuQfUNog)
-
----
-
-## 🔌 Available Modules:
-
-- **[MCF_HamsterKombat](https://github.com/masterking32/MCF_HamsterKombat)**: Module for the Hamster Kombat bot.
-- **[MCF_Blum](https://github.com/masterking32/MCF_Blum)**: Module for the Blum bot.
-- **[MCF_PocketFi](https://t.me/pocketfi_bot/Mining?startapp=95736407)**: Module for the PocketFi bot.
 
 ---
 
