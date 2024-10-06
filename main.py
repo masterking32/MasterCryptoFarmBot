@@ -62,6 +62,19 @@ print(banner)
 modulesThread = None
 
 
+def start_event_loop(loop, coro):
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(coro)
+    loop.close()
+
+
+def run_in_thread(coro):
+    loop = asyncio.new_event_loop()
+    t = threading.Thread(target=start_event_loop, args=(loop, coro))
+    t.start()
+    return t
+
+
 async def start_bot():
     global modulesThread
     log.info(f"<green>🚀 Starting MCF ...</green>")
@@ -207,7 +220,7 @@ async def start_bot():
         )
 
     web_server = WebServer(log, config.config, modulesThread)
-    threading.Thread(target=asyncio.run, args=(web_server.start(),)).start()
+    thread = run_in_thread(web_server.start())
 
     await asyncio.sleep(1)
     log.info("<green>🟢 MCF is ready to use! Check your Web Control Panel.</green>")
@@ -220,7 +233,7 @@ async def start_bot():
         log.info(
             f"<green>🔄 Auto module update checker is running. Checking every </green><cyan>{update_interval}</cyan><green> seconds.</green>"
         )
-        threading.Thread(target=modulesThread.update_check_thread).start()
+        run_in_thread(modulesThread.update_check_thread())
 
     modulesThread.run_all_modules()
 
