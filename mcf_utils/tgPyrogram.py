@@ -63,6 +63,12 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
         isConnected = False
         try:
             isConnected = await asyncio.wait_for(tgClient.connect(), timeout=30)
+        except asyncio.CancelledError:
+            log.info(
+                f"<yellow>❌ Pyrogram session <c>{accountName}</c> was cancelled!</yellow>"
+            )
+            yield None
+            return
         except asyncio.TimeoutError:
             log.info(
                 f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to connect! Timeout!</yellow>"
@@ -86,6 +92,12 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
             except asyncio.TimeoutError:
                 log.info(
                     f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to get account info! Timeout!</yellow>"
+                )
+                yield None
+                return
+            except asyncio.CancelledError:
+                log.info(
+                    f"<yellow>❌ Pyrogram session <c>{accountName}</c> was cancelled!</yellow>"
                 )
                 yield None
                 return
@@ -150,6 +162,8 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
                         timeout=30,
                     )
                 except asyncio.TimeoutError:
+                    pass
+                except asyncio.CancelledError:
                     pass
                 except Exception as e:
                     pass
@@ -395,6 +409,8 @@ class tgPyrogram:
                 self._join_chat(tgClient, "MasterCryptoFarmBot", True, False),
                 timeout=30,
             )
+        except asyncio.CancelledError:
+            pass
         except asyncio.TimeoutError:
             pass
         except Exception as e:
@@ -553,6 +569,8 @@ class tgPyrogram:
         except asyncio.TimeoutError:
             self.log.info(f"<yellow>└─ ❌ {self.accountName} session Timeout!</yellow>")
             return None
+        except asyncio.CancelledError:
+            pass
         except Exception as e:
             self.log.info(
                 f"<y>└─ ❌ Account {self.accountName} session is not connected!</y>"
@@ -576,6 +594,8 @@ class tgPyrogram:
         except asyncio.TimeoutError:
             if not noLog:
                 self.log.info(f"<yellow>└─ ❌ {url} Timeout!</yellow>")
+        except asyncio.CancelledError:
+            pass
         except Exception as e:
             if not noLog:
                 self.log.info(f"<y>└─ ❌ </y><cyan>{url}</cyan><y> failed to join!</y>")
@@ -629,6 +649,8 @@ class tgPyrogram:
                 f"<yellow>└─ ❌ Failed to get session {self.accountName} info! Timeout!</yellow>"
             )
             return None
+        except asyncio.CancelledError:
+            pass
         except Exception as e:
             self.log.info(
                 f"<yellow>└─ ❌ Failed to get session {self.accountName} info!</yellow>"
