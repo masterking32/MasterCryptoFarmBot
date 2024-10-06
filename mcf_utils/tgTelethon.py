@@ -68,7 +68,6 @@ async def connect_telethon(log, bot_globals, accountName, proxy=None):
             log.info(
                 f"<green>✔️ Telethon session <c>{accountName}</c> has been connected successfully!</green>"
             )
-            await tgClient.get_me()
 
             try:
                 await tgClient(functions.account.UpdateStatusRequest(offline=False))
