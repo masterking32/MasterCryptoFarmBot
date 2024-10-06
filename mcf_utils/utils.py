@@ -384,8 +384,9 @@ def get_session_type(log, session_file):
         if not os.path.exists(session_file):
             return None
 
-        with open(session_file, "rb") as f:
+        with open(session_file, "rb", buffering=0) as f:
             session_data = f.read().decode("utf-8", errors="ignore")
+            f.close()
 
         if "SQLite" not in session_data:
             return None
