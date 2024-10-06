@@ -36,7 +36,7 @@
         </div>
         <p class="text-lg font-semibold mt-5">
           Please wait for
-          <span id="timer" class="text-primary">60</span> seconds.
+          <span id="timer" class="text-primary">30</span> seconds.
         </p>
         <p class="text-xs text-info mt-2">
           You will be redirected to the dashboard after the update is complete.
@@ -51,7 +51,7 @@
 
       <script>
         try {
-          fetch("./dashboard.py?update=true");
+          fetch("./dashboard.py?update=true", { method: "POST" });
         } catch (error) {}
         let timer = 30;
         setInterval(() => {
