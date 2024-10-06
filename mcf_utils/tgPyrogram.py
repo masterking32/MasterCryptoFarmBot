@@ -63,6 +63,12 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
         isConnected = False
         try:
             isConnected = await asyncio.wait_for(tgClient.connect(), timeout=30)
+        except asyncio.TimeoutError:
+            log.info(
+                f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to connect! Timeout!</yellow>"
+            )
+            yield None
+            return
         except Exception as e:
             log.info(
                 f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to connect! Timeout!</yellow>"
@@ -77,11 +83,17 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
 
             try:
                 await asyncio.wait_for(tgClient.get_me(), timeout=30)
+            except asyncio.TimeoutError:
+                log.info(
+                    f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to get account info! Timeout!</yellow>"
+                )
+                yield None
+                return
             except Exception as e:
                 log.info(
                     f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to get account info!</yellow>"
                 )
-                log.error(f"<red>❌ {e}</red>")
+                # log.error(f"<red>❌ {e}</red>")
                 yield None
                 return
 
@@ -90,6 +102,8 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
                     tgClient.invoke(functions.account.UpdateStatus(offline=False)),
                     timeout=30,
                 )
+            except asyncio.TimeoutError:
+                pass
             except Exception as e:
                 pass
 
@@ -130,6 +144,8 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
                         tgClient.invoke(functions.account.UpdateStatus(offline=True)),
                         timeout=30,
                     )
+                except asyncio.TimeoutError:
+                    pass
                 except Exception as e:
                     pass
 
@@ -369,6 +385,8 @@ class tgPyrogram:
                 self._join_chat(tgClient, "MasterCryptoFarmBot", True, False),
                 timeout=30,
             )
+        except asyncio.TimeoutError:
+            pass
         except Exception as e:
             pass
 
@@ -522,6 +540,9 @@ class tgPyrogram:
                 return await asyncio.wait_for(
                     self._join_chat(tgClient, url, noLog, mute), timeout=60
                 )
+        except asyncio.TimeoutError:
+            self.log.info(f"<yellow>└─ ❌ {self.accountName} session Timeout!</yellow>")
+            return None
         except Exception as e:
             self.log.info(
                 f"<y>└─ ❌ Account {self.accountName} session is not connected!</y>"
@@ -542,6 +563,9 @@ class tgPyrogram:
                         f"<green>└─ ✅ <cyan>{url}</cyan> has been joined successfully!</green>"
                     )
                 return True
+        except asyncio.TimeoutError:
+            if not noLog:
+                self.log.info(f"<yellow>└─ ❌ {url} Timeout!</yellow>")
         except Exception as e:
             if not noLog:
                 self.log.info(f"<y>└─ ❌ </y><cyan>{url}</cyan><y> failed to join!</y>")
@@ -590,6 +614,11 @@ class tgPyrogram:
     async def _get_me(self, tgClient):
         try:
             return await asyncio.wait_for(tgClient.get_me(), timeout=30)
+        except asyncio.TimeoutError:
+            self.log.info(
+                f"<yellow>└─ ❌ Failed to get session {self.accountName} info! Timeout!</yellow>"
+            )
+            return None
         except Exception as e:
             self.log.info(
                 f"<yellow>└─ ❌ Failed to get session {self.accountName} info!</yellow>"
