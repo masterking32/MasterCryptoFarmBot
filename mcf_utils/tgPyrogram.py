@@ -110,6 +110,11 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
             yield tgClient
         else:
             yield None
+    except asyncio.CancelledError:
+        log.info(
+            f"<yellow>❌ Pyrogram session <c>{accountName}</c> was cancelled!</yellow>"
+        )
+        yield None
     except Exception as e:
         try:
             if "database is locked" in str(e):
@@ -193,6 +198,11 @@ class tgPyrogram:
 
                 await self._account_setup(tgClient)
                 return await self._get_web_view_data(tgClient)
+        except asyncio.CancelledError:
+            self.log.info(
+                f"<yellow>❌ Running {self.accountName} account was cancelled!</yellow>"
+            )
+            return None
         except Exception as e:
             self.log.info(
                 f"<yellow>❌ Failed to run {self.accountName} account!</yellow>"
