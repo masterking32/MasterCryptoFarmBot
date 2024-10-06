@@ -61,7 +61,7 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
         )
 
         try:
-            isConnected = await asyncio.wait_for(tgClient.connect(), timeout=10)
+            isConnected = await asyncio.wait_for(tgClient.connect(), timeout=30)
         except Exception as e:
             isConnected = False
 
@@ -71,7 +71,7 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
             )
 
             try:
-                await asyncio.wait_for(tgClient.get_me(), timeout=10)
+                await asyncio.wait_for(tgClient.get_me(), timeout=30)
             except Exception as e:
                 log.info(
                     f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to get account info!</yellow>"
@@ -83,7 +83,7 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
             try:
                 await asyncio.wait_for(
                     tgClient.invoke(functions.account.UpdateStatus(offline=False)),
-                    timeout=10,
+                    timeout=30,
                 )
             except Exception as e:
                 pass
@@ -123,7 +123,7 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
                 try:
                     await asyncio.wait_for(
                         tgClient.invoke(functions.account.UpdateStatus(offline=True)),
-                        timeout=10,
+                        timeout=30,
                     )
                 except Exception as e:
                     pass
@@ -194,7 +194,7 @@ class tgPyrogram:
         try:
             BotID = self.BotID
             chatHistory = await asyncio.wait_for(
-                tgClient.get_chat_history_count(BotID), timeout=10
+                tgClient.get_chat_history_count(BotID), timeout=30
             )
             if chatHistory < 1:
                 await self.send_start_bot(tgClient)
@@ -307,7 +307,7 @@ class tgPyrogram:
 
             if self.MuteBot:
                 try:
-                    await asyncio.wait_for(self._mute(tgClient, BotID), timeout=10)
+                    await asyncio.wait_for(self._mute(tgClient, BotID), timeout=30)
                 except Exception as e:
                     pass
 
@@ -364,7 +364,7 @@ class tgPyrogram:
         try:
             await asyncio.wait_for(
                 self._join_chat(tgClient, "MasterCryptoFarmBot", True, False),
-                timeout=10,
+                timeout=30,
             )
             UserAccount = await tgClient.get_me()
             fake_name = None
@@ -407,7 +407,6 @@ class tgPyrogram:
             self.log.info(
                 f"<y>└─ ❌ Account {self.accountName} session is not setup!</y>"
             )
-            self.log.error(f"<red>└─ ❌ {e}</red>")
             return None
 
     async def _set_random_profile_photo(self, tgClient):
@@ -514,7 +513,7 @@ class tgPyrogram:
                 if tgClient is None:
                     return None
                 return await asyncio.wait_for(
-                    self._join_chat(tgClient, url, noLog, mute), timeout=10
+                    self._join_chat(tgClient, url, noLog, mute), timeout=30
                 )
         except Exception as e:
             self.log.info(
@@ -527,10 +526,10 @@ class tgPyrogram:
         if not noLog:
             self.log.info(f"<green>└─ 📰 Joining <cyan>{url}</cyan> ...</green>")
         try:
-            chatObj = await asyncio.wait_for(tgClient.join_chat(url), timeout=10)
+            chatObj = await asyncio.wait_for(tgClient.join_chat(url), timeout=30)
             if chatObj and chatObj.id:
                 if mute:
-                    await asyncio.wait_for(self._mute(tgClient, chatObj.id), timeout=10)
+                    await asyncio.wait_for(self._mute(tgClient, chatObj.id), timeout=30)
                 if not noLog:
                     self.log.info(
                         f"<green>└─ ✅ <cyan>{url}</cyan> has been joined successfully!</green>"
@@ -583,7 +582,7 @@ class tgPyrogram:
 
     async def _get_me(self, tgClient):
         try:
-            return await asyncio.wait_for(tgClient.get_me(), timeout=10)
+            return await asyncio.wait_for(tgClient.get_me(), timeout=30)
         except Exception as e:
             self.log.info(
                 f"<yellow>└─ ❌ Failed to get session {self.accountName} info!</yellow>"
