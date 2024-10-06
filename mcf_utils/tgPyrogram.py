@@ -60,12 +60,15 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
             proxy=parseProxy(proxy) if proxy else None,
         )
 
+        isConnected = False
         try:
             isConnected = await asyncio.wait_for(tgClient.connect(), timeout=30)
         except Exception as e:
             log.info(
-                f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to connect!</yellow>"
+                f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to connect! Timeout!</yellow>"
             )
+            yield None
+            return
 
         if isConnected:
             log.info(
