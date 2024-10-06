@@ -86,7 +86,7 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
             log.info(
                 f"<green>🌍 Pyrogram Session <c>{accountName}</c> connected successfully!</green>"
             )
-
+            await asyncio.sleep(3.2)
             try:
                 await asyncio.wait_for(tgClient.get_me(), timeout=30)
             except asyncio.TimeoutError:
@@ -452,7 +452,7 @@ class tgPyrogram:
                 tgClient.me = UserAccount
                 await self._set_random_profile_photo(tgClient)
 
-            UserAccount = await tgClient.get_me()
+            UserAccount = await self._get_me(tgClient)
             return UserAccount
         except Exception as e:
             self.log.info(
@@ -615,7 +615,7 @@ class tgPyrogram:
 
     async def _set_name(self, tgClient, firstName, lastName=None):
         try:
-            tgMe = await tgClient.get_me()
+            tgMe = await self._get_me(tgClient)
             await tgClient.update_profile(
                 first_name=firstName or tgMe.first_name,
                 last_name=lastName or tgMe.last_name,
@@ -643,6 +643,7 @@ class tgPyrogram:
 
     async def _get_me(self, tgClient):
         try:
+            await asyncio.sleep(3)
             return await asyncio.wait_for(tgClient.get_me(), timeout=30)
         except asyncio.TimeoutError:
             self.log.info(
