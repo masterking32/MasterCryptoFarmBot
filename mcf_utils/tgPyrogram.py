@@ -32,9 +32,16 @@ from contextlib import asynccontextmanager
 
 
 @asynccontextmanager
-async def connect_pyrogram(log, bot_globals, accountName, proxy=None):
+async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=3):
     tgClient = None
     try:
+        if retries < 0:
+            log.info(
+                f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to connect!</yellow>"
+            )
+            yield None
+            return
+
         log.info(
             f"<green>🌍 Connecting to Pyrogram <c>({accountName})</c> session ...</green>"
         )
@@ -56,7 +63,31 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None):
             proxy=parseProxy(proxy) if proxy else None,
         )
 
-        isConnected = await tgClient.connect()
+        isConnected = False
+        try:
+            log.info(
+                f"<green>🌍 Attempting to connect <c>{accountName}</c> ...</green>"
+            )
+            isConnected = await asyncio.wait_for(tgClient.connect(), 120)
+        except asyncio.TimeoutError:
+            log.info(
+                f"<yellow>❌ Pyrogram session <c>{accountName}</c> timed out while connecting!</yellow>"
+            )
+            yield None
+            return
+        except asyncio.CancelledError:
+            log.info(
+                f"<yellow>❌ Pyrogram session <c>{accountName}</c> connection has been cancelled!</yellow>"
+            )
+            yield None
+            return
+        except Exception as e:
+            log.info(
+                f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to connect!</yellow>"
+            )
+            log.error(f"<red>❌ {e}</red>")
+            yield None
+            return
 
         if isConnected:
             log.info(
@@ -77,7 +108,7 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None):
                 )
                 await asyncio.sleep(30)
                 async with connect_pyrogram(
-                    log, bot_globals, accountName, proxy
+                    log, bot_globals, accountName, proxy, retries=retries - 1
                 ) as client:
                     yield client
                 return
@@ -90,25 +121,30 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None):
         except Exception as e:
             log.error(f"<red>❌ {e}</red>")
             yield None
+
+    except asyncio.CancelledError:
+        log.info(
+            f"<yellow>❌ Pyrogram session <c>{accountName}</c> connection has been cancelled!</yellow>"
+        )
+        yield None
     finally:
         try:
+            log.info(
+                f"<g>💻 Disconnecting Pyrogram session <c>{accountName}</c> ...</g>"
+            )
             if tgClient is not None and tgClient.is_connected:
-                log.info(
-                    f"<g>💻 Disconnecting Pyrogram session <c>{accountName}</c> ...</g>"
-                )
                 try:
                     await tgClient.invoke(functions.account.UpdateStatus(offline=True))
                 except Exception as e:
                     pass
 
                 await tgClient.disconnect()
+                log.info(
+                    f"<green>✔️ Pyrogram session <c>{accountName}</c> has been disconnected successfully!</green>"
+                )
         except Exception as e:
             # self.log.error(f"<red>└─ ❌ {e}</red>")
             pass
-
-        log.info(
-            f"<green>✔️ Pyrogram session <c>{accountName}</c> has been disconnected successfully!</green>"
-        )
 
 
 class tgPyrogram:
@@ -145,6 +181,11 @@ class tgPyrogram:
 
                 await self._account_setup(tgClient)
                 return await self._get_web_view_data(tgClient)
+        except asyncio.CancelledError:
+            self.log.info(
+                f"<yellow>❌ Failed to run {self.accountName} account!</yellow>"
+            )
+            return None
         except Exception as e:
             self.log.info(
                 f"<yellow>❌ Failed to run {self.accountName} account!</yellow>"
