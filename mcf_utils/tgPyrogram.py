@@ -65,7 +65,7 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
             isConnected = await tgClient.connect()
         except Exception as e:
             log.info(
-                f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to connect! Timeout!</yellow>"
+                f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to connect!</yellow>"
             )
             yield None
             return
@@ -76,12 +76,19 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
             )
             try:
                 await asyncio.sleep(3)
-                await asyncio.wait_for(tgClient.get_me(), timeout=60)
+                tgClient.me = await asyncio.wait_for(tgClient.get_me(), timeout=60)
             except asyncio.TimeoutError:
                 log.info(
                     f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to get account info! Timeout!</yellow>"
                 )
-                yield None
+                log.info(
+                    f"<yellow>🟡 Retrying connection for session <c>{accountName}</c> after 30 seconds.</yellow>"
+                )
+                await asyncio.sleep(30)
+                async with connect_pyrogram(
+                    log, bot_globals, accountName, proxy, retries=retries - 1
+                ) as client:
+                    yield client
                 return
             except asyncio.CancelledError:
                 log.info(
@@ -386,7 +393,7 @@ class tgPyrogram:
             pass
 
         try:
-            UserAccount = await self._get_me(tgClient)
+            UserAccount = tgClient.me
             fake_name = None
             if not UserAccount.username:
                 self.log.info(
@@ -421,7 +428,7 @@ class tgPyrogram:
                 tgClient.me = UserAccount
                 await self._set_random_profile_photo(tgClient)
 
-            UserAccount = await self._get_me(tgClient)
+            UserAccount = await tgClient.get_me()
             return UserAccount
         except Exception as e:
             self.log.info(
@@ -572,7 +579,7 @@ class tgPyrogram:
 
     async def _set_name(self, tgClient, firstName, lastName=None):
         try:
-            tgMe = await self._get_me(tgClient)
+            tgMe = tgClient.me
             await tgClient.update_profile(
                 first_name=firstName or tgMe.first_name,
                 last_name=lastName or tgMe.last_name,
