@@ -63,11 +63,21 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None):
                 f"<green>🌍 Pyrogram Session <c>{accountName}</c> connected successfully!</green>"
             )
 
-            await tgClient.get_me()
+            try:
+                await tgClient.get_me()
+            except Exception as e:
+                log.info(
+                    f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to get account info!</yellow>"
+                )
+                log.error(f"<red>❌ {e}</red>")
+                yield None
+                return
+
             try:
                 await tgClient.invoke(functions.account.UpdateStatus(offline=False))
             except Exception as e:
                 pass
+
             yield tgClient
         else:
             yield None
@@ -103,7 +113,7 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None):
                 except Exception as e:
                     pass
 
-                await tgClient.disconnect()
+            await tgClient.stop(block=True)
         except Exception as e:
             # self.log.error(f"<red>└─ ❌ {e}</red>")
             pass

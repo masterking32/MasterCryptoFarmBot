@@ -85,7 +85,7 @@ async def connect_telethon(log, bot_globals, accountName, proxy=None):
         try:
             if "database is locked" in str(e):
                 log.info(
-                    f"<y>🟡 It looks like the Pyrogram session <c>{accountName}</c> is busy with another module. Waiting for 30 seconds before retrying.</y>"
+                    f"<y>🟡 It looks like the Telethon session <c>{accountName}</c> is busy with another module. Waiting for 30 seconds before retrying.</y>"
                 )
                 await asyncio.sleep(30)
                 async with connect_telethon(
@@ -95,7 +95,7 @@ async def connect_telethon(log, bot_globals, accountName, proxy=None):
                 return
             else:
                 log.info(
-                    f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to connect!</yellow>"
+                    f"<yellow>❌ Telethon session <c>{accountName}</c> failed to connect!</yellow>"
                 )
                 log.error(f"<red>❌ {e}</red>")
             yield None
@@ -106,7 +106,7 @@ async def connect_telethon(log, bot_globals, accountName, proxy=None):
         try:
             if tgClient is not None and tgClient.is_connected():
                 log.info(
-                    f"<g>💻 Disconnecting Pyrogram session <c>{accountName}</c> ...</g>"
+                    f"<g>💻 Disconnecting Telethon session <c>{accountName}</c> ...</g>"
                 )
                 try:
                     await tgClient(functions.account.UpdateStatusRequest(offline=True))
