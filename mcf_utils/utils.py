@@ -41,42 +41,48 @@ def parseProxy(proxy_url):
 
 
 def telethon_proxy(url):
+    if not url or url is None or url == "":
+        return None
+
     parsed = parseProxy(url)
-    if parsed.scheme == "socks5":
+    if not parsed:
+        return None
+
+    if parsed["scheme"] == "socks5":
         return (
             socks.SOCKS5,
-            parsed.hostname,
-            parsed.port,
+            parsed["hostname"],
+            parsed["port"],
             True,
-            parsed.username,
-            parsed.password,
+            parsed.get("username"),
+            parsed.get("password"),
         )
-    elif parsed.scheme == "socks4":
+    elif parsed["scheme"] == "socks4":
         return (
             socks.SOCKS4,
-            parsed.hostname,
-            parsed.port,
+            parsed["hostname"],
+            parsed["port"],
             True,
-            parsed.username,
-            parsed.password,
+            parsed.get("username"),
+            parsed.get("password"),
         )
-    elif parsed.scheme == "http":
+    elif parsed["scheme"] == "http":
         return (
             socks.HTTP,
-            parsed.hostname,
-            parsed.port,
-            False,
-            parsed.username,
-            parsed.password,
+            parsed["hostname"],
+            parsed["port"],
+            True,
+            parsed.get("username"),
+            parsed.get("password"),
         )
-    elif parsed.scheme == "https":
+    elif parsed["scheme"] == "https":
         return (
             socks.HTTP,
-            parsed.hostname,
-            parsed.port,
+            parsed["hostname"],
+            parsed["port"],
             True,
-            parsed.username,
-            parsed.password,
+            parsed.get("username"),
+            parsed.get("password"),
         )
     return None
 
