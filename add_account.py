@@ -326,6 +326,28 @@ async def import_sessions() -> None:
     for session_file in session_files:
         try:
             print(f"{lc.y}📂 Importing {session_file}...{lc.rs}")
+            if not session_file.endswith(".session"):
+                print(f"{lc.r}❌ Invalid session file!{lc.rs}")
+                continue
+
+            clean_session_name = "".join(
+                e for e in session_file.replace(".session", "") if e.isalnum()
+            )
+
+            if session_file != f"{clean_session_name}.session":
+                if os.path.exists(f"telegram_accounts/{clean_session_name}.session"):
+                    print(
+                        f"{lc.r}⚠️ Session {clean_session_name} file already exists!{lc.rs}"
+                    )
+                    continue
+
+                os.rename(
+                    f"telegram_accounts/{session_file}",
+                    f"telegram_accounts/{clean_session_name}.session",
+                )
+
+                session_file = f"{clean_session_name}.session"
+
             session_name = session_file.replace(".session", "")
             if os.path.exists("telegram_accounts/accounts.json"):
                 accounts = []
