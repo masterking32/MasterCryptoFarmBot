@@ -17,7 +17,8 @@ class tgAccount:
             if not bot_globals or not account_name or not log:
                 from mcf_utils.tgTelethon import tgTelethon
 
-                return tgTelethon(*args, **kwargs)
+                tg = tgTelethon(*args, **kwargs)
+                return tg
 
             mcf_dir = bot_globals.get("mcf_dir")
 
@@ -25,11 +26,13 @@ class tgAccount:
             if not session_type or session_type == "telethon":
                 from mcf_utils.tgTelethon import tgTelethon
 
-                return tgTelethon(*args, **kwargs)
+                tg = tgTelethon(*args, **kwargs)
+                return tg
             elif session_type == "pyrogram":
                 from mcf_utils.tgPyrogram import tgPyrogram
 
-                return tgPyrogram(*args, **kwargs)
+                tg = tgPyrogram(*args, **kwargs)
+                return tg
         except Exception as e:
             if log:
                 log.error(f"<red>Error: {e}</red>")
@@ -39,7 +42,8 @@ class tgAccount:
         try:
             from mcf_utils.tgTelethon import tgTelethon
 
-            return tgTelethon(*args, **kwargs)
+            tg = tgTelethon(*args, **kwargs)
+            return tg
         except Exception as e:
             if log:
                 log.error(f"<red>Error: {e}</red>")
