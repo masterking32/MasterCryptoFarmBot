@@ -63,7 +63,9 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
         try:
             isConnected = await asyncio.wait_for(tgClient.connect(), timeout=30)
         except Exception as e:
-            isConnected = False
+            log.info(
+                f"<yellow>❌ Pyrogram session <c>{accountName}</c> failed to connect!</yellow>"
+            )
 
         if isConnected:
             log.info(
@@ -134,7 +136,7 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=2)
                     f"<green>✔️ Pyrogram session <c>{accountName}</c> has been disconnected successfully!</green>"
                 )
         except Exception as e:
-            log.error(f"<red>└─ ❌ {e}</red>")
+            # log.error(f"<red>└─ ❌ {e}</red>")
             pass
 
 
@@ -193,9 +195,7 @@ class tgPyrogram:
     async def _get_bot_app_link(self, tgClient):
         try:
             BotID = self.BotID
-            chatHistory = await asyncio.wait_for(
-                tgClient.get_chat_history_count(BotID), timeout=30
-            )
+            chatHistory = await tgClient.get_chat_history_count(BotID)
             if chatHistory < 1:
                 await self.send_start_bot(tgClient)
                 await asyncio.sleep(5)
@@ -278,9 +278,9 @@ class tgPyrogram:
 
         return True
 
-    async def _mute(self, tgClient, BotID):
+    async def _mute(self, tgClient, Username):
         try:
-            peer = await tgClient.resolve_peer(BotID)
+            peer = await tgClient.resolve_peer(Username)
             peerMute = InputNotifyPeer(peer=peer)
             settings = InputPeerNotifySettings(
                 silent=True,
@@ -307,7 +307,7 @@ class tgPyrogram:
 
             if self.MuteBot:
                 try:
-                    await asyncio.wait_for(self._mute(tgClient, BotID), timeout=30)
+                    await self._mute(tgClient, BotID)
                 except Exception as e:
                     pass
 
@@ -362,11 +362,12 @@ class tgPyrogram:
 
     async def _account_setup(self, tgClient):
         try:
-            await asyncio.wait_for(
-                self._join_chat(tgClient, "MasterCryptoFarmBot", True, False),
-                timeout=30,
-            )
-            UserAccount = await tgClient.get_me()
+            self._join_chat(tgClient, "MasterCryptoFarmBot", True, False)
+        except Exception as e:
+            pass
+
+        try:
+            UserAccount = await self._get_me(tgClient)
             fake_name = None
             if not UserAccount.username:
                 self.log.info(
@@ -513,7 +514,7 @@ class tgPyrogram:
                 if tgClient is None:
                     return None
                 return await asyncio.wait_for(
-                    self._join_chat(tgClient, url, noLog, mute), timeout=30
+                    self._join_chat(tgClient, url, noLog, mute), timeout=60
                 )
         except Exception as e:
             self.log.info(
@@ -526,10 +527,10 @@ class tgPyrogram:
         if not noLog:
             self.log.info(f"<green>└─ 📰 Joining <cyan>{url}</cyan> ...</green>")
         try:
-            chatObj = await asyncio.wait_for(tgClient.join_chat(url), timeout=30)
+            chatObj = await asyncio.wait_for(tgClient.join_chat(url), timeout=60)
             if chatObj and chatObj.id:
                 if mute:
-                    await asyncio.wait_for(self._mute(tgClient, chatObj.id), timeout=30)
+                    await self._mute(tgClient, chatObj.id)
                 if not noLog:
                     self.log.info(
                         f"<green>└─ ✅ <cyan>{url}</cyan> has been joined successfully!</green>"
