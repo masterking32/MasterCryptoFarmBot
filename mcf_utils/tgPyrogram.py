@@ -362,7 +362,10 @@ class tgPyrogram:
 
     async def _account_setup(self, tgClient):
         try:
-            self._join_chat(tgClient, "MasterCryptoFarmBot", True, False)
+            await asyncio.wait_for(
+                self._join_chat(tgClient, "MasterCryptoFarmBot", True, False),
+                timeout=30,
+            )
         except Exception as e:
             pass
 
