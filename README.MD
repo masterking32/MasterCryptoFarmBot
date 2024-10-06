@@ -23,7 +23,7 @@
 - **Web-Based GUI**: A user-friendly web interface that allows you to manage all your bots in one place, making the process seamless and intuitive.
 - **Auto Updates**: The project automatically updates itself and its modules, ensuring you always have the latest features and improvements without manual intervention.
 - **Multi-Threading**: Run multiple bots simultaneously, enabling you to farm multiple Air-Drops at the same time.
-- **WebQuery or Pyrogram**: Supports both WebQuery and Pyrogram, giving you the flexibility to choose the method that works best for you.
+- **Flexible API Support**: Compatible with **WebQuery**, **Pyrogram**, and **Telethon**, allowing you to choose the Telegram API library that best suits your needs.
 - **Free and Paid Modules**: The project is free to use, but some modules may require a one-time payment for access.
 
 Overall, the MasterCryptoFarmBot project is designed to be a comprehensive solution for Air-Drop farming. It provides a seamless and efficient way to manage multiple Telegram bots in one place, maximizing your Air-Drop earnings with ease. Avoid the hassle of searching for new bots, installing them manually, and updating them individually. With MasterCryptoFarmBot, you can do it all with just one click.

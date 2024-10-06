@@ -142,15 +142,17 @@ async def start_bot():
     modulesThread = Module_Thread(log)
 
     if os.path.exists("./telegram_accounts/accounts.json"):
-        log.info("<green>👤 Reading accounts.json file (Pyrogram Accounts) ...</green>")
+        log.info(
+            "<green>👤 Reading accounts.json file (Pyrogram/Telethon Accounts) ...</green>"
+        )
         with open("./telegram_accounts/accounts.json", "r") as f:
             accounts = json.load(f)
             if accounts:
                 log.info(
-                    f"<green>└─ ✅ Found </green><cyan>{len(accounts)}</cyan><green> Pyrogram accounts ...</green>"
+                    f"<green>└─ ✅ Found </green><cyan>{len(accounts)}</cyan><green> Pyrogram/Telethon accounts ...</green>"
                 )
                 log.info(
-                    "<green>🔍 Checking Pyrogram session and account files ...</green>"
+                    "<green>🔍 Checking Pyrogram/Telethon session and account files ...</green>"
                 )
                 sessions = [
                     f
@@ -197,11 +199,11 @@ async def start_bot():
                         log.error("<red>└─ ⛔ Telegram access check has failed.</red>")
             else:
                 log.info(
-                    "<yellow>🟨 No Pyrogram accounts found. You can add them or use module accounts ...</yellow>"
+                    "<yellow>🟨 No Pyrogram/Telethon accounts found. You can add them or use module accounts ...</yellow>"
                 )
     else:
         log.info(
-            "<yellow>🟨 No Pyrogram accounts found. You can add them or use module accounts ...</yellow>"
+            "<yellow>🟨 No Pyrogram/Telethon accounts found. You can add them or use module accounts ...</yellow>"
         )
 
     web_server = WebServer(log, config.config, modulesThread)

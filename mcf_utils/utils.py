@@ -4,11 +4,13 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 
 from datetime import datetime
+import os
 import random
 from urllib.parse import urlparse
 from faker import Faker
 import requests
 import re
+import socks
 
 import unidecode
 
@@ -36,6 +38,47 @@ def parseProxy(proxy_url):
         proxy_dict["password"] = parsed.password
 
     return proxy_dict
+
+
+def telethon_proxy(url):
+    parsed = parseProxy(url)
+    if parsed.scheme == "socks5":
+        return (
+            socks.SOCKS5,
+            parsed.hostname,
+            parsed.port,
+            True,
+            parsed.username,
+            parsed.password,
+        )
+    elif parsed.scheme == "socks4":
+        return (
+            socks.SOCKS4,
+            parsed.hostname,
+            parsed.port,
+            True,
+            parsed.username,
+            parsed.password,
+        )
+    elif parsed.scheme == "http":
+        return (
+            socks.HTTP,
+            parsed.hostname,
+            parsed.port,
+            False,
+            parsed.username,
+            parsed.password,
+        )
+    elif parsed.scheme == "https":
+        return (
+            socks.HTTP,
+            parsed.hostname,
+            parsed.port,
+            True,
+            parsed.username,
+            parsed.password,
+        )
+    return None
 
 
 def getConfig(config, key, default=None):
@@ -331,3 +374,31 @@ def get_random_name():
     )
     fake_name = fake.name()
     return unidecode.unidecode(fake_name)
+
+
+def get_session_type(log, session_file):
+    if not session_file:
+        return None
+
+    try:
+        if not os.path.exists(session_file):
+            return None
+
+        with open(session_file, "rb") as f:
+            session_data = f.read().decode("utf-8", errors="ignore")
+
+        if "SQLite" not in session_data:
+            return None
+
+        if "sent_files" in session_data:
+            return "telethon"
+        if "access_hash" in session_data:
+            return "pyrogram"
+
+    except Exception as e:
+        if log:
+            log.error(f"<red>Error: {e}</red>")
+        else:
+            print(f"Error: {e}")
+
+    return None

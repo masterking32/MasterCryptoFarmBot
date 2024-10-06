@@ -115,7 +115,7 @@
                 <p>
                   <i class="fa-solid fa-exclamation-triangle"></i> This bot
                   module does not support adding module accounts. You can only
-                  add accounts using the Pyrogram Sessions.
+                  add accounts using the Pyrogram/Telethon Sessions.
                 </p>
               </div>
               {% else %}
@@ -487,17 +487,17 @@
                   onclick="bot_disabled_accounts{{ bot.id }}.showModal()"
                 >
                   <i class="fa-solid fa-users-slash"></i> Module Disabled
-                  Pyrogram Sessions
+                  Pyrogram/Telethon Sessions
                 </button>
               </div>
               <dialog id="bot_disabled_accounts{{ bot.id }}" class="modal">
                 <div class="modal-box">
-                  <h1 class="">Module Disabled Pyrogram Sessions</h1>
+                  <h1 class="">Module Disabled Pyrogram/Telethon Sessions</h1>
                   <hr class="h-px my-4 border-0 bg-gray-700" />
                   <p>
-                    You can disable Pyrogram Sessions for this bot module. This
-                    will prevent the bot from using the disabled Pyrogram
-                    Sessions.
+                    You can disable Pyrogram/Telethon Sessions for this bot
+                    module. This will prevent the bot from using the disabled
+                    Pyrogram/Telethon Sessions.
                   </p>
                   <hr class="h-px my-4 border-0 bg-gray-700" />
                   <form action="./bots.py" method="POST">
@@ -513,7 +513,7 @@
                       bot.id
                     }}"
                         class="mb-2"
-                        >Disabled Pyrogram Sessions</label
+                        >Disabled Pyrogram/Telethon Sessions</label
                       >
 
                       <select
