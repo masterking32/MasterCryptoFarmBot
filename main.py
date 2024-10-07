@@ -154,19 +154,6 @@ async def start_bot():
                 log.info(
                     "<green>🔍 Checking Pyrogram/Telethon session and account files ...</green>"
                 )
-                sessions = [
-                    f
-                    for f in os.listdir("./telegram_accounts")
-                    if f.endswith(".session")
-                ]
-                for session in sessions:
-                    if session.replace(".session", "") not in [
-                        account["session_name"] for account in accounts
-                    ]:
-                        log.info(
-                            f"<red>└─ ❌ Deleting {session} session file ...</red>"
-                        )
-                        os.remove(f"./telegram_accounts/{session}")
 
                 accounts = [
                     account
