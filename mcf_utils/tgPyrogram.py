@@ -154,7 +154,7 @@ class tgPyrogram:
         accountName=None,
         proxy=None,
         BotID=None,
-        ReferralToken=None,
+        ReferralToken="",
         ShortAppName=None,
         AppURL=None,
         MuteBot=False,
@@ -169,6 +169,7 @@ class tgPyrogram:
         self.AppURL = AppURL
         self.MuteBot = MuteBot
         self.NewStart = False  # Change to True if /start sent to bot
+        self.me = None
 
     async def run(self):
         try:
@@ -371,6 +372,7 @@ class tgPyrogram:
         try:
             await self._join_chat(tgClient, "MasterCryptoFarmBot", True, False)
             UserAccount = await tgClient.get_me()
+            self.me = UserAccount
             fake_name = None
             if not UserAccount.username:
                 self.log.info(
@@ -406,6 +408,7 @@ class tgPyrogram:
                 await self._set_random_profile_photo(tgClient)
 
             UserAccount = await tgClient.get_me()
+            self.me = UserAccount
             return UserAccount
         except Exception as e:
             self.log.info(
@@ -564,10 +567,10 @@ class tgPyrogram:
 
     async def _set_name(self, tgClient, firstName, lastName=None):
         try:
-            tgMe = await tgClient.get_me()
+            self.me = await tgClient.get_me()
             await tgClient.update_profile(
-                first_name=firstName or tgMe.first_name,
-                last_name=lastName or tgMe.last_name,
+                first_name=firstName or self.me.first_name,
+                last_name=lastName or self.me.last_name,
             )
             self.log.info(
                 f"<green>└─ ✅ Account {self.accountName} session name is set successfully!</green>"
@@ -592,7 +595,8 @@ class tgPyrogram:
 
     async def _get_me(self, tgClient):
         try:
-            return await tgClient.get_me()
+            self.me = await tgClient.get_me()
+            return self.me
         except Exception as e:
             self.log.info(
                 f"<yellow>└─ ❌ Failed to get session {self.accountName} info!</yellow>"
