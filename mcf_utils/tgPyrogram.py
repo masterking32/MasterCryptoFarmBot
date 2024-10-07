@@ -154,7 +154,7 @@ class tgPyrogram:
         accountName=None,
         proxy=None,
         BotID=None,
-        ReferralToken="",
+        ReferralToken=None,
         ShortAppName=None,
         AppURL=None,
         MuteBot=False,
@@ -287,7 +287,7 @@ class tgPyrogram:
                 bot=peer,
                 peer=peer,
                 random_id=random.randint(100000, 999999),
-                start_param=self.ReferralToken,
+                start_param=str(self.ReferralToken) if self.ReferralToken else "0",
             )
         )
 
@@ -331,7 +331,7 @@ class tgPyrogram:
                     app=bot_app,
                     platform="android",
                     write_allowed=True,
-                    start_param=self.ReferralToken if self.NewStart else "",
+                    start_param=str(self.ReferralToken) if self.NewStart else None,
                 )
                 if bot_app
                 else RequestWebView(
@@ -340,6 +340,7 @@ class tgPyrogram:
                     platform="android",
                     from_bot_menu=False,
                     url=app_url,
+                    start_param=str(self.ReferralToken) if self.NewStart else None,
                 )
             )
 

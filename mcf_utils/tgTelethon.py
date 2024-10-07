@@ -129,7 +129,7 @@ class tgTelethon:
         accountName=None,
         proxy=None,
         BotID=None,
-        ReferralToken="",
+        ReferralToken=None,
         ShortAppName=None,
         AppURL=None,
         MuteBot=False,
@@ -282,7 +282,7 @@ class tgTelethon:
                 functions.messages.StartBotRequest(
                     bot=self.BotID,
                     peer=self.BotID,
-                    start_param=self.ReferralToken,
+                    start_param=str(self.ReferralToken) if self.ReferralToken else "0",
                 )
             )
 
@@ -333,7 +333,7 @@ class tgTelethon:
                         platform="android",
                         write_allowed=True,
                         compact=True,
-                        start_param=self.ReferralToken if self.NewStart else "",
+                        start_param=str(self.ReferralToken) if self.NewStart else None,
                     )
                 )
             elif app_url:
@@ -344,7 +344,7 @@ class tgTelethon:
                         platform="android",
                         from_bot_menu=True,
                         url=app_url,
-                        start_param=self.ReferralToken,
+                        start_param=str(self.ReferralToken) if self.NewStart else None,
                     )
                 )
 
