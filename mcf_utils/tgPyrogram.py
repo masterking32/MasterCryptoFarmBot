@@ -169,6 +169,7 @@ class tgPyrogram:
         self.ReferralToken = ReferralToken
         self.AppURL = AppURL
         self.MuteBot = MuteBot
+        self.NewStart = False  # Change to True if /start sent to bot
 
     async def run(self):
         try:
@@ -278,6 +279,8 @@ class tgPyrogram:
             f"<green>└─ 🤖 Sending start bot for {self.accountName} ...</green>"
         )
 
+        self.NewStart = True
+
         peer = await tgClient.resolve_peer(self.BotID)
         await tgClient.invoke(
             functions.messages.StartBot(
@@ -328,7 +331,7 @@ class tgPyrogram:
                     app=bot_app,
                     platform="android",
                     write_allowed=True,
-                    start_param=self.ReferralToken,
+                    start_param=self.ReferralToken if self.NewStart else "",
                 )
                 if bot_app
                 else RequestWebView(

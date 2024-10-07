@@ -144,6 +144,7 @@ class tgTelethon:
         self.ReferralToken = ReferralToken
         self.AppURL = AppURL
         self.MuteBot = MuteBot
+        self.NewStart = False  # Change to True if /start sent to bot
 
     async def run(self):
         try:
@@ -284,6 +285,8 @@ class tgTelethon:
             f"<green>└─ 🤖 Sending start bot for {self.accountName} ...</green>"
         )
 
+        self.NewStart = True
+
         try:
             await tgClient(
                 functions.messages.StartBotRequest(
@@ -340,7 +343,7 @@ class tgTelethon:
                         platform="android",
                         write_allowed=True,
                         compact=True,
-                        start_param=self.ReferralToken,
+                        start_param=self.ReferralToken if self.NewStart else "",
                     )
                 )
             elif app_url:
