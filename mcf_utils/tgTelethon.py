@@ -16,7 +16,6 @@ from telethon import functions, types
 from telethon.tl.types import InputBotAppShortName, InputPeerNotifySettings
 from telethon.tl.functions.account import UpdateProfileRequest, UpdateUsernameRequest
 
-from urllib.parse import unquote
 from mcf_utils.utils import (
     get_random_name,
     testProxy,
@@ -200,17 +199,6 @@ class tgTelethon:
                 )
                 return None
             return await self._get_me(tgClient)
-
-    def getTGWebQuery(self, url):
-        if not url or "first_name" not in url:
-            return None
-        if "tgWebAppData=" not in url:
-            return url
-        return unquote(
-            url.split("tgWebAppData=", maxsplit=1)[1].split(
-                "&tgWebAppVersion", maxsplit=1
-            )[0]
-        )
 
     async def getWebViewData(self):
         async with connect_telethon(

@@ -11,6 +11,7 @@ from faker import Faker
 import requests
 import re
 import socks
+from urllib.parse import unquote
 
 import unidecode
 
@@ -409,3 +410,15 @@ def get_session_type(log, session_file):
             print(f"Error: {e}")
 
     return None
+
+
+def extract_tg_query_from_url(url):
+    if not url or "first_name" not in url:
+        return None
+    if "tgWebAppData=" not in url:
+        return url
+    return unquote(
+        url.split("tgWebAppData=", maxsplit=1)[1].split("&tgWebAppVersion", maxsplit=1)[
+            0
+        ]
+    )

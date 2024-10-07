@@ -19,7 +19,6 @@ from pyrogram.raw.types import (
 from pyrogram.raw import functions
 from pyrogram.raw.functions.messages import RequestWebView, RequestAppWebView
 from pyrogram.raw.functions.account import UpdateNotifySettings
-from urllib.parse import unquote
 from mcf_utils.utils import (
     get_random_name,
     testProxy,
@@ -599,14 +598,3 @@ class tgPyrogram:
                 f"<yellow>└─ ❌ Failed to get session {self.accountName} info!</yellow>"
             )
             return None
-
-    def getTGWebQuery(self, url):
-        if not url or "first_name" not in url:
-            return None
-        if "tgWebAppData=" not in url:
-            return url
-        return unquote(
-            url.split("tgWebAppData=", maxsplit=1)[1].split(
-                "&tgWebAppVersion", maxsplit=1
-            )[0]
-        )
