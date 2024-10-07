@@ -236,6 +236,8 @@ async def start_bot():
 def main():
     global modulesThread
     try:
+        if sys.platform == "win32":
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         asyncio.run(start_bot())
     except KeyboardInterrupt:
         log.info("<red>🛑 Bot interrupted by user ... </red>")
