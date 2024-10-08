@@ -402,7 +402,7 @@ class tgTelethon:
                         if fake_name
                         else None
                     ),
-                    bio=UserAccount.about or get_random_emoji(),
+                    bio=get_random_emoji(),
                 )
 
             if not UserAccount.photo:
