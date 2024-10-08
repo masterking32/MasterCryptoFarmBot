@@ -44,6 +44,10 @@ Module for the Blum bot. Automatically registers new accounts, claims daily rewa
 
 Module for the PocketFi bot. Automatically registers new accounts with your referral token, claims daily rewards, starts, finishes, and completes tasks (Twitter, Telegram, alliance), automatically claims mining rewards, and joins an alliance if you don't have one already.
 
+### 🤖 [NotPixel Farm/Claimer Bot](https://t.me/notpixel/app?startapp=f95736407)
+
+Module for the NotPixel bot. Automatically registers new accounts with your referral token, claims rewards, starts, finishes, and completes tasks, paints automatically **(BOOSTED paints +4px)**, and joins a squad if you don't have one already.
+
 ---
 
 ## 🛠️ How to Install?
