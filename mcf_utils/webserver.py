@@ -9,6 +9,7 @@ import platform
 import random
 import string
 import logging
+import sys
 from flask import Flask, render_template, request, send_from_directory
 import flask.cli
 from mcf_utils.database import Database
@@ -18,7 +19,7 @@ import mcf_utils.api as api
 
 
 class WebServer:
-    def __init__(self, logger, config, module_threads):
+    def __init__(self, logger, config, module_threads, project_dir):
         self.logger = logger
         self.config = config
         self.host = self.config["web_server"]["host"]
@@ -28,6 +29,7 @@ class WebServer:
         self.system_os = None
         self.module_threads = module_threads
         self.startTime = datetime.datetime.now().replace(microsecond=0)
+        self.project_dir = project_dir
 
     def load_file(self, file):
         try:
@@ -40,12 +42,14 @@ class WebServer:
             return "500 Internal Server Error"
 
     def get_public_html_path(self, path):
-        current_dir = os.path.dirname(__file__)
-        return os.path.abspath(os.path.join(current_dir, "../web/public_html/", path))
+        return os.path.abspath(
+            os.path.join(self.project_dir, "web", "public_html", path)
+        )
 
     def get_controllers_path(self, path):
-        current_dir = os.path.dirname(__file__)
-        return os.path.abspath(os.path.join(current_dir, "../web/controllers/", path))
+        return os.path.abspath(
+            os.path.join(self.project_dir, "web", "controllers", path)
+        )
 
     async def start(self):
         self.system_os = platform.system()
@@ -109,6 +113,9 @@ class WebServer:
                 return "404 Not Found"
 
             try:
+                if self.project_dir not in sys.path:
+                    sys.path.append(self.project_dir)
+
                 exec(f"import web.controllers.{split_path[0]}")
                 module = eval(
                     f"web.controllers.{split_path[0]}.{split_path[0]}(self.logger)"
