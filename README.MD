@@ -48,6 +48,10 @@ Module for the PocketFi bot. Automatically registers new accounts with your refe
 
 Module for the NotPixel bot. Automatically registers new accounts with your referral token, claims rewards, starts, finishes, and completes tasks, paints automatically **(BOOSTED paints +4px)**, and joins a squad if you don't have one already.
 
+### 🤖 [Seed Farm/Claimer Bot](https://t.me/seed_coin_bot/app?startapp=95736407)
+
+Module for the Seed bot. Automatically registers new accounts with your referral token, claims rewards, starts and completes tasks (Join Channel/Start Bot), hunts automatically, collects daily gifts, catches worms, gets free birds, auto-adds 🌱 to names, and more!
+
 ---
 
 ## 🛠️ How to Install?
