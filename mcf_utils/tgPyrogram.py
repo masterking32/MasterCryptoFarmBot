@@ -205,7 +205,9 @@ class tgPyrogram:
                 return None
             return await self._get_web_view_data(tgClient)
 
-    async def _get_bot_app_link(self, tgClient):
+    async def _get_bot_app_link(self, tgClient, retries=2):
+        if retries < 0:
+            return None
         try:
             BotID = self.BotID
             chatHistory = await tgClient.get_chat_history_count(BotID)
@@ -266,7 +268,7 @@ class tgPyrogram:
                 if time_now - message_date > a_week:
                     await asyncio.sleep(5)
                     await self.send_start_bot(tgClient)
-                    return await self._get_bot_app_link(tgClient)
+                    return await self._get_bot_app_link(tgClient, retries=retries - 1)
 
                 return webAppURL
         except Exception as e:
