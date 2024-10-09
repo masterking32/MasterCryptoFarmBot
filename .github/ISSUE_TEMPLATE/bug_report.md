@@ -34,6 +34,12 @@ If applicable, add screenshots to help explain your problem.
 - System Architecture: x86/x86_64/arm/arm64
 - System Type: Desktop/Laptop/Server/Cloud
 
+**How did you run the software?**
+
+- `start_linux.sh`
+- `start_windows.bat`
+- `using command line`
+
 **Are you using the latest version of the software?**
 Yes/No, If no, please update to the latest version and check if the issue still exists.
 
