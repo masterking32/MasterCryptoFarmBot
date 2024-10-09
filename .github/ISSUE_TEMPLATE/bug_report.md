@@ -33,6 +33,7 @@ If applicable, add screenshots to help explain your problem.
 - Browser Chrome/Firefox/Opera
 - System Architecture: x86/x86_64/arm/arm64
 - System Type: Desktop/Laptop/Server/Cloud
+- Installed Modules: MCF_X, MCF_Y, MCF_Z
 
 **How did you run the software?**
 
@@ -40,8 +41,13 @@ If applicable, add screenshots to help explain your problem.
 - `start_windows.bat`
 - `using command line`
 
+**Did you install like wiki?**
+
+- Yes/No, If no, please install like wiki and check if the issue still exists.
+
 **Are you using the latest version of the software?**
-Yes/No, If no, please update to the latest version and check if the issue still exists.
+
+- Yes/No, If no, please update to the latest version and check if the issue still exists.
 
 **Additional context**
 Add any other context about the problem here.
