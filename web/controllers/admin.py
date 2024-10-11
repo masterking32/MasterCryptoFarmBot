@@ -176,7 +176,7 @@ class admin:
 
         try:
             if os.path.exists(accounts_file):
-                with open(accounts_file, "r") as f:
+                with open(accounts_file, "r", encoding="utf-8") as f:
                     accounts = json.load(f)
 
                 if not accounts:
@@ -271,7 +271,7 @@ class admin:
 
         if file_updated:
             try:
-                with open(accounts_file, "w") as f:
+                with open(accounts_file, "w", encoding="utf-8") as f:
                     json.dump(accounts, f, indent=4)
             except Exception as e:
                 error = f"Error saving accounts..."
@@ -446,7 +446,7 @@ class admin:
         pyrogram_accounts = []
         try:
             if os.path.exists(accounts_file):
-                with open(accounts_file, "r") as f:
+                with open(accounts_file, "r", encoding="utf-8") as f:
                     pyrogram_accounts = json.load(f)
         except Exception as e:
             pass
