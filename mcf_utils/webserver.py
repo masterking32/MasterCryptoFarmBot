@@ -13,6 +13,7 @@ import sys
 from flask import Flask, render_template, request, send_from_directory
 import flask.cli
 from mcf_utils.database import Database
+import importlib
 import mcf_utils.variables as vr
 import mcf_utils.utils as utils
 import mcf_utils.api as api
@@ -115,11 +116,12 @@ class WebServer:
             try:
                 if self.project_dir not in sys.path:
                     sys.path.append(self.project_dir)
+                module_name = f"web.controllers.{split_path[0]}"
+                module = importlib.import_module(module_name)
+                if not hasattr(module, split_path[0]):
+                    return "404 Not Found"
 
-                exec(f"import web.controllers.{split_path[0]}")
-                module = eval(
-                    f"web.controllers.{split_path[0]}.{split_path[0]}(self.logger)"
-                )
+                module = getattr(module, split_path[0])(self.logger)
                 if hasattr(module, split_path[1]):
                     return eval(f"module.{split_path[1]}(request, self)")
                 else:
