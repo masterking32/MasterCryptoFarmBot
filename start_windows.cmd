@@ -9,21 +9,22 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-:: Check if Python and pip are installed
-where python >nul 2>nul
+:: Check if Python 3.12 and pip are installed
+where py >nul 2>nul
 if %errorlevel% neq 0 (
-    echo Python is not installed or not in PATH. Please install Python and try again.
+    echo Python launcher is not installed or not in PATH. Please install Python and try again.
     echo To install Python, visit https://www.python.org/downloads/
     exit /b 1
 )
-:: check if py.exe exists
-where py >nul 2>nul
+
+py -3.12 --version >nul 2>nul
 if %errorlevel% neq 0 (
-    :: set python.exe as executer
-    set python_alias=python
+    echo Python 3.12 is not installed. Please install Python 3.12 and try again.
+    exit /b 1
 )
-:: set py.exe as executor 
-set python_alias=py
+
+:: Set python_alias to use Python 3.12
+set python_alias=py -3.12
 
 where pip >nul 2>nul
 if %errorlevel% neq 0 (
@@ -66,12 +67,13 @@ echo Dependencies updated successfully
 echo ==========================================
 echo Starting bot...
 echo ==========================================
-py main.py
+%python_alias% main.py
 if %errorlevel% neq 0 (
     echo Bot encountered an error. Restarting in 5 seconds...
-) else (
-    echo Bot stopped. Restarting in 5 seconds...
-)
+    timeout /t 5
+    goto loop
+) 
+echo Bot stopped. Restarting in 5 seconds...
 timeout /t 5
 goto loop
 
