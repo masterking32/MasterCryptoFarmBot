@@ -442,6 +442,19 @@
               </div>
               {% if bot.disabled == false %}
               <hr class="h-px my-4 border-0 bg-gray-700" />
+              {% if bot.update_available == true %}
+              <div class="text-center">
+                <p class="text-center">
+                  New Update Available:
+                  <a
+                    href="./bots.py?update_bot={{ bot.id }}"
+                    class="btn btn-info"
+                    ><i class="fa-solid fa-download"></i> Update Bot Module</a
+                  >
+                </p>
+              </div>
+              <hr class="h-px my-4 border-0 bg-gray-700" />
+              {% endif %}
               <div class="text-center">
                 <p class="text-center">
                   Bot Status: {% if bot.is_running %}
