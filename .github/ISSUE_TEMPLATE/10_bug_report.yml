@@ -53,17 +53,18 @@ body:
     attributes:
       label: "Operating System"
       options:
-        - Debian
-        - Ubuntu
-        - Windows
-        - macOS
-        - Fedora
+        - Android
         - Arch Linux
         - CentOS
-        - openSUSE
-        - Android
-        - Termux
+        - Debian
         - Docker
+        - Fedora
+        - macOS
+        - openSUSE
+        - Termux
+        - Ubuntu
+        - Windows
+
     validations:
       required: true
 
