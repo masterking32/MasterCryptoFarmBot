@@ -77,24 +77,32 @@ body:
         - Android 11
         - Android 12
         - Termux
+    validations:
+      required: true
 
   - type: input
     id: os_version
     attributes:
       label: "OS Version"
       placeholder: "e.g. 11, 20.04, 7.2"
+    validations:
+      required: true
 
   - type: input
     id: python_version
     attributes:
       label: "Python Version"
       placeholder: "e.g. 3.9.1"
+    validations:
+      required: true
 
   - type: input
     id: installed_modules
     attributes:
       label: "Installed Modules (comma-separated)"
       placeholder: "e.g. MCF_X, MCF_Y, MCF_Z"
+    validations:
+      required: true
 
   - type: markdown
     attributes:
@@ -109,6 +117,8 @@ body:
         - start_linux.sh
         - start_windows.bat
         - using command line
+    validations:
+      required: true
 
   - type: markdown
     attributes:
