@@ -1,9 +1,9 @@
 name: 🐞 Bug Report
-description: 🐞 Report a Bug
+description: Report a Bug
 body:
   - type: checkboxes
     attributes:
-      label: Is there an existing issue for this?
+      label: 🔍 Is there an existing issue for this?
       description: Please search to see if an issue already exists for the bug you encountered (https://github.com/masterking32/MasterCryptoFarmBot/issues?q=).
       options:
         - label: I have searched the existing issues
@@ -62,11 +62,6 @@ body:
     validations:
       required: true
 
-  - type: markdown
-    attributes:
-      value: |
-        ### System Information (please complete the following):
-
   - type: dropdown
     id: os
     attributes:
@@ -105,7 +100,7 @@ body:
   - type: dropdown
     id: multiple_python
     attributes:
-      label: "Do you have multiple Python versions installed on your system? 🐍"
+      label: "🐍 Do you have multiple Python versions installed on your system?"
       options:
         - "Yes"
         - "No"
@@ -119,7 +114,7 @@ body:
   - type: dropdown
     id: is_http_error
     attributes:
-      label: "Is this issue related to an HTTP error? 🌐"
+      label: "🌐 Is this issue related to an HTTP error?"
       options:
         - "Yes"
         - "No"
@@ -133,7 +128,7 @@ body:
   - type: dropdown
     id: is_pyrogram_telethon_error
     attributes:
-      label: "Is this issue related to Pyrogram or Telethon? 📡"
+      label: "📡 Is this issue related to Pyrogram or Telethon?"
       options:
         - "Yes"
         - "No"
@@ -146,7 +141,7 @@ body:
 
   - type: textarea
     attributes:
-      label: Describe the bug 🐛
+      label: 🐛 Describe the bug
       description: A clear and concise description of what the bug is.
     validations:
       required: true
