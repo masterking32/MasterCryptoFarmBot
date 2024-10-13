@@ -1,47 +1,66 @@
-
 name: 🐞 Bug Report
-description: Create a report about something that is not working
+description: 🐞 Report a Bug
 body:
   - type: checkboxes
     attributes:
       label: Is there an existing issue for this?
-      description: Please search to see if an issue already exists for the bug you encountered (https://github.com/masterking32/MasterCryptoFarmBot/issues).
+      description: Please search to see if an issue already exists for the bug you encountered (https://github.com/masterking32/MasterCryptoFarmBot/issues?q=).
       options:
         - label: I have searched the existing issues
           required: true
 
-  - type: textarea
+  - type: dropdown
+    id: install_like_wiki
     attributes:
-      label: Describe the bug
-      description: A clear and concise description of what the bug is.
+      label: "📚 Did you install according to the wiki?"
+      options:
+        - "Yes"
+        - "No"
     validations:
       required: true
-
-  - type: textarea
+  - type: markdown
     attributes:
-      label: Expected Behavior
-      description: A clear and concise description of what you expected to happen.
-    validations:
-      required: false
+      value: |
+        If not, please install according to the wiki and check if the issue still exists.
 
-  - type: textarea
+  - type: dropdown
+    id: custom_changes
     attributes:
-      label: Steps To Reproduce
-      description: |
-        We will close this issue if:
-        - If we will not be able to reproduce the behavior you're reporting.
+      label: "🔧 Have you made any custom changes to the software?"
+      options:
+        - "Yes"
+        - "No"
     validations:
-      required: false
-
-  - type: textarea
+      required: true
+  - type: markdown
     attributes:
-      label: Anything else?
-      description: |
-        Links? References? Anything that will give us more context about the issue you are encountering!
+      value: |
+        If yes, we do not support custom changes. Please revert your changes and check if the issue still exists.
 
-        Tip: You can attach images or log files by clicking this area to highlight it and then dragging files in.
+  - type: dropdown
+    id: is_about_modules
+    attributes:
+      label: "📦 Is this issue about a module?"
+      options:
+        - "Yes"
+        - "No"
     validations:
-      required: false
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        If yes and your module is free, please create an issue for the module repository. If your module is paid, we will assist you here.
+
+  - type: dropdown
+    id: run_method
+    attributes:
+      label: "🚀 How did you run the software?"
+      options:
+        - start_linux.sh
+        - start_windows.bat
+        - using command line
+    validations:
+      required: true
 
   - type: markdown
     attributes:
@@ -51,83 +70,117 @@ body:
   - type: dropdown
     id: os
     attributes:
-      label: "Operating System"
+      label: "🖥️ Operating System"
       options:
-        - Android
-        - Arch Linux
-        - CentOS
-        - Debian
-        - Docker
-        - Fedora
-        - macOS
-        - openSUSE
-        - Termux
-        - Ubuntu
         - Windows
+        - Android
+        - Ubuntu
+        - Debian
+        - macOS
+        - Arch Linux
+        - Fedora
+        - CentOS
+        - openSUSE
+        - Docker
+        - Other Linux
     validations:
       required: true
 
   - type: input
     id: os_version
     attributes:
-      label: "OS Version"
-      placeholder: "e.g. 11, 20.04, 7.2"
+      label: "📝 OS Version"
+      placeholder: "e.g. Windows 11, Ubuntu 20.04, Debian 12, etc."
     validations:
       required: true
 
   - type: input
     id: python_version
     attributes:
-      label: "Python Version"
-      placeholder: "e.g. 3.9.1"
+      label: "🐍 Python Version"
+      placeholder: "e.g. 3.13"
     validations:
       required: true
+
+  - type: dropdown
+    id: multiple_python
+    attributes:
+      label: "Do you have multiple Python versions installed on your system? 🐍"
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        If yes, please try running the software on a system with only one Python version installed.
+
+  - type: dropdown
+    id: is_http_error
+    attributes:
+      label: "Is this issue related to an HTTP error? 🌐"
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        If yes, please first check if the issue is related to the server. If the server is down or under maintenance, the software will not work. Then try with a different network or Proxy/VPN and check if the issue still exists.
+
+  - type: dropdown
+    id: is_pyrogram_telethon_error
+    attributes:
+      label: "Is this issue related to Pyrogram or Telethon? 📡"
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        If yes, please first check if the issue is related to the library. Please check the library's documentation and issues.
+
+  - type: textarea
+    attributes:
+      label: Describe the bug 🐛
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 🎯 Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: 🔄 Steps To Reproduce
+      description: |
+        We will close this issue if:
+        - We are not able to reproduce the behavior you're reporting.
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: 💬 Anything else?
+      description: |
+        Links? References? Anything that will give us more context about the issue you are encountering!
+
+        Tip: You can attach images or log files by clicking this area to highlight it and then dragging files in.
+    validations:
+      required: false
 
   - type: input
     id: installed_modules
     attributes:
-      label: "Installed Modules (comma-separated)"
+      label: "📜 Installed Modules (comma-separated)"
       placeholder: "e.g. MCF_X, MCF_Y, MCF_Z"
     validations:
       required: true
-
-  - type: dropdown
-    id: run_method
-    attributes:
-      label: "How did you run the software?"
-      options:
-        - start_linux.sh
-        - start_windows.bat
-        - using command line
-    validations:
-      required: true
-
-  - type: dropdown
-    id: install_like_wiki
-    attributes:
-      label: "Did you install like the wiki?"
-      options:
-        - "Yes"
-        - "No"
-    validations:
-      required: true
-
-  - type: markdown
-    attributes:
-      value: |
-        If no, please install like wiki and check if the issue still exists.
-
-  - type: dropdown
-    id: latest_version
-    attributes:
-      label: "Are you using the latest version of the software?"
-      options:
-        - "Yes"
-        - "No"
-    validations:
-      required: true
-
-  - type: markdown
-    attributes:
-      value: |
-        If no, please update to the latest version and check if the issue still exists.
