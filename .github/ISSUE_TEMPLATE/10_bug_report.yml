@@ -64,7 +64,6 @@ body:
         - Termux
         - Ubuntu
         - Windows
-
     validations:
       required: true
 
@@ -92,15 +91,10 @@ body:
     validations:
       required: true
 
-  - type: markdown
-    attributes:
-      value: |
-        ### How did you run the software?
-
   - type: dropdown
     id: run_method
     attributes:
-      label: "Run Method"
+      label: "How did you run the software?"
       options:
         - start_linux.sh
         - start_windows.bat
@@ -108,15 +102,10 @@ body:
     validations:
       required: true
 
-  - type: markdown
-    attributes:
-      value: |
-        ### Did you install like the wiki?
-
   - type: dropdown
     id: install_like_wiki
     attributes:
-      label: "Installed like Wiki?"
+      label: "Did you install like the wiki?"
       options:
         - "Yes"
         - "No"
@@ -128,15 +117,10 @@ body:
       value: |
         If no, please install like wiki and check if the issue still exists.
 
-  - type: markdown
-    attributes:
-      value: |
-        ### Are you using the latest version of the software?
-
   - type: dropdown
     id: latest_version
     attributes:
-      label: "Using Latest Version?"
+      label: "Are you using the latest version of the software?"
       options:
         - "Yes"
         - "No"
