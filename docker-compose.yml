@@ -1,0 +1,48 @@
+# you need to change the time zone “Europe/London” to your time zone at the entry point. 
+# find the value for your time zone on the web.
+# replace ~/.MCF/container with your MCF path, '~/' means the current user's home directory.
+# for synology nas you need to create this path manually in your system because docker cannot create folders in synology
+
+version: '3.8'
+
+services:
+  mcf:
+    image: python:3.12-slim
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+    container_name: mcf
+    restart: unless-stopped
+    volumes:
+      - ~/.MCF/container:/MasterCryptoFarmBot
+    environment:
+      - PYTHONUNBUFFERED=1
+    working_dir: /MasterCryptoFarmBot
+    ports:
+      - "3232:3232"
+    init: true
+    network_mode: bridge
+    entrypoint: >
+      bash -c "
+      if ! git --version &> /dev/null; then
+        echo 'Installing\\Updating git ...';
+        apt-get update > /dev/null && apt-get install -y git > /dev/null;
+      fi &&
+      ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime;
+      echo 'Europe/London' > /etc/timezone;
+      if [ ! -f main.py ]; then
+        echo 'Cloning repository ...';
+        git clone https://github.com/masterking32/MasterCryptoFarmBot.git ./;
+      fi &&
+      if ! git config --global --get-all safe.directory | grep -q "/MasterCryptoFarmBot"; then
+        echo 'Adding /MasterCryptoFarmBot to safe directories ...';
+        git config --global --add safe.directory /MasterCryptoFarmBot;
+      fi &&
+      if [ ! -f config.py ]; then
+        echo 'Copying config from sample ...'
+        cp config.py.sample config.py
+      fi &&
+      if [ -f start_linux.sh ]; then
+        echo 'Launching ...';
+        bash start_linux.sh;
+      fi"
