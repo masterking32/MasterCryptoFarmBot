@@ -1,1 +1,6 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Feature Request
+    url: https://github.com/masterking32/MasterCryptoFarmBot/discussions/new?category=ideas
+    about: Please use this to request a new feature.
+    
