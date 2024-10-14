@@ -49,7 +49,8 @@ echo UseCredentialManager=Enabled
 echo PerformanceTweaksFSCache=Enabled
 echo EnableSymlinks=Disabled
 echo EnableFSMonitor=Disabled
-) > "%OPTIONS_FILE%"
+) > "%OPTIONS_FILE%" 2>nul
+
 if errorlevel 1 (
     echo Failed to create %OPTIONS_FILE%.
     goto :cleanup
