@@ -516,7 +516,7 @@ class admin:
                 git = Git.Git(webServer.logger, webServer.config)
 
                 directory = os.path.join(os.getcwd(), f"modules/{bot['name']}")
-                git.UpdateProject(directory)
+                git.UpdateProject(directory=directory, RestartAfterUpdate=False)
                 webServer.module_threads.run_module(bot["name"])
                 return f"Module {bot['name']} has been updated and has restarted."
 
