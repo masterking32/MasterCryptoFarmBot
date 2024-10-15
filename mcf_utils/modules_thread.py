@@ -5,6 +5,7 @@
 
 import datetime
 import os
+import random
 import sys
 import time
 import subprocess
@@ -395,7 +396,13 @@ class Module_Thread:
                         self.logger.info(
                             f"<green>✅ <cyan>{len(self.running_modules)}</cyan> modules running!</green>"
                         )
-                        time.sleep(5)
+                        random_wait = random.randint(30, 60)
+
+                        self.logger.info(
+                            f"<green>🚀 Waiting for <cyan>{random_wait}</cyan> seconds before running the next module ...</green>"
+                        )
+
+                        time.sleep(random_wait)
 
                 time.sleep(300)
             except Exception as e:
