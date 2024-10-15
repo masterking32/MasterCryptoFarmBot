@@ -25,7 +25,7 @@ echo Downloading %INSTALLER_NAME%...
 powershell -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -OutFile '%INSTALLER_NAME%' -Uri '%DOWNLOAD_URL%'"
 if %errorlevel% neq 0 (
     echo Failed to download GIT installer.
-    goto :error
+    goto :giterror
 )
 
 echo Creating temporary git_options.ini file...
@@ -56,25 +56,25 @@ echo EnableFSMonitor=Disabled
 
 if %errorlevel% neq 0 (
     echo Failed to create temporary git_options.ini file.
-    goto :error
+    goto :giterror
 )
 
 echo Installing %INSTALLER_NAME%...
 start /wait %INSTALLER_NAME% /VERYSILENT /NORESTART /NOCANCEL /LOADINF="git_options.ini"
 if %errorlevel% neq 0 (
     echo Failed to install GIT.
-    goto :error
+    goto :giterror
 )
 
 echo GIT installation completed successfully.
-goto :cleanup
+goto :gitcleanup
 
-:error
+:giterror
 echo An error occurred during the GIT installation process.
-call :cleanup
+call :gitcleanup
 exit /b 1
 
-:cleanup
+:gitcleanup
 echo Cleaning up...
 cd /d "%TEMP%"
 if %errorlevel% neq 0 (
