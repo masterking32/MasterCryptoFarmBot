@@ -333,7 +333,9 @@ class tgTelethon:
                         platform="android",
                         write_allowed=True,
                         compact=True,
-                        start_param=str(self.ReferralToken) if self.NewStart else None,
+                        start_param=(
+                            str(self.ReferralToken) if self.ReferralToken else "0"
+                        ),
                     )
                 )
             elif app_url:
@@ -344,7 +346,9 @@ class tgTelethon:
                         platform="android",
                         from_bot_menu=True,
                         url=app_url,
-                        start_param=str(self.ReferralToken) if self.NewStart else None,
+                        start_param=(
+                            str(self.ReferralToken) if self.ReferralToken else "0"
+                        ),
                     )
                 )
 

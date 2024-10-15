@@ -333,7 +333,7 @@ class tgPyrogram:
                     app=bot_app,
                     platform="android",
                     write_allowed=True,
-                    start_param=str(self.ReferralToken) if self.NewStart else None,
+                    start_param=str(self.ReferralToken) if self.ReferralToken else "0",
                 )
                 if bot_app
                 else RequestWebView(
@@ -342,7 +342,7 @@ class tgPyrogram:
                     platform="android",
                     from_bot_menu=False,
                     url=app_url,
-                    start_param=str(self.ReferralToken) if self.NewStart else None,
+                    start_param=str(self.ReferralToken) if self.ReferralToken else "0",
                 )
             )
 
