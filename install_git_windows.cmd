@@ -7,13 +7,15 @@ set "DOWNLOAD_URL=https://github.com/git-for-windows/git/releases/download/v%GIT
 set "INSTALLER_NAME=Git-%GIT_VERSION%-64-bit.exe"
 
 set "TEMP_DIR=%TEMP%\GitInstall_%RANDOM%"
-mkdir "%TEMP_DIR%" || (
+mkdir "%TEMP_DIR%"
+if %errorlevel% neq 0 (
     echo Failed to create temporary directory.
     timeout /t 5
     exit /b 1
 )
 
-cd /d "%TEMP_DIR%" || (
+cd /d "%TEMP_DIR%"
+if %errorlevel% neq 0 (
     echo Failed to change to temporary directory.
     timeout /t 5
     exit /b 1
@@ -21,7 +23,7 @@ cd /d "%TEMP_DIR%" || (
 
 echo Downloading %INSTALLER_NAME%...
 powershell -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -OutFile '%INSTALLER_NAME%' -Uri '%DOWNLOAD_URL%'"
-if errorlevel 1 (
+if %errorlevel% neq 0 (
     echo Failed to download Git installer.
     goto :error
 )
@@ -52,14 +54,14 @@ echo EnableSymlinks=Disabled
 echo EnableFSMonitor=Disabled
 ) > "git_options.ini" 2>nul
 
-if errorlevel 1 (
+if %errorlevel% neq 0 (
     echo Failed to create git_options.ini.
     goto :error
 )
 
 echo Installing %INSTALLER_NAME%...
 start /wait %INSTALLER_NAME% /VERYSILENT /NORESTART /NOCANCEL /LOADINF="git_options.ini"
-if errorlevel 1 (
+if %errorlevel% neq 0 (
     echo Failed to install Git.
     goto :error
 )
