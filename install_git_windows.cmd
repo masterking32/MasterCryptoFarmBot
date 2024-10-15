@@ -5,7 +5,6 @@ setlocal enabledelayedexpansion
 set "GIT_VERSION=2.47.0"
 set "DOWNLOAD_URL=https://github.com/git-for-windows/git/releases/download/v%GIT_VERSION%.windows.1/Git-%GIT_VERSION%-64-bit.exe"
 set "INSTALLER_NAME=Git-%GIT_VERSION%-64-bit.exe"
-set "OPTIONS_FILE=git_options.ini"
 
 set "TEMP_DIR=%TEMP%\GitInstall_%RANDOM%"
 mkdir "%TEMP_DIR%" || (
@@ -27,7 +26,7 @@ if errorlevel 1 (
     goto :error
 )
 
-echo Creating temporary %OPTIONS_FILE% file...
+echo Creating temporary git_options.ini file...
 (
 echo [Setup]
 echo Lang=default
@@ -51,15 +50,15 @@ echo UseCredentialManager=Enabled
 echo PerformanceTweaksFSCache=Enabled
 echo EnableSymlinks=Disabled
 echo EnableFSMonitor=Disabled
-) > "%OPTIONS_FILE%" 2>nul
+) > "git_options.ini" 2>nul
 
 if errorlevel 1 (
-    echo Failed to create %OPTIONS_FILE%.
+    echo Failed to create git_options.ini.
     goto :error
 )
 
 echo Installing %INSTALLER_NAME%...
-start /wait %INSTALLER_NAME% /VERYSILENT /NORESTART /NOCANCEL /LOADINF="%OPTIONS_FILE%"
+start /wait %INSTALLER_NAME% /VERYSILENT /NORESTART /NOCANCEL /LOADINF="git_options.ini"
 if errorlevel 1 (
     echo Failed to install Git.
     goto :error
