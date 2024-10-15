@@ -9,14 +9,14 @@ set "INSTALLER_NAME=Git-%GIT_VERSION%-64-bit.exe"
 set "TEMP_DIR=%TEMP%\GitInstall_%RANDOM%"
 mkdir "%TEMP_DIR%"
 if %errorlevel% neq 0 (
-    echo Failed to create temporary directory.
+    echo Failed to create temporary GIT install directory.
     timeout /t 5
     exit /b 1
 )
 
 cd /d "%TEMP_DIR%"
 if %errorlevel% neq 0 (
-    echo Failed to change to temporary directory.
+    echo Failed to change to temporary GIT install directory.
     timeout /t 5
     exit /b 1
 )
@@ -24,7 +24,7 @@ if %errorlevel% neq 0 (
 echo Downloading %INSTALLER_NAME%...
 powershell -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -OutFile '%INSTALLER_NAME%' -Uri '%DOWNLOAD_URL%'"
 if %errorlevel% neq 0 (
-    echo Failed to download Git installer.
+    echo Failed to download GIT installer.
     goto :error
 )
 
@@ -62,22 +62,22 @@ if %errorlevel% neq 0 (
 echo Installing %INSTALLER_NAME%...
 start /wait %INSTALLER_NAME% /VERYSILENT /NORESTART /NOCANCEL /LOADINF="git_options.ini"
 if %errorlevel% neq 0 (
-    echo Failed to install Git.
+    echo Failed to install GIT.
     goto :error
 )
 
-echo Installation completed successfully.
+echo GIT installation completed successfully.
 goto :cleanup
 
 :error
-echo An error occurred during the installation process.
+echo An error occurred during the GIT installation process.
 call :cleanup
 exit /b 1
 
 :cleanup
 echo Cleaning up...
-cd /d "%TEMP%" || echo Failed to change directory for cleanup.
-rd /s /q "%TEMP_DIR%" || echo Failed to remove temporary directory. Please delete %TEMP_DIR% manually.
+cd /d "%TEMP%" || echo Failed to change to temporary directory for cleanup.
+rd /s /q "%TEMP_DIR%" || echo Failed to remove temporary GIT install directory. Please delete %TEMP_DIR% manually.
 timeout /t 5
 
 exit /b 0
