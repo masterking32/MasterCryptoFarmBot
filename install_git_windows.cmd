@@ -76,7 +76,7 @@ exit /b 1
 
 :cleanup
 echo Cleaning up...
-cd /d "%TEMP%" || echo Failed to change to temporary directory for cleanup.
+cd /d "%TEMP%" || echo Failed to change to temporary directory for GIT install cleanup.
 rd /s /q "%TEMP_DIR%" || echo Failed to remove temporary GIT install directory. Please delete %TEMP_DIR% manually.
 timeout /t 5
 
