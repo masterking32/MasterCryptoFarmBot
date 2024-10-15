@@ -10,11 +10,13 @@ set "OPTIONS_FILE=git_options.ini"
 set "TEMP_DIR=%TEMP%\GitInstall_%RANDOM%"
 mkdir "%TEMP_DIR%" || (
     echo Failed to create temporary directory.
+    timeout /t 3
     exit /b 1
 )
 
 cd /d "%TEMP_DIR%" || (
     echo Failed to change to temporary directory.
+    timeout /t 3
     exit /b 1
 )
 
@@ -69,11 +71,13 @@ goto :cleanup
 :error
 echo An error occurred during the installation process.
 call :cleanup
+timeout /t 3
 exit /b 1
 
 :cleanup
 echo Cleaning up...
 cd /d "%TEMP%" || echo Failed to change directory for cleanup.
 rd /s /q "%TEMP_DIR%" || echo Failed to remove temporary directory. Please delete %TEMP_DIR% manually.
+timeout /t 3
 
 exit /b 0
