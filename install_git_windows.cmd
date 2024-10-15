@@ -55,7 +55,7 @@ echo EnableFSMonitor=Disabled
 ) > "git_options.ini" 2>nul
 
 if %errorlevel% neq 0 (
-    echo Failed to create git_options.ini.
+    echo Failed to create temporary git_options.ini file.
     goto :error
 )
 
