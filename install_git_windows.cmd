@@ -71,14 +71,12 @@ goto :cleanup
 :error
 echo An error occurred during the installation process.
 call :cleanup
-timeout /t 3
 exit /b 1
 
 :cleanup
 echo Cleaning up...
 cd /d "%TEMP%" || echo Failed to change directory for cleanup.
 rd /s /q "%TEMP_DIR%" || echo Failed to remove temporary directory. Please delete %TEMP_DIR% manually.
-
 timeout /t 3
 
 exit /b 0
