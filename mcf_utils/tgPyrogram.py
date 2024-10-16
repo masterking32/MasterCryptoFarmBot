@@ -310,6 +310,7 @@ class tgPyrogram:
 
             if self.MuteBot:
                 try:
+                    await asyncio.sleep(3)
                     peerMute = InputNotifyPeer(peer=peer)
                     settings = InputPeerNotifySettings(
                         silent=True,
@@ -538,6 +539,7 @@ class tgPyrogram:
             chatObj = await tgClient.join_chat(url)
             if chatObj and chatObj.id:
                 if mute:
+                    await asyncio.sleep(3)
                     peer = InputNotifyPeer(peer=await tgClient.resolve_peer(chatObj.id))
                     settings = InputPeerNotifySettings(
                         silent=True,

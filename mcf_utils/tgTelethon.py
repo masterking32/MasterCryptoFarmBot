@@ -285,7 +285,7 @@ class tgTelethon:
                     start_param=str(self.ReferralToken) if self.ReferralToken else "0",
                 )
             )
-
+            await asyncio.sleep(3)
             await self._mute(tgClient, self.BotID)
         except Exception as e:
             self.log.error(
@@ -536,6 +536,7 @@ class tgTelethon:
 
             await tgClient(functions.channels.JoinChannelRequest(chatObj))
             if mute:
+                await asyncio.sleep(3)
                 await self._mute(tgClient, chatObj)
 
             if not noLog:
