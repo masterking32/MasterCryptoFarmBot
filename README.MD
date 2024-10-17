@@ -46,13 +46,7 @@ Module for the Hrum bot. Automatically claims cookies from the farm, collects da
 
 ### 🤖 [NotPixel Farm/Claimer Bot](https://t.me/notpixel/app?startapp=f95736407)
 
-### 🤖 [NotPixel Farm/Claimer Bot](https://t.me/notpixel/app?startapp=f95736407)
-
 Module for the NotPixel bot. Automatically registers new accounts with your referral token, claims rewards, starts, finishes, and completes tasks, paints automatically **(BOOSTED paints +4px)**, and joins a squad if you don't have one already. Automatically joins templates and paints them.
-
-### 🤖 [PocketFi Farm/Claimer Bot](https://t.me/pocketfi_bot/Mining?startapp=95736407)
-
-Module for the PocketFi bot. Automatically registers new accounts with your referral token, claims daily rewards, starts, finishes, and completes tasks (Twitter, Telegram, alliance), automatically claims mining rewards, and joins an alliance if you don't have one already.
 
 ### 🤖 [Seed Farm/Claimer Bot](https://t.me/seed_coin_bot/app?startapp=95736407)
 
@@ -61,6 +55,10 @@ Module for the Seed bot. Automatically registers new accounts with your referral
 ### 🤖 [Major Farm/Claimer Bot](https://t.me/major/start?startapp=95736407)
 
 Module for the Major bot. Automatically registers new accounts with your referral token, claims rewards, starts and completes tasks (Join Channel/Start Bot), Play games, Get daily rewards and more!
+
+### 🤖 [PocketFi Farm/Claimer Bot](https://t.me/pocketfi_bot/Mining?startapp=95736407)
+
+Module for the PocketFi bot. Automatically registers new accounts with your referral token, claims daily rewards, starts, finishes, and completes tasks (Twitter, Telegram, alliance), automatically claims mining rewards, and joins an alliance if you don't have one already.
 
 ### 🤖 [Cats&Dogs Farm/Claimer Bot](https://t.me/catsdogs_game_bot/join?startapp=95736407)
 
