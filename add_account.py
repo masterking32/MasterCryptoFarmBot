@@ -26,6 +26,64 @@ except ImportError:
     )
 
 
+def load_proxies():
+    try:
+        if not os.path.exists("proxy.txt"):
+            return None
+
+        with open("proxy.txt", "r") as f:
+            proxies = f.readlines()
+            f.close()
+
+        if not proxies:
+            return None
+
+        return proxies
+    except Exception as e:
+        print(f"\n{lc.r}Error while reading proxy.txt file!{lc.rs}")
+        print(f"\n{lc.r}Error: {e}{lc.rs}")
+        return None
+
+
+proxy_id = 0
+all_proxies = load_proxies()
+current_proxy = ""
+
+
+def get_proxy(pyrogram=False):
+    global proxy_id, all_proxies, current_proxy
+    current_proxy = ""
+    if not all_proxies:
+        return None
+
+    if proxy_id >= len(all_proxies):
+        proxy_id = 0
+
+    proxy = all_proxies[proxy_id].strip()
+
+    if not proxy or proxy == "":
+        if len(all_proxies) > 1:
+            proxy_id += 1
+            return get_proxy()
+        return None
+
+    print(f"{lc.y}🔗 Testing proxy {proxy}...{lc.rs}")
+    proxy_check = utils.testProxy(proxy)
+    if not proxy_check:
+        print(f"{lc.r}❌ Proxy {proxy} is not working!{lc.rs}")
+        proxy_id += 1
+        return get_proxy()
+
+    print(f"{lc.g}✅ Proxy {proxy} is working!{lc.rs}")
+    proxy_id += 1
+
+    current_proxy = proxy
+    if pyrogram:
+        return utils.parseProxy(proxy) if proxy else None
+    else:
+        return utils.telethon_proxy(proxy) if proxy else None
+
+
 def add_account_to_json(account):
     accounts = []
     try:
@@ -116,6 +174,7 @@ async def register_telethon(session_name, phone_number) -> None:
         api_id=API_ID,
         api_hash=API_HASH,
         device_model="Desktop (MCF-T)",
+        proxy=get_proxy(),
     )
 
     user_data = None
@@ -161,7 +220,7 @@ async def register_telethon(session_name, phone_number) -> None:
         "username": user_data.username,
         "disabled": True,
         "user_agent": "",
-        "proxy": "",
+        "proxy": current_proxy,
         "type": "telethon",
     }
 
@@ -260,6 +319,7 @@ async def check_pyrogram_session(session_name) -> bool:
         api_id=API_ID,
         api_hash=API_HASH,
         workdir="telegram_accounts/",
+        proxy=get_proxy(True),
     )
 
     try:
@@ -286,6 +346,7 @@ async def check_telethon_session(session_name) -> bool:
         api_id=API_ID,
         api_hash=API_HASH,
         device_model="Desktop (MCF-T)",
+        proxy=get_proxy(),
     )
 
     user_data = None
@@ -385,7 +446,7 @@ async def import_sessions() -> None:
                 "username": user_data.username,
                 "disabled": True,
                 "user_agent": "",
-                "proxy": "",
+                "proxy": current_proxy,
                 "type": session_type,
             }
 
@@ -405,6 +466,23 @@ if __name__ == "__main__":
         f"{lc.r}🚀 After creating a session, run main.py{lc.rs}\n"
         f"{lc.r}🛠️ Then go to Control Panel > Manage Accounts, set the User-Agent (Proxy is optional), and enable the account.{lc.rs}\n"
         f"{lc.r}🔒 By default, the accounts are disabled after creation and need to be enabled manually.{lc.rs}\n"
+        f"{lc.g}----------------------------------------------------{lc.rs}"
+    )
+
+    if all_proxies is None or len(all_proxies) == 0:
+        print(f"{lc.y}If you want to use a proxy, create a proxy.txt file!{lc.rs}")
+        print(
+            f"{lc.y}The file should contain the proxies in the following format: {lc.rs}"
+        )
+        print(f"{lc.c}socks5://username:password@ip:port{lc.rs}")
+        print(f"{lc.y}You can add multiple proxies, one per line!{lc.rs}")
+        print(f"{lc.g}Each account will use a different proxy!{lc.rs}")
+    else:
+        print(
+            f"{lc.y}🔗 Found {len(all_proxies)} proxies in the proxy.txt file.{lc.rs}"
+        )
+
+    print(
         f"{lc.g}----------------------------------------------------{lc.rs}\n"
         f"{lc.y}📋 Please select an option:{lc.rs}"
         f"\n{lc.g}1. 🆕 Register new sessions (PyroGram or Telethon){lc.rs}"
