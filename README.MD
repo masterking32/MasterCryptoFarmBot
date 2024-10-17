@@ -56,6 +56,14 @@ Module for the Seed bot. Automatically registers new accounts with your referral
 
 Module for the Major bot. Automatically registers new accounts with your referral token, claims rewards, starts and completes tasks (Join Channel/Start Bot), Play games, Get daily rewards and more!
 
+### 🤖 [Cats&Dogs Farm/Claimer Bot](https://t.me/catsdogs_game_bot/join?startapp=95736407)
+
+Module for the Cats&Dogs bot. Automatically registers new accounts with your referral token, claims rewards, starts and completes tasks (Join Channel/Start Bot), Get daily rewards and more!
+
+### 🤖 [Hrum Farm/Claimer Bot](https://github.com/masterking32/MCF_Hrum)
+
+Module for the Hrum bot. Automatically claims cookies from the farm, collects daily rewards, starts and completes tasks (Join Channel/Start Bot), auto-finishes the Ribble task, auto-finishes the 🥠 rename task, and more!
+
 ---
 
 ## 🛠️ How to Install?
