@@ -52,6 +52,10 @@ Module for the NotPixel bot. Automatically registers new accounts with your refe
 
 Module for the Seed bot. Automatically registers new accounts with your referral token, claims rewards, starts and completes tasks (Join Channel/Start Bot), hunts automatically, collects daily gifts, catches worms, gets free birds, auto-adds 🌱 to names, and more!
 
+### 🤖 [TimeFarm Farm/Claimer Bot](https://t.me/TimeFarmCryptoBot?start=P0pVlE6x4Rm0bPqo)
+
+Module for the TimeFarm bot. Automatically registers new accounts with your referral token, starts and claims farms, starts and completes tasks (Join Channel/Start Bot), gets daily rewards, auto-stakes, auto-upgrades clocks, and more!
+
 ### 🤖 [Major Farm/Claimer Bot](https://t.me/major/start?startapp=95736407)
 
 Module for the Major bot. Automatically registers new accounts with your referral token, claims rewards, starts and completes tasks (Join Channel/Start Bot), Play games, Get daily rewards and more!
