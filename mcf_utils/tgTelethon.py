@@ -285,7 +285,7 @@ class tgTelethon:
                     start_param=str(self.ReferralToken) if self.ReferralToken else "0",
                 )
             )
-
+            await asyncio.sleep(3)
             await self._mute(tgClient, self.BotID)
         except Exception as e:
             self.log.error(
@@ -333,7 +333,9 @@ class tgTelethon:
                         platform="android",
                         write_allowed=True,
                         compact=True,
-                        start_param=str(self.ReferralToken) if self.NewStart else None,
+                        start_param=(
+                            str(self.ReferralToken) if self.ReferralToken else "0"
+                        ),
                     )
                 )
             elif app_url:
@@ -344,7 +346,9 @@ class tgTelethon:
                         platform="android",
                         from_bot_menu=True,
                         url=app_url,
-                        start_param=str(self.ReferralToken) if self.NewStart else None,
+                        start_param=(
+                            str(self.ReferralToken) if self.ReferralToken else "0"
+                        ),
                     )
                 )
 
@@ -402,7 +406,7 @@ class tgTelethon:
                         if fake_name
                         else None
                     ),
-                    bio=UserAccount.about or get_random_emoji(),
+                    bio=get_random_emoji(),
                 )
 
             if not UserAccount.photo:
@@ -532,6 +536,7 @@ class tgTelethon:
 
             await tgClient(functions.channels.JoinChannelRequest(chatObj))
             if mute:
+                await asyncio.sleep(3)
                 await self._mute(tgClient, chatObj)
 
             if not noLog:

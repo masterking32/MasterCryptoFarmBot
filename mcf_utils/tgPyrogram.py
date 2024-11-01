@@ -205,7 +205,9 @@ class tgPyrogram:
                 return None
             return await self._get_web_view_data(tgClient)
 
-    async def _get_bot_app_link(self, tgClient):
+    async def _get_bot_app_link(self, tgClient, retries=2):
+        if retries < 0:
+            return None
         try:
             BotID = self.BotID
             chatHistory = await tgClient.get_chat_history_count(BotID)
@@ -266,7 +268,7 @@ class tgPyrogram:
                 if time_now - message_date > a_week:
                     await asyncio.sleep(5)
                     await self.send_start_bot(tgClient)
-                    return await self.get_app_web_link(tgClient)
+                    return await self._get_bot_app_link(tgClient, retries=retries - 1)
 
                 return webAppURL
         except Exception as e:
@@ -308,6 +310,7 @@ class tgPyrogram:
 
             if self.MuteBot:
                 try:
+                    await asyncio.sleep(3)
                     peerMute = InputNotifyPeer(peer=peer)
                     settings = InputPeerNotifySettings(
                         silent=True,
@@ -331,7 +334,7 @@ class tgPyrogram:
                     app=bot_app,
                     platform="android",
                     write_allowed=True,
-                    start_param=str(self.ReferralToken) if self.NewStart else None,
+                    start_param=str(self.ReferralToken) if self.ReferralToken else "0",
                 )
                 if bot_app
                 else RequestWebView(
@@ -340,7 +343,7 @@ class tgPyrogram:
                     platform="android",
                     from_bot_menu=False,
                     url=app_url,
-                    start_param=str(self.ReferralToken) if self.NewStart else None,
+                    start_param=str(self.ReferralToken) if self.ReferralToken else "0",
                 )
             )
 
@@ -536,6 +539,7 @@ class tgPyrogram:
             chatObj = await tgClient.join_chat(url)
             if chatObj and chatObj.id:
                 if mute:
+                    await asyncio.sleep(3)
                     peer = InputNotifyPeer(peer=await tgClient.resolve_peer(chatObj.id))
                     settings = InputPeerNotifySettings(
                         silent=True,

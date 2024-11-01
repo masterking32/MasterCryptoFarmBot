@@ -176,7 +176,7 @@ class admin:
 
         try:
             if os.path.exists(accounts_file):
-                with open(accounts_file, "r") as f:
+                with open(accounts_file, "r", encoding="utf-8") as f:
                     accounts = json.load(f)
 
                 if not accounts:
@@ -271,7 +271,7 @@ class admin:
 
         if file_updated:
             try:
-                with open(accounts_file, "w") as f:
+                with open(accounts_file, "w", encoding="utf-8") as f:
                     json.dump(accounts, f, indent=4)
             except Exception as e:
                 error = f"Error saving accounts..."
@@ -446,7 +446,7 @@ class admin:
         pyrogram_accounts = []
         try:
             if os.path.exists(accounts_file):
-                with open(accounts_file, "r") as f:
+                with open(accounts_file, "r", encoding="utf-8") as f:
                     pyrogram_accounts = json.load(f)
         except Exception as e:
             pass
@@ -468,6 +468,8 @@ class admin:
             success = self._bots_start_bot(requests, bots, webServer)
         elif "restart_bot" in requests.args:
             success = self._bots_restart_bot(requests, bots, webServer)
+        elif "update_bot" in requests.args:
+            success = self._update_bot(requests, webServer)
 
         if requests.args:
             bots = self._bots_load_all(webServer)
@@ -505,6 +507,21 @@ class admin:
             theme=self.theme,
         )
 
+    def _update_bot(self, requests, webServer):
+        BotID = requests.args.get("update_bot", 0)
+        bots = self._bots_load_all(webServer)
+        for bot in bots:
+            if str(bot["id"]) == str(BotID):
+                webServer.module_threads.stop_module(bot["name"])
+                git = Git.Git(webServer.logger, webServer.config)
+
+                directory = os.path.join(os.getcwd(), f"modules/{bot['name']}")
+                git.UpdateProject(directory=directory, RestartAfterUpdate=False)
+                webServer.module_threads.run_module(bot["name"])
+                return f"Module {bot['name']} has been updated and has restarted."
+
+        return None
+
     def _bots_disable_sessions(self, requests, bots, webServer):
         BotID = requests.form["disabled_pyrogram_sessions"]
         for bot in bots:
@@ -523,6 +540,15 @@ class admin:
         modules = os.listdir("modules")
         bots = []
         db = Database("database.db", webServer.logger)
+        user_modules = api.API(webServer.logger).get_user_modules(
+            db.getSettings("license", "Free License")
+        )
+
+        if user_modules is None or "error" in user_modules:
+            user_modules = []
+
+        self.user_modules = user_modules
+
         for module in modules:
             if os.path.isdir(f"modules/{module}") and os.path.exists(
                 f"modules/{module}/bot.py"
@@ -555,6 +581,30 @@ class admin:
         bot["uptime"] = utils.TimeAgo(
             webServer.module_threads.get_module_start_time(module)
         )
+
+        bot["commit_hash"] = ""
+        bot["commit_date"] = ""
+        bot["update_available"] = False
+        bot["owned"] = False
+
+        for user_module in self.user_modules:
+            if user_module["name"] == module:
+                bot["commit_hash"] = user_module.get("commit_hash", "")
+                bot["commit_date"] = user_module.get("commit_date", "")
+                bot["owned"] = True
+
+        modules_dir = os.path.join(os.getcwd(), f"modules/{module}")
+        git = Git.Git(webServer.logger, webServer.config)
+        if (
+            bot["owned"]
+            and bot["commit_hash"] != ""
+            and not git.GitHasCommit(bot["commit_hash"], modules_dir)
+        ):
+            self.logger.info(
+                f"<yellow>🔄 Update available, Module Name: <cyan>{module}</cyan></yellow>"
+            )
+            bot["update_available"] = True
+
         return bot
 
     def _bots_load_logo(self, module):

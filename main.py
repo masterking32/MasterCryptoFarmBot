@@ -111,6 +111,7 @@ async def start_bot():
 
     os.makedirs("temp", exist_ok=True)
     os.makedirs("telegram_accounts", exist_ok=True)
+    os.makedirs("wallet_connector", exist_ok=True)
 
     db = Database("database.db", log)
     db.migration()
@@ -193,7 +194,8 @@ async def start_bot():
             "<yellow>🟨 No Pyrogram/Telethon accounts found. You can add them or use module accounts ...</yellow>"
         )
 
-    web_server = WebServer(log, config.config, modulesThread)
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    web_server = WebServer(log, config.config, modulesThread, current_dir)
     threading.Thread(target=asyncio.run, args=(web_server.start(),)).start()
 
     await asyncio.sleep(1)
