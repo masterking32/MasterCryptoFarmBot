@@ -9,3 +9,4 @@ telegram_accounts
 .vscode
 *.log
 proxy.txt
+wallet_connector

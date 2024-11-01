@@ -40,6 +40,10 @@ Module for the Hamster Combat bot. Automatically buys the best cards, completes 
 
 Module for the Blum bot. Automatically registers new accounts, claims daily rewards, starts, finishes, and completes all tasks (including promotions, YouTube, partners, and more), plays games, joins channels, and launches partner bots for tasks, and much more!
 
+### 🤖 [PAWS/Claimer Bot](https://github.com/masterking32/MCF_PAWS)
+
+Module for the PAWS bot. Automatically registers new accounts, claims rewards, and much more!
+
 ### 🤖 [Hrum Farm/Claimer Bot](https://github.com/masterking32/MCF_Hrum)
 
 Module for the Hrum bot. Automatically claims cookies from the farm, collects daily rewards, starts and completes tasks (Join Channel/Start Bot), auto-finishes the Ribble task, auto-finishes the 🥠 rename task, and more!
