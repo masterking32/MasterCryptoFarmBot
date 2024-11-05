@@ -332,7 +332,6 @@ class tgTelethon:
                         app=app,
                         platform="android",
                         write_allowed=True,
-                        compact=True,
                         start_param=(
                             str(self.ReferralToken) if self.ReferralToken else "0"
                         ),
