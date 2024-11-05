@@ -112,6 +112,7 @@ async def start_bot():
     os.makedirs("temp", exist_ok=True)
     os.makedirs("telegram_accounts", exist_ok=True)
     os.makedirs("wallet_connector", exist_ok=True)
+    os.makedirs("wallet_connector/modules", exist_ok=True)
 
     db = Database("database.db", log)
     db.migration()
