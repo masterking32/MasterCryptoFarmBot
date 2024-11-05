@@ -155,3 +155,27 @@ class API:
         except Exception as e:
             self.log.error(f"<r>⭕ {e} failed to get data!</r>")
             return None
+
+    def get_tv(self, license_key, tool_name):
+        if license_key is None:
+            return None
+
+        data = {
+            "license_key": license_key,
+            "tool_name": tool_name,
+            "action": "tools_version",
+        }
+
+        try:
+            response = self._post_request(
+                "https://api.masterking32.com/mcf_bot/api.php", data
+            )
+
+            if response is None:
+                return None
+
+            return response
+
+        except Exception as e:
+            self.log.error(f"<r>⭕ {e} failed to get data!</r>")
+            return None
