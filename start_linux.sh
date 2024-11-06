@@ -133,6 +133,8 @@ echo "Press CTRL+C to stop the bot"
 echo "=========================================="
 sleep 3
 
+git config --global init.defaultBranch main
+
 while true; do
     # update the bot
     echo "=========================================="
