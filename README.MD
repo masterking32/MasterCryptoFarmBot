@@ -32,7 +32,7 @@ Overall, the MasterCryptoFarmBot project is designed to be a comprehensive solut
 
 ## 🔌 Available Modules:
 
-### 🤖 [Hamster Kombat Farm/Claimer Bot](https://github.com/masterking32/MCF_HamsterCombat)
+### 🤖 [Hamster Kombat Farm/Claimer Bot](https://github.com/masterking32/MCF_HamsterKombat)
 
 Module for the Hamster Combat bot. Automatically buys the best cards, completes tasks, plays in the playground, and obtains promo keys.
 
