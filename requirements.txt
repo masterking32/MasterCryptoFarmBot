@@ -4,8 +4,6 @@ requests[socks]
 pyrogram
 aiohttp
 loguru
-websocket-client
-websockets
 psutil
 unidecode
 faker
