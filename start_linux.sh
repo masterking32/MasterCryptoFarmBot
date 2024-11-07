@@ -133,7 +133,9 @@ echo "Press CTRL+C to stop the bot"
 echo "=========================================="
 sleep 3
 
-git config --global init.defaultBranch main
+if ! git config --get-regexp init.defaultBranch | grep -q main; then
+    git config --global init.defaultBranch main
+fi
 
 while true; do
     # update the bot
