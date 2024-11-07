@@ -9,8 +9,11 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-:: Set default branch to main
-git config --global init.defaultBranch main
+:: Set default branch to main if needed
+git config --get-regexp init.defaultBranch | findstr /i "main" > nul
+if %errorlevel% neq 0 (
+    git config --global init.defaultBranch main
+)
 
 :: Check if Python and pip are installed
 where python >nul 2>nul
