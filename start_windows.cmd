@@ -10,7 +10,7 @@ if %errorlevel% neq 0 (
 )
 
 :: Set default branch to main if needed
-git config --get-regexp init.defaultBranch | findstr /i "main" > nul
+git config --get-regexp init.defaultBranch | findstr /i "main" >nul 2>nul
 if %errorlevel% neq 0 (
     git config --global init.defaultBranch main
 )
