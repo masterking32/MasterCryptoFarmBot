@@ -9,6 +9,12 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
+:: Set default branch to main if needed
+git config --get-regexp init.defaultBranch | findstr /i "main" >nul 2>nul
+if %errorlevel% neq 0 (
+    git config --global init.defaultBranch main
+)
+
 :: Check if Python and pip are installed
 where python >nul 2>nul
 if %errorlevel% neq 0 (
@@ -35,7 +41,7 @@ if %errorlevel% neq 0 (
 echo ==========================================
 echo Press CTRL+C to stop the bot
 echo ==========================================
-timeout /t 3
+timeout /t 3 /nobreak
 
 :loop
 :: Update the bot
@@ -45,19 +51,19 @@ echo ==========================================
 git pull origin main
 if %errorlevel% neq 0 (
     echo Failed to update the bot. Retrying in 5 seconds...
-    timeout /t 5
+    timeout /t 5 /nobreak
     goto loop
 )
 echo Project updated successfully
-timeout /t 2
+timeout /t 2 /nobreak
 
 echo ==========================================
 echo Updating dependencies...
 echo ==========================================
-%python_alias% -m pip install -r requirements.txt >nul 2>nul
+%python_alias% -m pip install -U -r requirements.txt >nul 2>nul
 if %errorlevel% neq 0 (
     echo Failed to update dependencies. Retrying in 5 seconds...
-    timeout /t 5
+    timeout /t 5 /nobreak
     goto loop
 )
 echo Dependencies updated successfully
@@ -72,7 +78,7 @@ if %errorlevel% neq 0 (
 ) else (
     echo Bot stopped. Restarting in 5 seconds...
 )
-timeout /t 5
+timeout /t 5 /nobreak
 goto loop
 
 :ctrlc
