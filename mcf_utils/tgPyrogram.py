@@ -349,14 +349,14 @@ class tgPyrogram:
 
             if not web_view and "url" not in web_view:
                 self.log.info(
-                    f"<yellow>└─ ❌ {self.accountName} session failed to get web view data!</yellow>"
+                    f"<yellow>└─ ❌ {self.accountName} [PYROGRAM] session failed to get web view data!</yellow>"
                 )
                 return None
 
             return web_view.url
         except Exception as e:
             self.log.info(
-                f"<yellow>└─ ❌ {self.accountName} session failed to get web view data!</yellow>"
+                f"<yellow>└─ ❌ {self.accountName} [PYROGRAM] session failed to get web view data!</yellow>"
             )
             self.log.error(f"<red>❌ {e}</red>")
             return None

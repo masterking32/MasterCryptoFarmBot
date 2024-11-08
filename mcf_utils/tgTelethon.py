@@ -289,7 +289,7 @@ class tgTelethon:
             await self._mute(tgClient, self.BotID)
         except Exception as e:
             self.log.error(
-                f"<red>❌ failed to send start bot for {self.accountName}</red>"
+                f"<red>❌ [TELETHON]: failed to send start bot for {self.accountName}</red>"
             )
         return True
 
@@ -353,13 +353,13 @@ class tgTelethon:
 
             if not result:
                 self.log.info(
-                    f"<yellow>└─ ❌ {self.accountName} session failed to get web view data!</yellow>"
+                    f"<yellow>└─ ❌ {self.accountName} [TELETHON] session failed to get web view data!</yellow>"
                 )
                 return None
 
             if not result.url:
                 self.log.info(
-                    f"<yellow>└─ ❌ {self.accountName} session failed to get web view data!</yellow>"
+                    f"<yellow>└─ ❌ {self.accountName} [TELETHON] session failed to get web view data!</yellow>"
                 )
                 return None
 
@@ -367,7 +367,7 @@ class tgTelethon:
 
         except Exception as e:
             self.log.info(
-                f"<yellow>└─ ❌ {self.accountName} session failed to get web view data!</yellow>"
+                f"<yellow>└─ ❌ {self.accountName} [TELETHON] session failed to get web view data!</yellow>"
             )
             self.log.error(f"<red>❌ {e}</red>")
             return None
