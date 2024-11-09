@@ -150,8 +150,8 @@ async def get_sesstion_name() -> str:
 async def get_lib_choice() -> str:
     print(f"{lc.g}----------------------------------------------------{lc.rs}")
     print(f"{lc.y}📚 Please select a library:{lc.rs}")
-    print(f"{lc.g}1. Telethon (Recommended){lc.rs}")
-    print(f"{lc.g}2. Pyrogram{lc.rs}")
+    print(f"{lc.g}1. Pyrogram{lc.rs}")
+    print(f"{lc.g}2. Telethon{lc.rs}")
     print(f"{lc.g}3. Exit{lc.rs}")
 
     choice = input(f"\n{lc.y}🔢 Enter your choice: {lc.rs}")
@@ -293,9 +293,9 @@ async def getPhoneNumber(session_name, lib_choice):
         print(f"\n{lc.r}❌ Phone number must contain only digits!{lc.rs}")
         return await getPhoneNumber(session_name, lib_choice)
 
-    if lib_choice == "1":
+    if lib_choice == "2":
         return await register_telethon(session_name, phone_number)
-    elif lib_choice == "2":
+    elif lib_choice == "1":
         return await register_pyrogram(session_name, phone_number)
 
     print(f"\n{lc.r}❌ Invalid library choice!{lc.rs}")
