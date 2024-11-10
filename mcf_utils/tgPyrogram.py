@@ -29,6 +29,7 @@ from mcf_utils.utils import (
 )
 from contextlib import asynccontextmanager
 
+import config
 
 @asynccontextmanager
 async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=3):
@@ -52,6 +53,8 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=3)
             yield None
             return
 
+        wait_second = getConfig(config.config, "max_flood_wait", 600)
+
         tgClient = Client(
             name=accountName,
             api_id=bot_globals["telegram_api_id"],
@@ -60,6 +63,7 @@ async def connect_pyrogram(log, bot_globals, accountName, proxy=None, retries=3)
             plugins=dict(root="bot/plugins"),
             device_model="Desktop (MCF-P)",
             proxy=parseProxy(proxy) if proxy else None,
+            sleep_threshold=wait_second
         )
 
         isConnected = False
