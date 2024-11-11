@@ -1,0 +1,26 @@
+# It’s recommended to create a .env file without a name in the same directory as docker-compose.yml to set environment variables like MCF_PATH and TZ otherwise defaults will be used e.g.:
+# MCF_PATH=C:\path\to\your\MCF
+# TZ=Your/Timezone
+# For Synology NAS you need to create the directory path manually in your system because docker cannot create folders in Synology.
+
+services:
+  mcf:
+    build: .
+    image: mcf:latest
+    container_name: mcf
+    restart: unless-stopped
+    volumes:
+      - ${MCF_PATH:-~/.MCF/container}:/MasterCryptoFarmBot
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TZ=${TZ:-Europe/London}
+    ports:
+      - "3232:3232"
+    init: true
+    network_mode: bridge
+    user: "mcfuser:mcfuser"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os, sys; sys.exit(0 if os.path.isfile('/MasterCryptoFarmBot/main.py') else 1)"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
