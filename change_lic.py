@@ -9,6 +9,14 @@ import mcf_utils.logColors as lc
 
 def change_license(license: str) -> None:
     try:
+        if not license:
+            print(f"{lc.r}License cannot be empty!{lc.rs}")
+            return
+
+        if "_" not in license:
+            print(f"{lc.r}Invalid license!{lc.rs}")
+            return
+
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
         cursor.execute(
