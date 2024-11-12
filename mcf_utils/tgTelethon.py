@@ -26,6 +26,7 @@ from mcf_utils.utils import (
 )
 from contextlib import asynccontextmanager
 
+import config
 
 @asynccontextmanager
 async def connect_telethon(log, bot_globals, accountName, proxy=None):
@@ -46,6 +47,8 @@ async def connect_telethon(log, bot_globals, accountName, proxy=None):
             bot_globals["mcf_dir"], "telegram_accounts", f"{accountName}.session"
         )
 
+        wait_second = getConfig(config.config, "max_flood_wait", 600)
+
         tgClient = TelegramClient(
             session=file_path,
             api_id=bot_globals["telegram_api_id"],
@@ -53,6 +56,7 @@ async def connect_telethon(log, bot_globals, accountName, proxy=None):
             proxy=telethon_proxy(proxy) if proxy else None,
             auto_reconnect=False,
             device_model="Desktop (MCF-T)",
+            flood_sleep_threshold=wait_second,
         )
 
         isConnected = await tgClient.connect()
