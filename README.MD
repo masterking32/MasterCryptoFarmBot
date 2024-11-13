@@ -48,6 +48,10 @@ Module for the PAWS bot. Automatically registers new accounts, claims rewards, a
 
 Module for the Hrum bot. Automatically claims cookies from the farm, collects daily rewards, starts and completes tasks (Join Channel/Start Bot), auto-finishes the Ribble task, auto-finishes the 🥠 rename task, and more!
 
+### 🤖 [Bums Farm/Claimer Bot](https://t.me/bums/app?startapp=ref_Y1r7YLBo)
+
+Module for the Bums bot. Automatically registers new accounts with your referral token, performs taps instantly or in a human-like manner, completes tasks (Video, Join Channel/Bot, Add "📦 Bums" to your account name), claims rewards for friends, gets and uses expeditions, gets and opens daily free boxes, buys PPH (filtered by level profit), buys TAP upgrades, and more.
+
 ### 🤖 [NotPixel Farm/Claimer Bot](https://t.me/notpixel/app?startapp=f95736407)
 
 Module for the NotPixel bot. Automatically registers new accounts with your referral token, claims rewards, starts, finishes, and completes tasks, paints automatically **(BOOSTED paints +4px)**, and joins a squad if you don't have one already. Automatically joins templates and paints them.
