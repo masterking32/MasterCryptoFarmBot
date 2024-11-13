@@ -45,7 +45,7 @@ RUN useradd -m mcfuser && \
 USER mcfuser
 
 RUN pip3 install --upgrade pip && \
-    pip cache purge
+    pip3 cache purge
 
 WORKDIR /MasterCryptoFarmBot
 
