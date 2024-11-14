@@ -1,15 +1,12 @@
-FROM python:3.12.0-slim
+FROM python:3.13.0-slim
 
-LABEL version="1.0"
+LABEL version="1.1"
 LABEL description="MasterCryptoFarmBot Docker Image"
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-    
-RUN pip3 install --upgrade pip && \
-    rm -rf /root/.cache/pip/*
 
 RUN echo '#!/bin/bash\n\
 set -e\n\
@@ -46,6 +43,10 @@ RUN useradd -m mcfuser && \
     chown -R mcfuser:mcfuser /MasterCryptoFarmBot
 
 USER mcfuser
+
+RUN pip3 install --upgrade pip && \
+    pip3 cache purge
+
 WORKDIR /MasterCryptoFarmBot
 
 ENTRYPOINT ["/entrypoint.sh"]
