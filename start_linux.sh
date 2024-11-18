@@ -72,8 +72,11 @@ if ! command -v git &> /dev/null; then
     echo "Do you want to install Git? (y/n)"
     read -r INSTALL_GIT
     if [ "$INSTALL_GIT" == "y" ]; then
+        echo "Running command: $PACKAGE_MANAGER_UPDATE"
         $PACKAGE_MANAGER_UPDATE
+        echo "Running command: $PACKAGE_MANAGER_UPGRADE"
         $PACKAGE_MANAGER_UPGRADE
+        echo "Running command: $PACKAGE_MANAGER_INSTALL git"
         $PACKAGE_MANAGER_INSTALL git
     else
         exit 1
@@ -95,8 +98,11 @@ else
     echo "Do you want to install Python? (y/n)"
     read -r INSTALL_PYTHON
     if [ "$INSTALL_PYTHON" == "y" ]; then
+        echo "Running command: $PACKAGE_MANAGER_UPDATE"
         $PACKAGE_MANAGER_UPDATE
+        echo "Running command: $PACKAGE_MANAGER_UPGRADE"
         $PACKAGE_MANAGER_UPGRADE
+        echo "Running command: $PACKAGE_MANAGER_INSTALL python3"
         $PACKAGE_MANAGER_INSTALL python3
         PYTHON=python3
     else
@@ -116,11 +122,17 @@ else
     echo "Do you want to install Pip? (y/n)"
     read -r INSTALL_PIP
     if [ "$INSTALL_PIP" == "y" ]; then
+        echo "Running command: $PACKAGE_MANAGER_UPDATE"
         $PACKAGE_MANAGER_UPDATE
+        echo "Running command: $PACKAGE_MANAGER_UPGRADE"
         $PACKAGE_MANAGER_UPGRADE
-        $PACKAGE_MANAGER_INSTALL python3-pip
+
         if [ "$OS" == "arch" ]; then
+            echo "Running command: $PACKAGE_MANAGER_INSTALL python-pip"
             $PACKAGE_MANAGER_INSTALL python-pip
+        else
+            echo "Running command: $PACKAGE_MANAGER_INSTALL python3-pip"
+            $PACKAGE_MANAGER_INSTALL python3-pip
         fi
         PIP=pip3
     else
@@ -147,9 +159,12 @@ while true; do
     echo "Updating dependencies..."
     echo "=========================================="
 
+    echo "Running command: $PIP install -U -r requirements.txt"
+
     $PIP install -U -r requirements.txt > /dev/null 2>&1
 
     if [ $? -ne 0 ]; then
+        echo "Running command: $PIP install -U --break-system-packages -r requirements.txt"
         $PIP install -U --break-system-packages -r requirements.txt  > /dev/null 2>&1
         if [ $? -ne 0 ]; then
             echo "Failed to update dependencies. Retrying in 5 seconds..."
@@ -163,6 +178,7 @@ while true; do
     echo "=========================================="
     echo "Starting bot..."
     echo "=========================================="
+    echo "Running command: $PYTHON main.py"
     $PYTHON main.py
     if [ $? -ne 0 ]; then
         echo "Bot encountered an error. Restarting in 5 seconds..."
