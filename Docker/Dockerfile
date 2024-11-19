@@ -1,6 +1,6 @@
-FROM python:3.13.0-slim
+FROM python:3.12.0-slim
 
-LABEL version="1.1"
+LABEL version="1.2"
 LABEL description="MasterCryptoFarmBot Docker Image"
 
 RUN apt-get update && \
