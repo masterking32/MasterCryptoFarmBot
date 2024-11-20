@@ -355,6 +355,7 @@ class admin:
         apiObj = api.API(webServer.logger)
         db = Database("database.db", webServer.logger)
         license = db.getSettings("license", "Free License")
+        tools = {}
 
         if license == "Free License":
             error = "Please change your license to add bot."
@@ -370,6 +371,8 @@ class admin:
                     if os.path.isdir(f"modules/{module}")
                     and os.path.exists(f"modules/{module}/bot.py")
                 ]
+
+                tools = server_modules["tools"]
 
                 for module in server_modules.get("modules", []):
                     module["commit_date"] = module.get("commit_date", "Unknown")
@@ -413,6 +416,7 @@ class admin:
             error=error,
             success=success,
             modules=server_modules.get("modules", []) if not error else [],
+            tools=tools,
             theme=self.theme,
         )
 

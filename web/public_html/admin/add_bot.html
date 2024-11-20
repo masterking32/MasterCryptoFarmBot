@@ -29,8 +29,69 @@
           <li><span class="fa-solid fa-plus mr-2"></span> Install Module</li>
         </ul>
       </div>
-      <div class="divider divider-neutral">All available modules</div>
+      <div class="divider divider-neutral text-primary">
+        <i class="fa-solid fa-crown mr-1 text-orange-400"></i>
+        Premium & Extra Tools
+        <i class="fa-solid fa-crown ml-1 text-orange-400"></i>
+      </div>
+      <hr class="h-px my-4 border-0 bg-gray-700" />
+      {% for tool in tools %}
+      <div class="flex items-center justify-between mb-5">
+        <div class="text-primary">{{ tool.title }}</div>
+        <div class="flex items-center">
+          <a
+            class="btn btn-info btn-sm"
+            name="info mr-2"
+            target="_blank"
+            href="{{ tool.link }}"
+          >
+            <i class="fa-solid fa-info-circle"></i>
+            Info
+          </a>
+          <button
+            type="button"
+            class="btn btn-success btn-sm ml-2"
+            onClick="install_tool.showModal()"
+          >
+            <i class="fa-solid fa-crown"></i>
+            Install
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+      <dialog id="install_tool" class="modal">
+        <div class="modal-box max-w-md">
+          <h1 class="">Install Tool</h1>
+          <hr class="h-px my-4 border-0 bg-gray-700" />
+          <div class="max-w-md mx-auto">
+            <div class="text-content space-y-4">
+              <p class="text-md">
+                To install this tool, please visit our
+                <a
+                  href="https://t.me/MasterCryptoFarmBot_bot"
+                  target="_blank"
+                  class="text-accent"
+                  >Telegram Bot</a
+                >
+                and type <code class="text-accent">/tools</code> to follow the
+                instructions.
+              </p>
+            </div>
+          </div>
+          <div class="text-center mt-5">
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm"
+              onclick="install_tool.close()"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </dialog>
 
+      <hr class="h-px my-4 border-0 bg-gray-700" />
+      <div class="divider divider-neutral">All available modules</div>
       {% if error %}
       <div class="alert alert-error">{{ error }}</div>
       {% if "license" in error or "credit" in error %}
