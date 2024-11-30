@@ -1,6 +1,6 @@
 FROM debian:stable-slim
 
-LABEL version="1.3"
+LABEL version="1.3.1"
 LABEL description="MasterCryptoFarmBot Docker Image"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -18,8 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libbz2-dev \
     git \
     ca-certificates \
-    sqlite3 \
-    libsqlite3-dev
+    sqlite3
 
 RUN wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz \
     && tar -xf Python-3.12.0.tgz \
