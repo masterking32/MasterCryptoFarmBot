@@ -438,8 +438,25 @@ class admin:
 
         return {"status": "success", "logs": logs}
 
-    def bot_disabled_sessions(self, requests, webServer):
+    def module_accounts(self, requests, webServer):
+        if "admin" not in session:
+            return redirect("/auth/login.py")
 
+        accounts = []
+        if requests.method != "POST" or "bot_id" not in requests.args:
+            return redirect("/admin/bots.py")
+
+        bot = requests.args.get("bot_id")
+
+        bots = self._bots_load_all(webServer)
+        for b in bots:
+            if b["id"] == bot:
+                accounts = b["accounts"]
+                break
+
+        return {"status": "success", "accounts": accounts}
+
+    def bot_disabled_sessions(self, requests, webServer):
         if "admin" not in session:
             return redirect("/auth/login.py")
 
