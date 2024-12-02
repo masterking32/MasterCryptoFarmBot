@@ -58,7 +58,7 @@
         <div class="flex items-center">
           <button
             class="btn btn-sm btn-info mr-2"
-            onclick="bot_logs{{ bot.id }}.showModal()"
+            onclick="load_logs('{{ bot.id }}')"
           >
             <i class="fa-solid fa-clipboard-list"></i>
           </button>
@@ -78,7 +78,7 @@
                 style="max-height: 300px"
                 id="bot_log_div_{{bot.id}}"
               >
-                <pre id="bot_log_pre_{{bot.id}}">{{ bot.logs | safe }}</pre>
+                <pre id="bot_log_pre_{{bot.id}}"></pre>
               </div>
 
               <hr class="h-px my-4 border-0 bg-gray-700" />
@@ -800,6 +800,13 @@
               data.logs;
             scrollToEnd(document.getElementById(`bot_log_div_${bot_id}`));
           });
+      }
+
+      function load_logs(bot_id) {
+        document.getElementById(`bot_log_pre_${bot_id}`).innerHTML =
+          "Loading...";
+        document.getElementById(`bot_logs${bot_id}`).showModal();
+        refresh_logs(bot_id);
       }
     </script>
   </body>
