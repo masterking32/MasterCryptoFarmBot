@@ -8,3 +8,4 @@ psutil
 unidecode
 faker
 telethon
+urllib3
