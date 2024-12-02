@@ -4,5 +4,5 @@
 # Telegram: https://t.me/MasterCryptoFarmBot
 
 
-APP_VERSION = "1.5.3"
+APP_VERSION = "1.5.4"
 GITHUB_REPOSITORY = "masterking32/MasterCryptoFarmBot"
