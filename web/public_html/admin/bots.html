@@ -497,7 +497,7 @@
               <div class="text-center">
                 <button
                   class="btn btn-warning"
-                  onclick="bot_disabled_accounts{{ bot.id }}.showModal()"
+                  onclick="load_disabled_account('{{ bot.id }}')"
                 >
                   <i class="fa-solid fa-users-slash"></i> Module Disabled
                   Pyrogram/Telethon Sessions
@@ -534,25 +534,7 @@
                         id="disabled_pyrogram_sessions_{{ bot.id }}"
                         class="select select-bordered select-info"
                         multiple
-                      >
-                        {% for account in pyrogram_accounts %}
-                        <option
-                          value="{{ account.session_name }}"
-                          {%
-                          if
-                          account.session_name
-                          in
-                          bot.disabled_sessions
-                          %}
-                          selected
-                          {%
-                          endif
-                          %}
-                        >
-                          {{ account.session_name }}
-                        </option>
-                        {% endfor %}
-                      </select>
+                      ></select>
                     </div>
                     <div class="flex flex-col mt-5">
                       <button type="submit" class="btn btn-primary">
@@ -807,6 +789,49 @@
           "Loading...";
         document.getElementById(`bot_logs${bot_id}`).showModal();
         refresh_logs(bot_id);
+      }
+
+      function load_disabled_account(bot_id) {
+        document.getElementById(`bot_disabled_accounts${bot_id}`).showModal();
+        document.getElementById(
+          `disabled_pyrogram_sessions_${bot_id}`
+        ).innerHTML = "";
+
+        fetch(`../admin/bot_disabled_sessions.py?bot_id=${bot_id}`, {
+          method: "POST",
+          body: "bot_id=" + bot_id,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const select = document.getElementById(
+              `disabled_pyrogram_sessions_${bot_id}`
+            );
+
+            select.loadOptions();
+
+            if (data.accounts.length === 0) {
+              const option = document.createElement("option");
+              option.value = "";
+              option.text = "No Disabled Pyrogram/Telethon Sessions";
+              option.disabled = true;
+              option.selected = true;
+              select.add(option);
+              select.loadOptions();
+              return;
+            }
+
+            data.accounts.forEach((session) => {
+              const option = document.createElement("option");
+              option.value = session.name;
+              option.text = session.name;
+              if (session.disabled) {
+                option.selected = true;
+              }
+              select.add(option);
+            });
+
+            select.loadOptions();
+          });
       }
     </script>
   </body>

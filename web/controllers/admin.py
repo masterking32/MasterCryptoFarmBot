@@ -438,6 +438,53 @@ class admin:
 
         return {"status": "success", "logs": logs}
 
+    def bot_disabled_sessions(self, requests, webServer):
+
+        if "admin" not in session:
+            return redirect("/auth/login.py")
+
+        disabled_sessions = []
+        if requests.method != "POST" or "bot_id" not in requests.args:
+            return redirect("/admin/bots.py")
+
+        bot = requests.args.get("bot_id")
+
+        pyrogram_accounts = []
+        accounts_file = "telegram_accounts/accounts.json"
+        try:
+            if os.path.exists(accounts_file):
+                with open(accounts_file, "r", encoding="utf-8") as f:
+                    pyrogram_accounts = json.load(f)
+        except Exception as e:
+            pass
+
+        bots = self._bots_load_all(webServer)
+        for b in bots:
+            if b["id"] == bot:
+                disabled_sessions = b["disabled_sessions"]
+                break
+
+        accounts = []
+        for account in pyrogram_accounts:
+            if "disabled" in account and account["disabled"]:
+                continue
+
+            acc = {
+                "id": account["id"],
+                "name": account["session_name"],
+                "disabled": False,
+            }
+
+            if account["session_name"] in disabled_sessions:
+                acc["disabled"] = True
+
+            accounts.append(acc)
+        bot_single = self._bots_load_single(
+            bot, Database("database.db", webServer.logger), webServer
+        )
+
+        return {"status": "success", "accounts": accounts}
+
     def bots(self, requests, webServer):
         if "admin" not in session:
             return redirect("/auth/login.py")
