@@ -39,7 +39,11 @@
         </a>
       </div>
       <div class="flex w-full flex-col">
-        <div class="divider divider-neutral">Accounts</div>
+        <div class="divider divider-neutral">
+          Accounts (<span class="text-info"
+            ><i class="fa-solid fa-users mr-2"></i> {{ accounts|length }}</span
+          >)
+        </div>
       </div>
 
       {% if error %}
