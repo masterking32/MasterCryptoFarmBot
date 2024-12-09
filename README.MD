@@ -1,5 +1,8 @@
 # 🤖 MasterCryptoFarmBot
 
+[![GitHub stars](https://img.shields.io/github/stars/masterking32/MasterCryptoFarmBot.svg)](https://github.com/masterking32/MasterCryptoFarmBot/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/masterking32/MasterCryptoFarmBot.svg)](https://github.com/masterking32/MasterCryptoFarmBot/issues)
+
 **MasterCryptoFarmBot** is a cutting-edge Telegram Air-Drop farming bot that serves as a central platform for managing multiple Telegram bots. This project is designed to be the ultimate solution for Air-Drop farming, allowing you to install various Bot Modules to support and automate interactions with a wide range of Telegram bots—all in one comprehensive project.
 
 ⚠️ We do our best to avoid detection of bots in your crypto farms, but using bots is forbidden in all crypto air-drops. We cannot guarantee that you will not be detected as a bot. Use at your own risk. We are not responsible for any consequences of using this software.
