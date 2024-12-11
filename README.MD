@@ -51,6 +51,10 @@ Module for the PAWS bot. Automatically registers new accounts, claims rewards, a
 
 Module for the Hrum bot. Automatically claims cookies from the farm, collects daily rewards, starts and completes tasks (Join Channel/Start Bot), auto-finishes the Ribble task, auto-finishes the 🥠 rename task, and more!
 
+### 🤖 [Tiny Verse Farm/Claimer Bot](https://t.me/TVerse?startapp=galaxy-000564f1570000e84f3600017c014c)
+
+Module for the TinyVerse bot. Automatically registers new accounts with your referral token, Auto Farming, Collecting dusts, Gifting stars, Crafting and more.
+
 ### 🤖 [Bums Farm/Claimer Bot](https://t.me/bums/app?startapp=ref_Y1r7YLBo)
 
 Module for the Bums bot. Automatically registers new accounts with your referral token, performs taps instantly or in a human-like manner, completes tasks (Video, Join Channel/Bot, Add "📦 Bums" to your account name), claims rewards for friends, gets and uses expeditions, gets and opens daily free boxes, buys PPH (filtered by level profit), buys TAP upgrades, and more.
