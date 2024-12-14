@@ -3,9 +3,27 @@
 [![GitHub stars](https://img.shields.io/github/stars/masterking32/MasterCryptoFarmBot.svg)](https://github.com/masterking32/MasterCryptoFarmBot/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/masterking32/MasterCryptoFarmBot.svg)](https://github.com/masterking32/MasterCryptoFarmBot/issues)
 
-**MasterCryptoFarmBot** is a cutting-edge Telegram Air-Drop farming bot that serves as a central platform for managing multiple Telegram bots. This project is designed to be the ultimate solution for Air-Drop farming, allowing you to install various Bot Modules to support and automate interactions with a wide range of Telegram bots—all in one comprehensive project.
+![Python](https://ziadoua.github.io/m3-Markdown-Badges/badges/Python/python3.svg) 
+![Flask](https://ziadoua.github.io/m3-Markdown-Badges/badges/Flask/flask1.svg)
+![windows1](https://ziadoua.github.io/m3-Markdown-Badges/badges/Windows/windows1.svg)
+![linux2](https://ziadoua.github.io/m3-Markdown-Badges/badges/Linux/linux2.svg)
+![macos1](https://ziadoua.github.io/m3-Markdown-Badges/badges/macOS/macos1.svg)
+![Flask](https://ziadoua.github.io/m3-Markdown-Badges/badges/Android/android1.svg)
+![raspberrypi1](https://ziadoua.github.io/m3-Markdown-Badges/badges/RaspberryPI/raspberrypi1.svg)
+![css](https://ziadoua.github.io/m3-Markdown-Badges/badges/CSS/css3.svg)
+![FontAwesome](https://ziadoua.github.io/m3-Markdown-Badges/badges/FontAwesome/fontawesome2.svg)
+![git2](https://ziadoua.github.io/m3-Markdown-Badges/badges/Git/git2.svg)
+![html1](https://ziadoua.github.io/m3-Markdown-Badges/badges/HTML/html1.svg)
+![Javascript](https://ziadoua.github.io/m3-Markdown-Badges/badges/Javascript/javascript2.svg)
+![SQLite](https://ziadoua.github.io/m3-Markdown-Badges/badges/SQLite/sqlite1.svg)
+![TailwindCSS](https://ziadoua.github.io/m3-Markdown-Badges/badges/TailwindCSS/tailwindcss2.svg)
+![Telegram](https://ziadoua.github.io/m3-Markdown-Badges/badges/Telegram/telegram2.svg)
 
-⚠️ We do our best to avoid detection of bots in your crypto farms, but using bots is forbidden in all crypto air-drops. We cannot guarantee that you will not be detected as a bot. Use at your own risk. We are not responsible for any consequences of using this software.
+
+
+**MasterCryptoFarmBot** is a cutting-edge Telegram Air-Drop farming bot that serves as a central platform for managing multiple Telegram bots. This project is designed to be the ultimate solution for air-drop farming, allowing you to install various bot modules to support and automate interactions with a wide range of Telegram bots, which are all in one comprehensive project.
+
+⚠️ We do our best to avoid the detection of bots in your crypto farms, but using bots is forbidden in all crypto air-drops. We cannot guarantee that you will not be detected as a bot. Use at your own risk. We are not responsible for any consequences of using this software.
 
 ---
 
@@ -22,7 +40,7 @@
 ### 🌐 Key Features:
 
 - **Modular Design**: Easily add, install, and manage Bot Modules to support various Telegram bots.
-- **Unified Farming**: Efficiently farm Air-Drops from multiple Telegram bots with ease.
+- **Unified Farming**: Efficiently farm air drops from multiple Telegram bots with ease.
 - **Web-Based GUI**: A user-friendly web interface that allows you to manage all your bots in one place, making the process seamless and intuitive.
 - **Auto Updates**: The project automatically updates itself and its modules, ensuring you always have the latest features and improvements without manual intervention.
 - **Multi-Threading**: Run multiple bots simultaneously, enabling you to farm multiple Air-Drops at the same time.
