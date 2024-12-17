@@ -63,6 +63,10 @@ Module for the Hamster Combat bot. Automatically buys the best cards, completes 
 
 Module for the Blum bot. Automatically registers new accounts, claims daily rewards, starts, finishes, and completes all tasks (including promotions, YouTube, partners, and more), plays games, joins channels, launches partner bots for tasks, and much more!
 
+### 🤖 [NotPixel Farm/Claimer Bot](https://github.com/masterking32/MCF_NotPixel)
+
+Module for the NotPixel bot. Automatically registers new accounts with your referral token, claims rewards, starts, finishes, and completes tasks, paints automatically **(BOOSTED paints +4px)**, and joins a squad if you don't have one already. Automatically joins templates and paints them.
+
 ### 🤖 [PAWS/Claimer Bot](https://github.com/masterking32/MCF_PAWS)
 
 Module for the PAWS bot. Automatically registers new accounts, claims rewards, and much more!
@@ -78,10 +82,6 @@ Module for the TinyVerse bot. Automatically registers new accounts with your ref
 ### 🤖 [Bums Farm/Claimer Bot](https://t.me/bums/app?startapp=ref_Y1r7YLBo)
 
 Module for the Bums bot. Automatically registers new accounts with your referral token, performs taps instantly or in a human-like manner, completes tasks (Video, Join Channel/Bot, Add "📦 Bums" to your account name), claims rewards for friends, gets and uses expeditions, gets and opens daily free boxes, buys PPH (filtered by level profit), buys TAP upgrades, and more.
-
-### 🤖 [NotPixel Farm/Claimer Bot](https://github.com/masterking32/MCF_NotPixel)
-
-Module for the NotPixel bot. Automatically registers new accounts with your referral token, claims rewards, starts, finishes, and completes tasks, paints automatically **(BOOSTED paints +4px)**, and joins a squad if you don't have one already. Automatically joins templates and paints them.
 
 ### 🤖 [Seed Farm/Claimer Bot](https://t.me/seed_coin_bot/app?startapp=95736407)
 
