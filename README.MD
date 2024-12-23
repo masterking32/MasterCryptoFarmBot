@@ -127,7 +127,7 @@ For a step-by-step guide on installing and running the MasterCryptoFarmBot proje
 💵 If you're a fan of our project and want to support us, consider donating crypto. Your support will help us improve and expand, providing even more value to our users. Thank you for your generosity! 💵
 
 TON:
-`UQDdtN_p3WwuGMVXtMasatomVNPJF-Ljscy0srozJZBl15eL`
+`masterking32.ton`
 
 EVM-compatible blockchains:
 `0x517f07305D6ED781A089322B6cD93d1461bF8652`
