@@ -79,6 +79,10 @@ Module for the Hrum bot. Automatically claims cookies from the farm, collects da
 
 Module for the TinyVerse bot. Automatically registers new accounts with your referral token, Auto Farming, Collecting dust, Gifting stars, Crafting, and more.
 
+### 🤖 [Zoo Farm/Claimer Bot](https://t.me/zoo_story_bot/game?startapp=ref95736407)
+
+Module for the Zoo bot. Automatically registers new accounts with your referral token, Automatically stops the bot X days before the mining phase stops, Auto Claim daily rewards, Auto Complete tasks (Rebus & Riddle), Auto claims limited time chests, Automatically joins channels & changes names for tasks, Automatically buy animals to increase ProfitPerHour, Automatically join alliance (possible to give alliance ID), Automatically donate food to alliance, Automatically buy boosts. and more.
+
 ### 🤖 [Bums Farm/Claimer Bot](https://t.me/bums/app?startapp=ref_Y1r7YLBo)
 
 Module for the Bums bot. Automatically registers new accounts with your referral token, performs taps instantly or in a human-like manner, completes tasks (Video, Join Channel/Bot, Add "📦 Bums" to your account name), claims rewards for friends, gets and uses expeditions, gets and opens daily free boxes, buys PPH (filtered by level profit), buys TAP upgrades, and more.
