@@ -63,6 +63,10 @@ Module for the Hamster Combat bot. Automatically buys the best cards, completes 
 
 Module for the Blum bot. Automatically registers new accounts, claims daily rewards, starts, finishes, and completes all tasks (including promotions, YouTube, partners, and more), plays games, joins channels, launches partner bots for tasks, and much more!
 
+### 🤖 [Zoo Farm/Claimer Bot](https://t.me/zoo_story_bot/game?startapp=ref95736407)
+
+Module for the Zoo bot. Automatically registers new accounts with your referral token, Automatically stops the bot X days before the mining phase stops, Auto Claim daily rewards, Auto Complete tasks (Rebus & Riddle), Auto claims limited time chests, Automatically joins channels & changes names for tasks, Automatically buy animals to increase ProfitPerHour, Automatically join alliance (possible to give alliance ID), Automatically donate food to alliance, Automatically buy boosts. and more.
+
 ### 🤖 [NotPixel Farm/Claimer Bot](https://github.com/masterking32/MCF_NotPixel)
 
 Module for the NotPixel bot. Automatically registers new accounts with your referral token, claims rewards, starts, finishes, and completes tasks, paints automatically **(BOOSTED paints +4px)**, and joins a squad if you don't have one already. Automatically joins templates and paints them.
@@ -78,10 +82,6 @@ Module for the Hrum bot. Automatically claims cookies from the farm, collects da
 ### 🤖 [Tiny Verse Farm/Claimer Bot](https://t.me/TVerse?startapp=galaxy-000564f1570000e84f3600017c014c)
 
 Module for the TinyVerse bot. Automatically registers new accounts with your referral token, Auto Farming, Collecting dust, Gifting stars, Crafting, and more.
-
-### 🤖 [Zoo Farm/Claimer Bot](https://t.me/zoo_story_bot/game?startapp=ref95736407)
-
-Module for the Zoo bot. Automatically registers new accounts with your referral token, Automatically stops the bot X days before the mining phase stops, Auto Claim daily rewards, Auto Complete tasks (Rebus & Riddle), Auto claims limited time chests, Automatically joins channels & changes names for tasks, Automatically buy animals to increase ProfitPerHour, Automatically join alliance (possible to give alliance ID), Automatically donate food to alliance, Automatically buy boosts. and more.
 
 ### 🤖 [Bums Farm/Claimer Bot](https://t.me/bums/app?startapp=ref_Y1r7YLBo)
 
