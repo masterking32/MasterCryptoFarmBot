@@ -734,7 +734,9 @@
             const chart_id =
               "bot_status_chart" + bot_id + Math.floor(Math.random() * 1000);
             canvasContainer.innerHTML =
-              "<canvas id='bot_status_chart'></canvas><div class='text-center mt-5'><button onclick='load_bot_issues_accounts(\"" +
+              "<canvas id='" +
+              chart_id +
+              "'></canvas><div class='text-center mt-5'><button onclick='load_bot_issues_accounts(\"" +
               bot_id +
               "\")' class='btn btn-info btn-sm mx-2 my-2'><i class='fa-solid fa-users'></i> Bot Issues Accounts</button><button onclick='load_telegram_issues_accounts(\"" +
               bot_id +
@@ -745,9 +747,7 @@
               "\"'></div><div id='bot_accounts_list_data_issues" +
               bot_id +
               "'></div>";
-            const ctx = document
-              .getElementById("bot_status_chart")
-              .getContext("2d");
+            const ctx = document.getElementById(chart_id).getContext("2d");
 
             recent_chart = new Chart(ctx, config);
           });
