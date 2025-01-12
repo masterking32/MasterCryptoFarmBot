@@ -89,6 +89,38 @@
                 >
                   <i class="fa-solid fa-redo"></i> Refresh Logs
                 </button>
+
+                <button
+                  class="btn btn-info ml-2"
+                  onclick="load_status('{{ bot.id }}')"
+                >
+                  <i class="fa-solid fa-info"></i> Bot Status
+                </button>
+                <dialog id="bot_status{{ bot.id }}" class="modal">
+                  <div class="modal-box">
+                    <h1 class="">Bot Status</h1>
+                    <hr class="h-px my-4 border-0 bg-gray-700" />
+                    <div class="text-center mb-4">
+                      <h2
+                        class="text-xl font-bold flex items-center justify-center"
+                      >
+                        <i class="fa-solid fa-robot mr-2"></i> Bot Name: {{
+                        bot.name }}
+                      </h2>
+                    </div>
+                    <div class="divider divider-neutral">Bot Status</div>
+                    <div
+                      class="text-center"
+                      id="bot_status_div{{ bot.id }}"
+                    ></div>
+                    <hr class="h-px my-4 border-0 bg-gray-700" />
+                    <div class="modal-action">
+                      <form method="dialog">
+                        <button class="btn btn-secondary">Close</button>
+                      </form>
+                    </div>
+                  </div>
+                </dialog>
               </p>
 
               <hr class="h-px my-4 border-0 bg-gray-700" />
@@ -609,6 +641,7 @@
       </div>
     </div>
     <script src="../js/multiselect-dropdown.js"></script>
+    <script src="../js/chart.umd.min.js"></script>
     <script>
       function scrollToEnd(element) {
         element.scrollTop = element.scrollHeight;
@@ -631,6 +664,200 @@
           "Loading...";
         document.getElementById(`bot_logs${bot_id}`).showModal();
         refresh_logs(bot_id);
+      }
+
+      let recent_chart = null;
+      function load_status(bot_id) {
+        if (recent_chart) {
+          recent_chart.destroy();
+          recent_chart = null;
+        }
+
+        document.getElementById(`bot_status${bot_id}`).showModal();
+        document.getElementById(`bot_status_div${bot_id}`).innerHTML =
+          "<div class='mx-auto text-center'><div class='mx-auto mb-5 w-16 h-16 border-t-4 border-primary rounded-full animate-spin'></div> Loading ...</div>";
+
+        fetch(`../admin/bot_status.py?bot_id=${bot_id}`, {
+          method: "POST",
+          body: "bot_id=" + bot_id,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (Object.keys(data).length === 0) {
+              document.getElementById(`bot_status_div${bot_id}`).innerHTML =
+                "<div class='mx-auto text-center'><i class='fa-solid fa-info-circle text-xl text-info mr-2'></i> No Data Available</div>";
+              return;
+            }
+            let chart_data = {
+              labels: [],
+              datasets: [
+                {
+                  label: "Count",
+                  data: [],
+                  backgroundColor: [],
+                },
+              ],
+            };
+
+            for (const key in data) {
+              if (Object.hasOwnProperty.call(data, key)) {
+                const element = data[key];
+                chart_data.labels.push(element.title);
+                chart_data.datasets[0].data.push(element.count);
+                chart_data.datasets[0].backgroundColor.push(
+                  "#" + Math.floor(Math.random() * 16777215).toString(16)
+                );
+              }
+            }
+
+            const config = {
+              type: "pie",
+              data: chart_data,
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: "top",
+                  },
+                  title: {
+                    display: true,
+                    text: "Bot Status",
+                  },
+                },
+              },
+            };
+
+            const canvasContainer = document.getElementById(
+              `bot_status_div${bot_id}`
+            );
+
+            const chart_id =
+              "bot_status_chart" + bot_id + Math.floor(Math.random() * 1000);
+            canvasContainer.innerHTML =
+              "<canvas id='bot_status_chart'></canvas><div class='text-center mt-5'><button onclick='load_bot_issues_accounts(\"" +
+              bot_id +
+              "\")' class='btn btn-info btn-sm mx-2 my-2'><i class='fa-solid fa-users'></i> Bot Issues Accounts</button><button onclick='load_telegram_issues_accounts(\"" +
+              bot_id +
+              "\")' class='btn btn-warning btn-sm mx-2 my-2'><i class='fa-brands fa-telegram'></i> Telegram Issues Accounts</button><button onclick='load_successful_accounts(\"" +
+              bot_id +
+              "\")' class='btn btn-success btn-sm mx-2 my-2'><i class='fa-solid fa-check'></i> Successful Accounts</button></div><div id='bot_accounts_list_data\"" +
+              bot_id +
+              "\"'></div><div id='bot_accounts_list_data_issues" +
+              bot_id +
+              "'></div>";
+            const ctx = document
+              .getElementById("bot_status_chart")
+              .getContext("2d");
+
+            recent_chart = new Chart(ctx, config);
+          });
+      }
+
+      function load_bot_issues_accounts(bot_id) {
+        document.getElementById(
+          `bot_accounts_list_data_issues${bot_id}`
+        ).innerHTML =
+          "<div class='divider divider-neutral mt-2'>Bot Issues Accounts</div><div class='mx-auto text-center'><div class='mx-auto mb-5 w-16 h-16 border-t-4 border-primary rounded-full animate-spin'></div> Loading ...</div>";
+        fetch(`../admin/bot_issues_accounts.py?bot_id=${bot_id}`, {
+          method: "POST",
+          body: "bot_id=" + bot_id,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const bot_accounts_list_data_issues = document.getElementById(
+              `bot_accounts_list_data_issues${bot_id}`
+            );
+
+            bot_accounts_list_data_issues.innerHTML = "";
+            if (Object.keys(data).length === 0) {
+              bot_accounts_list_data_issues.innerHTML =
+                "<div class='divider divider-neutral mt-2'>Bot Issues Accounts</div><div class='mx-auto text-center mt-2'><i class='fa-solid fa-info-circle text-xl text-info mr-2'></i> No Data Available</div>";
+              return;
+            }
+
+            let table =
+              "<div class='divider divider-neutral mt-2'>Bot Issues Accounts</div><table class='table'><thead><tr><th>Account Name</th></tr></thead><tbody>";
+
+            for (const key in data) {
+              table += `<tr class="hover"><td><i class="fa-solid fa-user-circle text-error mr-2"></i>${key}</td></tr>`;
+            }
+
+            table += "</tbody></table>";
+            bot_accounts_list_data_issues.innerHTML = table;
+          });
+      }
+
+      function load_telegram_issues_accounts(bot_id) {
+        document.getElementById(
+          `bot_accounts_list_data_issues${bot_id}`
+        ).innerHTML =
+          "<div class='divider divider-neutral mt-2'>Telegram Issues Accounts</div><div class='mx-auto text-center'><div class='mx-auto mb-5 w-16 h-16 border-t-4 border-primary rounded-full animate-spin'></div> Loading ...</div>";
+        fetch(`../admin/telegram_issues_accounts.py?bot_id=${bot_id}`, {
+          method: "POST",
+          body: "bot_id=" + bot_id,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const bot_accounts_list_data_issues = document.getElementById(
+              `bot_accounts_list_data_issues${bot_id}`
+            );
+
+            bot_accounts_list_data_issues.innerHTML = "";
+            if (Object.keys(data).length === 0) {
+              bot_accounts_list_data_issues.innerHTML =
+                "<div class='divider divider-neutral mt-2'>Telegram Issues Accounts</div><div class='mx-auto text-center mt-2'><i class='fa-solid fa-info-circle text-xl text-info mr-2'></i> No Data Available</div>";
+              return;
+            }
+
+            let table =
+              "<div class='divider divider-neutral mt-2'>Telegram Issues Accounts</div><table class='table'><thead><tr><th>Account Name</th></tr></thead><tbody>";
+
+            for (const key in data) {
+              table += `<tr class="hover"><td><i class="fa-solid fa-user-circle text-warning mr-2"></i>${key}</td></tr>`;
+            }
+
+            table += "</tbody></table>";
+            bot_accounts_list_data_issues.innerHTML = table;
+          });
+      }
+
+      function load_successful_accounts(bot_id) {
+        document.getElementById(
+          `bot_accounts_list_data_issues${bot_id}`
+        ).innerHTML =
+          "<div class='divider divider-neutral mt-2'>Successful Accounts</div><div class='mx-auto text-center'><div class='mx-auto mb-5 w-16 h-16 border-t-4 border-primary rounded-full animate-spin'></div> Loading ...</div>";
+        fetch(`../admin/successful_accounts.py?bot_id=${bot_id}`, {
+          method: "POST",
+          body: "bot_id=" + bot_id,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const bot_accounts_list_data_issues = document.getElementById(
+              `bot_accounts_list_data_issues${bot_id}`
+            );
+
+            bot_accounts_list_data_issues.innerHTML = "";
+            if (Object.keys(data).length === 0) {
+              bot_accounts_list_data_issues.innerHTML =
+                "<div class='divider divider-neutral mt-2'>Successful Accounts</div><div class='mx-auto text-center mt-2'><i class='fa-solid fa-info-circle text-xl text-info mr-2'></i> No Data Available</div>";
+              return;
+            }
+
+            let table =
+              "<div class='divider divider-neutral mt-2'>Successful Accounts</div><table class='table'><thead><tr><th>Account Name</th><th>Balance</th><th>Info</th></tr></thead><tbody>";
+
+            let total_balance = 0;
+            let accounts_count = 0;
+            for (const key in data) {
+              total_balance += data[key].balance;
+              accounts_count += 1;
+              table += `<tr class="hover"><td><i class="fa-solid fa-user-circle text-success mr-2"></i>${key}</td><td>${data[key].balance}</td><td>${data[key].data}</td></tr>`;
+            }
+
+            table += `<tr class="hover"><td>Total Accounts: ${accounts_count}</td><td>Total Balance: ${total_balance}</td><td></td></tr>`;
+            table += "</tbody></table>";
+            bot_accounts_list_data_issues.innerHTML = table;
+          });
       }
 
       function load_disabled_account(bot_id) {

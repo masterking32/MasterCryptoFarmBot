@@ -438,6 +438,125 @@ class admin:
 
         return {"status": "success", "logs": logs}
 
+    def bot_status(self, requests, webServer):
+        if "admin" not in session:
+            return redirect("/auth/login.py")
+
+        if requests.method != "POST" or "bot_id" not in requests.args:
+            return redirect("/admin/bots.py")
+
+        bot = requests.args.get("bot_id")
+
+        module_name = None
+        bots = self._bots_load_all(webServer)
+        for b in bots:
+            if b["id"] == bot:
+                module_name = b["name"]
+                break
+
+        if module_name is None:
+            return {}
+
+        module_dir = os.path.join(os.getcwd(), f"modules/{module_name}")
+        display_data = {}
+        display_data_file = os.path.join(module_dir, "display_data.json")
+        if os.path.exists(display_data_file):
+            with open(display_data_file, "r") as f:
+                display_data = json.load(f)
+
+        return display_data
+
+    def bot_issues_accounts(self, requests, webServer):
+        if "admin" not in session:
+            return redirect("/auth/login.py")
+
+        issues = []
+        if requests.method != "POST" or "bot_id" not in requests.args:
+            return redirect("/admin/bots.py")
+
+        bot = requests.args.get("bot_id")
+        module_name = None
+
+        bots = self._bots_load_all(webServer)
+        for b in bots:
+            if b["id"] == bot:
+                module_name = b["name"]
+                break
+
+        if module_name is None:
+            return {}
+
+        module_dir = os.path.join(os.getcwd(), f"modules/{module_name}")
+        display_data = {}
+        display_data_file = os.path.join(module_dir, "display_data_bot_issues.json")
+        if os.path.exists(display_data_file):
+            with open(display_data_file, "r") as f:
+                display_data = json.load(f)
+
+        return display_data
+
+    def telegram_issues_accounts(self, requests, webServer):
+        if "admin" not in session:
+            return redirect("/auth/login.py")
+
+        issues = []
+        if requests.method != "POST" or "bot_id" not in requests.args:
+            return redirect("/admin/bots.py")
+
+        bot = requests.args.get("bot_id")
+        module_name = None
+
+        bots = self._bots_load_all(webServer)
+        for b in bots:
+            if b["id"] == bot:
+                module_name = b["name"]
+                break
+
+        if module_name is None:
+            return {}
+
+        module_dir = os.path.join(os.getcwd(), f"modules/{module_name}")
+        display_data = {}
+        display_data_file = os.path.join(
+            module_dir, "display_data_telegram_issues.json"
+        )
+        if os.path.exists(display_data_file):
+            with open(display_data_file, "r") as f:
+                display_data = json.load(f)
+
+        return display_data
+
+    def successful_accounts(self, requests, webServer):
+        if "admin" not in session:
+            return redirect("/auth/login.py")
+
+        issues = []
+        if requests.method != "POST" or "bot_id" not in requests.args:
+            return redirect("/admin/bots.py")
+
+        bot = requests.args.get("bot_id")
+        module_name = None
+
+        bots = self._bots_load_all(webServer)
+        for b in bots:
+            if b["id"] == bot:
+                module_name = b["name"]
+                break
+
+        if module_name is None:
+            return {}
+
+        module_dir = os.path.join(os.getcwd(), f"modules/{module_name}")
+        display_data = {}
+        display_data_file = os.path.join(
+            module_dir, "display_data_success_accounts.json"
+        )
+        if os.path.exists(display_data_file):
+            with open(display_data_file, "r") as f:
+                display_data = json.load(f)
+
+        return display_data
+
     def module_accounts(self, requests, webServer):
         if "admin" not in session:
             return redirect("/auth/login.py")
