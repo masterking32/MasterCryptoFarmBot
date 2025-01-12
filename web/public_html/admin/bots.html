@@ -854,6 +854,7 @@
               table += `<tr class="hover"><td><i class="fa-solid fa-user-circle text-success mr-2"></i>${key}</td><td>${data[key].balance}</td><td>${data[key].data}</td></tr>`;
             }
 
+            total_balance = total_balance.toFixed(2);
             table += `<tr class="hover"><td>Total Accounts: ${accounts_count}</td><td>Total Balance: ${total_balance}</td><td></td></tr>`;
             table += "</tbody></table>";
             bot_accounts_list_data_issues.innerHTML = table;
