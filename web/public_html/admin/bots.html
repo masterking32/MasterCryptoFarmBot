@@ -849,7 +849,7 @@
             let total_balance = 0;
             let accounts_count = 0;
             for (const key in data) {
-              total_balance += parseInt(data[key].balance, 10);
+              total_balance += parseFloat(data[key].balance);
               accounts_count += 1;
               table += `<tr class="hover"><td><i class="fa-solid fa-user-circle text-success mr-2"></i>${key}</td><td>${data[key].balance}</td><td>${data[key].data}</td></tr>`;
             }
