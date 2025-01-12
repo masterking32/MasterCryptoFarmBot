@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/masterking32/MasterCryptoFarmBot#readme",
   "devDependencies": {
-    "daisyui": "^4.12.14",
-    "tailwindcss": "^3.4.15"
+    "daisyui": "^4.12.23",
+    "tailwindcss": "^3.4.17"
   }
 }
