@@ -87,7 +87,7 @@ Module for the TinyVerse bot. Automatically registers new accounts with your ref
 
 Module for the Bums bot. Automatically registers new accounts with your referral token, performs taps instantly or in a human-like manner, completes tasks (Video, Join Channel/Bot, Add "📦 Bums" to your account name), claims rewards for friends, gets and uses expeditions, gets and opens daily free boxes, buys PPH (filtered by level profit), buys TAP upgrades, and more.
 
-### 🤖 [Seed Farm/Claimer Bot](https://t.me/seed_coin_bot/app?startapp=95736407)
+### 🤖 [Seed Farm/Claimer Bot](https://github.com/masterking32/MCF_Seed)
 
 Module for the Seed bot. Automatically registers new accounts with your referral token, claims rewards, starts and completes tasks (Join Channel/Start Bot), hunts automatically, collects daily gifts, catches worms, gets free birds, auto-adds 🌱 to names, and more!
 
@@ -95,7 +95,7 @@ Module for the Seed bot. Automatically registers new accounts with your referral
 
 Module for the TimeFarm bot. Automatically registers new accounts with your referral token, starts and claims farms, starts and completes tasks (Join Channel/Start Bot), gets daily rewards, auto-stakes, auto-upgrades clocks, and more!
 
-### 🤖 [Major Farm/Claimer Bot](https://t.me/major/start?startapp=95736407)
+### 🤖 [Major Farm/Claimer Bot](https://github.com/masterking32/MCF_Major)
 
 Module for the Major bot. Automatically registers new accounts with your referral token, claims rewards, starts and completes tasks (Join Channel/Start Bot), Play games, Gets daily rewards, and more!
 
