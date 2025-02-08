@@ -141,9 +141,6 @@ EVM-compatible blockchains:
 TRC20 chain:
 `TLApdY8APWkFHHoxebxGY8JhMeChiETqFH`
 
-RONIN Chain:
-`masterking.ron`
-
 ---
 
 ### 👨‍💻 Developed By
