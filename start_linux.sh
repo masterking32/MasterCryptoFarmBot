@@ -21,7 +21,7 @@ fi
 
 PACKAGE_MANAGER=""
 if [ "$OS" == "ubuntu" ] || [ "$OS" == "debian" ]; then
-    PACKAGE_MANAGER="apt"
+    PACKAGE_MANAGER="apt-get"
 elif [ "$OS" == "fedora" ] || [ "$OS" == "centos" ]; then
     PACKAGE_MANAGER="yum"
 elif [ "$OS" == "darwin" ]; then
@@ -31,8 +31,8 @@ elif [ "$OS" == "android" ]; then
 fi
 
 PACKAGE_MANAGER_UPDATE=""
-if [ "$PACKAGE_MANAGER" == "apt" ]; then
-    PACKAGE_MANAGER_UPDATE="sudo apt update"
+if [ "$PACKAGE_MANAGER" == "apt-get" ]; then
+    PACKAGE_MANAGER_UPDATE="sudo apt-get update"
 elif [ "$PACKAGE_MANAGER" == "yum" ]; then
     PACKAGE_MANAGER_UPDATE="sudo yum update"
 elif [ "$PACKAGE_MANAGER" == "brew" ]; then
@@ -42,8 +42,8 @@ elif [ "$PACKAGE_MANAGER" == "pkg" ]; then
 fi
 
 PACKAGE_MANAGER_UPGRADE=""
-if [ "$PACKAGE_MANAGER" == "apt" ]; then
-    PACKAGE_MANAGER_UPGRADE="sudo apt upgrade -y"
+if [ "$PACKAGE_MANAGER" == "apt-get" ]; then
+    PACKAGE_MANAGER_UPGRADE="sudo apt-get upgrade -y"
 elif [ "$PACKAGE_MANAGER" == "yum" ]; then
     PACKAGE_MANAGER_UPGRADE="sudo yum upgrade -y"
 elif [ "$PACKAGE_MANAGER" == "brew" ]; then
@@ -53,8 +53,8 @@ elif [ "$PACKAGE_MANAGER" == "pkg" ]; then
 fi
 
 PACKAGE_MANAGER_INSTALL=""
-if [ "$PACKAGE_MANAGER" == "apt" ]; then
-    PACKAGE_MANAGER_INSTALL="sudo apt install -y"
+if [ "$PACKAGE_MANAGER" == "apt-get" ]; then
+    PACKAGE_MANAGER_INSTALL="sudo apt-get install -y"
 elif [ "$PACKAGE_MANAGER" == "yum" ]; then
     PACKAGE_MANAGER_INSTALL="sudo yum install -y"
 elif [ "$PACKAGE_MANAGER" == "brew" ]; then
@@ -144,6 +144,10 @@ echo "=========================================="
 echo "Press CTRL+C to stop the bot"
 echo "=========================================="
 sleep 3
+
+if ! git config --get-regexp init.defaultBranch | grep -q main; then
+    git config --global init.defaultBranch main
+fi
 
 while true; do
     # update the bot
