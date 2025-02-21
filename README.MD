@@ -65,7 +65,7 @@ Module for the Hamster Combat bot. Automatically buys the best cards, completes 
 
 Module for the Blum bot. Automatically registers new accounts, claims daily rewards, starts, finishes, and completes all tasks (including promotions, YouTube, partners, and more), plays games, joins channels, launches partner bots for tasks, and much more!
 
-### 🤖 [Zoo Farm/Claimer Bot](https://t.me/zoo_story_bot/game?startapp=ref95736407)
+### 🤖 [Zoo Farm/Claimer Bot](https://github.com/masterking32/MCF_Zoo)
 
 Module for the Zoo bot. Automatically registers new accounts with your referral token, Automatically stops the bot X days before the mining phase stops, Auto Claim daily rewards, Auto Complete tasks (Rebus & Riddle), Auto claims limited time chests, Automatically joins channels & changes names for tasks, Automatically buy animals to increase ProfitPerHour, Automatically join alliance (possible to give alliance ID), Automatically donate food to alliance, Automatically buy boosts. and more.
 
