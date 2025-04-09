@@ -83,7 +83,7 @@ Module for the Hrum bot. Automatically claims cookies from the farm, collects da
 
 ### 🤖 [Tiny Verse Farm/Claimer Bot](https://t.me/TVerse?startapp=galaxy-000564f1570000e84f3600017c014c)
 
-Module for the TinyVerse bot. Automatically registers new accounts with your referral token, Auto Farming, Collecting dust, Gifting stars, Crafting, and more.
+Module for the TinyVerse bot. Automatically registers new accounts with your referral token, Auto Farming, collecting dust, Gifting stars, Crafting, and more.
 
 ### 🤖 [Bums Farm/Claimer Bot](https://t.me/bums/app?startapp=ref_Y1r7YLBo)
 
@@ -99,7 +99,7 @@ Module for the TimeFarm bot. Automatically registers new accounts with your refe
 
 ### 🤖 [Major Farm/Claimer Bot](https://github.com/masterking32/MCF_Major)
 
-Module for the Major bot. Automatically registers new accounts with your referral token, claims rewards, starts and completes tasks (Join Channel/Start Bot), Play games, Gets daily rewards, and more!
+Module for the Major bot. Automatically register new accounts with your referral token, claim rewards, start and complete tasks (Join Channel/Start Bot), play games, get daily rewards, and more!
 
 ### 🤖 [PocketFi Farm/Claimer Bot](https://t.me/pocketfi_bot/Mining?startapp=95736407)
 
